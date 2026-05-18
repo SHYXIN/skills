@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "idea-alchemist": {
+      "source": "SHYXIN/idea-alchemist",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "229d83e00c2048ffb1872dc9e93f6d389b146c74f9b489a313520577c0ed10df"
+    }
+  }
+}

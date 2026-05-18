@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "idea-alchemist": {
+      "source": "SHYXIN/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/idea-alchemist/SKILL.md",
+      "computedHash": "f7bade83a32b35d1eee2cc8299e5a0ac61d7c17cfdd018f1aa1f45ff2f37d7d4"
+    },
+    "socratic-tutor": {
+      "source": "SHYXIN/skills",
+      "sourceType": "github",
+      "skillPath": "skills/teaching/socratic-tutor/SKILL.md",
+      "computedHash": "94bfc19fd4a670c82cc5f87b34ee2833b718eb61f2e9a304eef4a7ffbc4632c1"
+    }
+  }
+}
