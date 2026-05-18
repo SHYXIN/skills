@@ -1,0 +1,7 @@
+{
+  "name": "shyxin-skills",
+  "skills": [
+    "./skills/teaching/socratic-tutor",
+    "./skills/productivity/idea-alchemist"
+  ]
+}
