@@ -38,9 +38,10 @@ Windows 示例：`C:\Users\<用户名>\.claude\skills\socratic-tutor\progress\pr
 
 1. 用 Read 工具读取上述固定路径的进度文件
 2. 如果文件存在且包含当前话题 → 记录存储的层级（作为初始假设，不要盲目信任）
-3. 如果文件不存在 → 创建文件（只有 header，没有话题记录），从初始校准开始
+3. 如果文件不存在 → **先确保 `progress/` 目录存在**，然后创建 `progress.md`（只有 header，没有话题记录），从初始校准开始
 
 > ✅ 路径是固定的，不需要动态构造。一个文件存所有话题的进度。
+> ⚠️ 写入前必须确保父目录存在——如果 `progress/` 目录不存在，先创建目录再写文件。
 
 ### 阶段二：水平校准
 
@@ -78,7 +79,7 @@ Windows 示例：`C:\Users\<用户名>\.claude\skills\socratic-tutor\progress\pr
 
 > ⚠️ **第 4 步保存和第 2 步检测一样重要。** 如果对话中断，进度不能丢。
 > 保存内容：当前话题、校准层级、本次覆盖的概念、时间戳。
-> 保存路径：`~/.claude/skills/socratic-tutor/progress/<项目名>_<用户名>.md`（绝对路径）
+> 保存路径：`~/.claude/skills/socratic-tutor/progress/progress.md`（固定路径）
 
 #### 讲解
 
@@ -136,14 +137,15 @@ Windows 示例：`C:\Users\<用户名>\.claude\skills\socratic-tutor\progress\pr
 每次教学交互的第 4 步"保存"，按以下清单逐项执行：
 
 ```
-□ 1. 构造绝对路径：~/.claude/skills/socratic-tutor/progress/<项目名>_<用户名>.md
-□ 2. 用 Read 工具读取进度文件（不存在则创建）
-□ 3. 更新当前话题的层级（如有变化）
-□ 4. 追加本次覆盖的概念（不覆盖已有记录）
-□ 5. 更新时间戳为当前日期
-□ 6. 如有纠偏，追加纠偏记录
-□ 7. 用 Write 工具写入文件
-□ 8. 确认写入成功（输出"进度已保存"）
+□ 1. 固定路径：~/.claude/skills/socratic-tutor/progress/progress.md
+□ 2. 确保 progress/ 目录存在（不存在则创建）
+□ 3. 用 Read 工具读取 progress.md（不存在则创建空文件）
+□ 4. 更新当前话题的层级（如有变化）
+□ 5. 追加本次覆盖的概念（不覆盖已有记录）
+□ 6. 更新时间戳为当前日期
+□ 7. 如有纠偏，追加纠偏记录
+□ 8. 用 Write 工具写入文件
+□ 9. 确认写入成功（输出"进度已保存"）
 ```
 
 **关键规则：**
