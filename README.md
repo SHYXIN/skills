@@ -10,6 +10,19 @@ npx skills@latest add SHYXIN/skills
 
 安装后，在 Claude Code 中即可使用以下技能。
 
+## 更新
+
+当技能有新版本时，运行以下命令更新：
+
+```bash
+# 更新指定技能
+npx skills@latest update socratic-tutor
+npx skills@latest update idea-alchemist
+
+# 或者同时更新多个
+npx skills@latest update socratic-tutor idea-alchemist
+```
+
 ## 技能列表
 
 ### 教学
