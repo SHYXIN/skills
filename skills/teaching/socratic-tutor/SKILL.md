@@ -29,19 +29,18 @@ description: >
 **固定路径（直接用，无需构造）：**
 
 ```
-~/.agents/skills/socratic-tutor/progress/progress.md
+~/.socratic-tutor/progress.md
 ```
 
-Windows 示例：`C:\Users\<用户名>\.agents\skills\socratic-tutor\progress\progress.md`
+Windows 示例：`C:\Users\<用户名>\.socratic-tutor\progress.md`
 
 **执行步骤：**
 
 1. 用 Read 工具读取上述固定路径的进度文件
 2. 如果文件存在且包含当前话题 → 记录存储的层级（作为初始假设，不要盲目信任）
-3. 如果文件不存在 → **先确保 `progress/` 目录存在**，然后创建 `progress.md`（只有 header，没有话题记录），从初始校准开始
+3. 如果文件不存在 → 创建 `~/.socratic-tutor/` 目录和 `progress.md`（只有 header，没有话题记录），从初始校准开始
 
-> ✅ 路径是固定的，不需要动态构造。一个文件存所有话题的进度。
-> ⚠️ 写入前必须确保父目录存在——如果 `progress/` 目录不存在，先创建目录再写文件。
+> ✅ 路径在用户主目录下，与 skill 安装位置完全无关。更新 skill 不会丢失进度。
 
 ### 阶段二：水平校准
 
@@ -79,7 +78,7 @@ Windows 示例：`C:\Users\<用户名>\.agents\skills\socratic-tutor\progress\pr
 
 > ⚠️ **第 4 步保存和第 2 步检测一样重要。** 如果对话中断，进度不能丢。
 > 保存内容：当前话题、校准层级、本次覆盖的概念、时间戳。
-> 保存路径：`~/.agents/skills/socratic-tutor/progress/progress.md`（固定路径）
+> 保存路径：`~/.socratic-tutor/progress.md`（固定路径）
 
 #### 讲解
 
@@ -137,8 +136,8 @@ Windows 示例：`C:\Users\<用户名>\.agents\skills\socratic-tutor\progress\pr
 每次教学交互的第 4 步"保存"，按以下清单逐项执行：
 
 ```
-□ 1. 固定路径：~/.agents/skills/socratic-tutor/progress/progress.md
-□ 2. 确保 progress/ 目录存在（不存在则创建）
+□ 1. 固定路径：~/.socratic-tutor/progress.md
+□ 2. 确保 ~/.socratic-tutor/ 目录存在（不存在则创建）
 □ 3. 用 Read 工具读取 progress.md（不存在则创建空文件）
 □ 4. 更新当前话题的层级（如有变化）
 □ 5. 追加本次覆盖的概念（不覆盖已有记录）

@@ -5,7 +5,7 @@
 固定路径，不再动态构造：
 
 ```
-~/.agents/skills/socratic-tutor/progress/progress.md
+~/.socratic-tutor/progress.md
 ```
 
 Windows 完整示例：
@@ -52,7 +52,7 @@ C:\Users\<用户名>\.claude\skills\socratic-tutor\progress\progress.md
 
 ### 读取（每次教学开始前）
 
-1. 用 Read 工具读取 `~/.agents/skills/socratic-tutor/progress/progress.md`（绝对路径）
+1. 用 Read 工具读取 `~/.socratic-tutor/progress.md`（绝对路径）
 2. 如果文件不存在 → 创建（只有 header，没有话题记录）
 3. 如果文件存在 → 找到当前话题对应的条目，提取层级作为初始假设
 
