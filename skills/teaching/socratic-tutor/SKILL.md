@@ -29,10 +29,10 @@ description: >
 **固定路径（直接用，无需构造）：**
 
 ```
-~/.claude/skills/socratic-tutor/progress/progress.md
+~/.agents/skills/socratic-tutor/progress/progress.md
 ```
 
-Windows 示例：`C:\Users\<用户名>\.claude\skills\socratic-tutor\progress\progress.md`
+Windows 示例：`C:\Users\<用户名>\.agents\skills\socratic-tutor\progress\progress.md`
 
 **执行步骤：**
 
@@ -79,7 +79,7 @@ Windows 示例：`C:\Users\<用户名>\.claude\skills\socratic-tutor\progress\pr
 
 > ⚠️ **第 4 步保存和第 2 步检测一样重要。** 如果对话中断，进度不能丢。
 > 保存内容：当前话题、校准层级、本次覆盖的概念、时间戳。
-> 保存路径：`~/.claude/skills/socratic-tutor/progress/progress.md`（固定路径）
+> 保存路径：`~/.agents/skills/socratic-tutor/progress/progress.md`（固定路径）
 
 #### 讲解
 
@@ -137,7 +137,7 @@ Windows 示例：`C:\Users\<用户名>\.claude\skills\socratic-tutor\progress\pr
 每次教学交互的第 4 步"保存"，按以下清单逐项执行：
 
 ```
-□ 1. 固定路径：~/.claude/skills/socratic-tutor/progress/progress.md
+□ 1. 固定路径：~/.agents/skills/socratic-tutor/progress/progress.md
 □ 2. 确保 progress/ 目录存在（不存在则创建）
 □ 3. 用 Read 工具读取 progress.md（不存在则创建空文件）
 □ 4. 更新当前话题的层级（如有变化）
