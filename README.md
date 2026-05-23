@@ -18,9 +18,10 @@ npx skills@latest add SHYXIN/skills
 # 更新指定技能
 npx skills@latest update socratic-tutor
 npx skills@latest update idea-alchemist
+npx skills@latest update interview-coach
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch
+npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach
 ```
 
 ## 技能列表
@@ -28,6 +29,10 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch
 ### 教学
 
 - **socratic-tutor** — 自适应教学技能。通过对话探测学习者的理解水平，动态调整讲解深度（术语密度、抽象层级、前置知识假设、例子复杂度），支持任意领域知识。自动跟踪学习进度，持续校准层级。内置**面试模式**（复习第 3 次起自动升级），用挑战式问题做深度检验，支持用户主动发起。
+
+### 面试
+
+- **interview-coach** — 面试备战教练。通过知识梳理、问答练习和全真模拟三种模式，帮求职者系统准备面试。覆盖技术面试（算法、系统设计、编码）和行为面试（STAR、文化匹配）。内置 5 家公司情报（字节/阿里/Google/Amazon/腾讯），支持能力图谱追踪、错题本和艾宾浩斯复习计划。进度文件独立存储于 `~/.interview-coach/`，更新 skill 不丢数据。
 
 ### 产品
 
@@ -45,7 +50,8 @@ skills/
 │   └── socratic-tutor/
 └── productivity/      # 效率类技能
     ├── idea-alchemist/
-    └── anysearch/     # 搜索类技能（含代理适配）
+    ├── anysearch/     # 搜索类技能（含代理适配）
+    └── interview-coach/  # 面试备战教练
 ```
 
 ## 后续计划

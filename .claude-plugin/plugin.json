@@ -3,6 +3,7 @@
   "skills": [
     "./skills/teaching/socratic-tutor",
     "./skills/productivity/idea-alchemist",
-    "./skills/productivity/anysearch"
+    "./skills/productivity/anysearch",
+    "./skills/productivity/interview-coach"
   ]
 }
