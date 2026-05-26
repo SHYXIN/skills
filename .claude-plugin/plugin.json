@@ -4,6 +4,7 @@
     "./skills/teaching/socratic-tutor",
     "./skills/productivity/idea-alchemist",
     "./skills/productivity/anysearch",
-    "./skills/productivity/interview-coach"
+    "./skills/productivity/interview-coach",
+    "./skills/backend/fastapi-starlette-admin"
   ]
 }

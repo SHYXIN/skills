@@ -19,9 +19,10 @@ npx skills@latest add SHYXIN/skills
 npx skills@latest update socratic-tutor
 npx skills@latest update idea-alchemist
 npx skills@latest update interview-coach
+npx skills@latest update fastapi-starlette-admin
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach
+npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach fastapi-starlette-admin
 ```
 
 ## 技能列表
@@ -42,16 +43,22 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach
 
 - **anysearch** — 实时搜索引擎。支持通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和网页内容提取。已适配 Windows Clash 代理环境，开关代理均可自动连通。
 
+### 后端开发
+
+- **fastapi-starlette-admin** — 给 FastAPI 项目快速集成 starlette-admin 管理面板。自动检测项目结构（从零开始 or 已有项目），处理 async/sync 引擎双轨制，生成完整的 admin 配置（含 AuthProvider、ModelView、batch actions、自定义 Dashboard、i18n 语言切换），标注 database.py 和 main.py 的修改点。基于真实项目经验，包含 11 条踩坑记录。
+
 ## 目录结构
 
 ```
 skills/
 ├── teaching/          # 教学类技能
 │   └── socratic-tutor/
-└── productivity/      # 效率类技能
-    ├── idea-alchemist/
-    ├── anysearch/     # 搜索类技能（含代理适配）
-    └── interview-coach/  # 面试备战教练
+├── productivity/      # 效率类技能
+│   ├── idea-alchemist/
+│   ├── anysearch/     # 搜索类技能（含代理适配）
+│   └── interview-coach/  # 面试备战教练
+└── backend/           # 后端开发类技能
+    └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
 ```
 
 ## 后续计划
@@ -60,4 +67,4 @@ skills/
 
 - 写作类
 - 分析类
-- 开发工作流类
+- 更多开发工作流类
