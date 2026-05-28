@@ -5,6 +5,8 @@
     "./skills/productivity/idea-alchemist",
     "./skills/productivity/anysearch",
     "./skills/productivity/interview-coach",
-    "./skills/backend/fastapi-starlette-admin"
+    "./skills/backend/fastapi-starlette-admin",
+    "./skills/productivity/verify-manual",
+    "./skills/frontend/miniprogram-iconfont"
   ]
 }

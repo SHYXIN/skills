@@ -39,9 +39,17 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach
 
 - **idea-alchemist** — 想法炼金师。通过引导式追问，帮普通人把模糊想法变成清晰的产品蓝图和技术规格。
 
+### 验证
+
+- **verify-manual** — 手动验证手册生成器。在 `/to-prd` 或 `/to-issues` 完成代码后，自动生成分层验证手册（冒烟测试→功能点→端到端场景），存放在 `docs/verify/issue-NNNN.md`。
+
 ### 搜索
 
 - **anysearch** — 实时搜索引擎。支持通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和网页内容提取。已适配 Windows Clash 代理环境，开关代理均可自动连通。
+
+### 前端开发
+
+- **miniprogram-iconfont** — 微信小程序 Iconfont 图标集成。从 iconfont.cn 挑选下载图标，自动替换字体文件、更新 CSS、扫描并替换 WXML/JS 中的 emoji 为 iconfont 类名。引导式交互 + 自动化脚本，覆盖完整的图标集成流程。
 
 ### 后端开发
 
@@ -57,6 +65,8 @@ skills/
 │   ├── idea-alchemist/
 │   ├── anysearch/     # 搜索类技能（含代理适配）
 │   └── interview-coach/  # 面试备战教练
+├── frontend/           # 前端开发类技能
+│   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 └── backend/           # 后端开发类技能
     └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
 ```
