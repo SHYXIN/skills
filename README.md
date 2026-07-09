@@ -20,9 +20,10 @@ npx skills@latest update socratic-tutor
 npx skills@latest update idea-alchemist
 npx skills@latest update interview-coach
 npx skills@latest update fastapi-starlette-admin
+npx skills@latest update ssh-key-setup
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach fastapi-starlette-admin
+npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach fastapi-starlette-admin ssh-key-setup
 ```
 
 ## 技能列表
@@ -47,6 +48,10 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach
 
 - **anysearch** — 实时搜索引擎。支持通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和网页内容提取。已适配 Windows Clash 代理环境，开关代理均可自动连通。
 
+### 效率
+
+- **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
+
 ### 前端开发
 
 - **miniprogram-iconfont** — 微信小程序 Iconfont 图标集成。从 iconfont.cn 挑选下载图标，自动替换字体文件、更新 CSS、扫描并替换 WXML/JS 中的 emoji 为 iconfont 类名。引导式交互 + 自动化脚本，覆盖完整的图标集成流程。
@@ -64,7 +69,8 @@ skills/
 ├── productivity/      # 效率类技能
 │   ├── idea-alchemist/
 │   ├── anysearch/     # 搜索类技能（含代理适配）
-│   └── interview-coach/  # 面试备战教练
+│   ├── interview-coach/  # 面试备战教练
+│   └── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 └── backend/           # 后端开发类技能
