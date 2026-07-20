@@ -18,12 +18,13 @@ npx skills@latest add SHYXIN/skills
 # 更新指定技能
 npx skills@latest update socratic-tutor
 npx skills@latest update idea-alchemist
+npx skills@latest update guided-book-reader
 npx skills@latest update interview-coach
 npx skills@latest update fastapi-starlette-admin
 npx skills@latest update ssh-key-setup
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach fastapi-starlette-admin ssh-key-setup
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup
 ```
 
 ## 技能列表
@@ -50,6 +51,8 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch interview-coach
 
 ### 效率
 
+- **guided-book-reader** — 带读英文技术书 PDF 的工作流技能。用于认真阅读英文技术书、论文集或长篇 PDF：先读取和解析 PDF、转成 txt、按章节拆分，再用中文为主的 teach 风格逐小节讲解、出选择题检查理解，并把每节阅读总结追加到 notes markdown。
+
 - **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
 
 ### 前端开发
@@ -69,6 +72,7 @@ skills/
 ├── productivity/      # 效率类技能
 │   ├── idea-alchemist/
 │   ├── anysearch/     # 搜索类技能（含代理适配）
+│   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
 │   └── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
 ├── frontend/           # 前端开发类技能
