@@ -2,6 +2,7 @@
   "name": "shyxin-skills",
   "skills": [
     "./skills/teaching/socratic-tutor",
+    "./skills/teaching/teach-wx",
     "./skills/productivity/idea-alchemist",
     "./skills/productivity/anysearch",
     "./skills/productivity/interview-coach",
