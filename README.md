@@ -22,9 +22,10 @@ npx skills@latest update guided-book-reader
 npx skills@latest update interview-coach
 npx skills@latest update fastapi-starlette-admin
 npx skills@latest update ssh-key-setup
+npx skills@latest update branch-management
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management
 ```
 
 ## 技能列表
@@ -55,6 +56,8 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 
 - **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
 
+- **branch-management** — 通用 Git 分支管理操作技能。默认以 wangxin/wx 身份从 `develop` 创建 `feature/wx-YYYYMMDD-<task>`，帮你执行新建 feature、同步基线、提交并 push、MR 前检查、合并后清理分支；历史重写、远端删除、生产分支相关动作会先确认。
+
 ### 前端开发
 
 - **miniprogram-iconfont** — 微信小程序 Iconfont 图标集成。从 iconfont.cn 挑选下载图标，自动替换字体文件、更新 CSS、扫描并替换 WXML/JS 中的 emoji 为 iconfont 类名。引导式交互 + 自动化脚本，覆盖完整的图标集成流程。
@@ -74,7 +77,8 @@ skills/
 │   ├── anysearch/     # 搜索类技能（含代理适配）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
-│   └── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
+│   ├── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
+│   └── branch-management/ # 通用 Git 分支管理操作
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 └── backend/           # 后端开发类技能
