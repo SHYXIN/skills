@@ -84,7 +84,7 @@ jq --arg p "./skills/productivity/foo" '.skills = [.skills[] | select(. != $p)]'
 | anysearch | productivity | anysearch |
 | interview-coach | productivity | interview-coach |
 | fastapi-starlette-admin | backend | fastapi-starlette-admin |
-| verify-manual | _（登记在 plugin.json） | verify-manual |
+| verify-manual-after-implementation | _（登记在 plugin.json） | verify-manual-after-implementation |
 | miniprogram-iconfont | frontend | miniprogram-iconfont |
 | ssh-key-setup | productivity | ssh-key-setup |
 

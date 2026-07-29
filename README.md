@@ -44,7 +44,7 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 
 ### 验证
 
-- **verify-manual** — 手动验证手册生成器。在 `/to-prd` 或 `/to-issues` 完成代码后，自动生成分层验证手册（冒烟测试→功能点→端到端场景），存放在 `docs/verify/issue-NNNN.md`。
+- **verify-manual-after-implementation** — 实现完成后的通用手动验收手册生成器。适用于 `to-spec -> to-tickets -> implement` 后，自动审计仓库、必要时补 `scripts/dev.sh`，并生成 `docs/verification/manual-test-guide.md`。
 
 ### 搜索
 

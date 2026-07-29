@@ -10,7 +10,7 @@
     "./skills/productivity/guided-book-reader",
     "./skills/productivity/branch-management",
     "./skills/backend/fastapi-starlette-admin",
-    "./skills/productivity/verify-manual",
+    "./skills/productivity/verify-manual-after-implementation",
     "./skills/frontend/miniprogram-iconfont"
   ]
 }
