@@ -23,9 +23,10 @@ npx skills@latest update interview-coach
 npx skills@latest update fastapi-starlette-admin
 npx skills@latest update ssh-key-setup
 npx skills@latest update branch-management
+npx skills@latest update consensus-tech-research
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management consensus-tech-research
 ```
 
 ## 技能列表
@@ -51,6 +52,8 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 - **anysearch** — 实时搜索引擎。支持通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和网页内容提取。已适配 Windows Clash 代理环境，开关代理均可自动连通。
 
 ### 效率
+
+- **consensus-tech-research** — 基于已达成的设计共识，调研并比较适合的技术库、包或框架，输出有证据支撑的技术选型报告与推荐结论。在 grilling、grill-me 或 grill-with-docs 达成共识后，需要技术调研、框架比较、依赖选型，或为 to-spec 准备技术决策时使用。
 
 - **guided-book-reader** — 带读英文技术书 PDF 的工作流技能。用于认真阅读英文技术书、论文集或长篇 PDF：先读取和解析 PDF、转成 txt、按章节拆分，再用中文为主的 teach 风格逐小节讲解、出选择题检查理解，并把每节阅读总结追加到 notes markdown。
 
@@ -79,6 +82,7 @@ skills/
 │   ├── interview-coach/  # 面试备战教练
 │   ├── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
 │   └── branch-management/ # 通用 Git 分支管理操作
+│   └── consensus-tech-research/ # 基于共识的技术选型调研
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 └── backend/           # 后端开发类技能

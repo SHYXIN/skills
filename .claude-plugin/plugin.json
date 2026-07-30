@@ -11,6 +11,7 @@
     "./skills/productivity/branch-management",
     "./skills/backend/fastapi-starlette-admin",
     "./skills/productivity/verify-manual-after-implementation",
-    "./skills/frontend/miniprogram-iconfont"
+    "./skills/frontend/miniprogram-iconfont",
+    "./skills/productivity/consensus-tech-research"
   ]
 }
