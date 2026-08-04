@@ -1,6 +1,6 @@
 ---
 name: agent-package-sync
-description: 公司内部 agent/专家结果包上传前同步工作流。用于检查 result 包改动、同步 AGENTS.md 命名、按实际 skills 目录重打 zip、排除缓存并输出上传清单；不执行 git commit 或 push。
+description: 公司内部 agent/专家结果包上传前同步工作流。用于检查 result 包改动、同步 AGENTS.md 命名、按 git 变更只重打更新过的 skill zip、排除缓存并输出上传清单；不执行 git commit 或 push。
 ---
 
 # Agent Package Sync
@@ -38,8 +38,9 @@ description: 公司内部 agent/专家结果包上传前同步工作流。用于
 3. 扫描 `<package_root>/skills` 下所有一级目录作为候选 skill。
 4. 对每个候选 skill：
    - 如果缺少同名 `.zip`，生成。
-   - 如果目录内源文件比 `.zip` 新，重打。
+   - 如果该 skill 目录出现在 git 变更中，重打。
    - 如果用户要求全部重打，全部重打。
+   - 如果显式开启 `--mtime`，再按时间戳补充判断。
 5. 打包规则：
    - zip 内保留顶层 skill 目录名。
    - 排除 `__pycache__` 和 `.pyc`。
@@ -72,6 +73,7 @@ python <skill>/scripts/package_sync.py --repo <repo_root>
 python <skill>/scripts/package_sync.py --repo C:\code_proj\maintenance-execution-expert
 python <skill>/scripts/package_sync.py --package C:\code_proj\maintenance-execution-expert\result
 python <skill>/scripts/package_sync.py --repo C:\code_proj\maintenance-execution-expert --all
+python <skill>/scripts/package_sync.py --repo C:\code_proj\maintenance-execution-expert --mtime
 ```
 
 脚本只整理文件和 zip，不做提交。

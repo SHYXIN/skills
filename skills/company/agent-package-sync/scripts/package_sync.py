@@ -29,6 +29,40 @@ def run_git(repo: Path, args: list[str]) -> str:
     return (result.stdout + result.stderr).strip()
 
 
+def git_changed_files(repo: Path) -> list[Path]:
+    output = run_git(repo, ["status", "--short"])
+    changed: list[Path] = []
+    for line in output.splitlines():
+        if not line.strip():
+            continue
+        raw = line[3:].strip()
+        if line.startswith("??"):
+            raw = line[2:].strip()
+        if " -> " in raw:
+            raw = raw.split(" -> ", 1)[1].strip()
+        raw = raw.strip('"').strip()
+        if raw:
+            changed.append((repo / raw).resolve())
+    return changed
+
+
+def changed_skill_names(repo: Path, package_root: Path, skills_root: Path) -> set[str]:
+    changed = git_changed_files(repo)
+    names: set[str] = set()
+    try:
+        skills_root.relative_to(package_root)
+    except ValueError:
+        return names
+    for path in changed:
+        try:
+            relative = path.relative_to(skills_root)
+        except ValueError:
+            continue
+        if relative.parts:
+            names.add(relative.parts[0])
+    return names
+
+
 def latest_mtime(root: Path) -> float:
     latest = root.stat().st_mtime
     for path in root.rglob("*"):
@@ -82,6 +116,7 @@ def main() -> int:
     parser.add_argument("--repo", type=Path, default=Path.cwd(), help="repository root; default is cwd")
     parser.add_argument("--package", type=Path, help="agent package root; default is <repo>/result")
     parser.add_argument("--all", action="store_true", help="rebuild all skill zips")
+    parser.add_argument("--mtime", action="store_true", help="also rebuild skill zips when source files are newer than zip")
     parser.add_argument("--dry-run", action="store_true", help="print actions without writing zips or renaming files")
     args = parser.parse_args()
 
@@ -109,12 +144,17 @@ def main() -> int:
 
     rebuilt: list[Path] = []
     skipped: list[Path] = []
+    changed_names = changed_skill_names(repo, package_root, skills_root)
 
     print("== Skills ==")
+    if changed_names:
+        print("changed skills by git status: " + ", ".join(sorted(changed_names)))
+    elif not args.all and not args.mtime:
+        print("changed skills by git status: none")
     for skill_dir in candidate_skill_dirs(skills_root):
         zip_path = skills_root / f"{skill_dir.name}.zip"
-        needs_rebuild = args.all or not zip_path.exists()
-        if zip_path.exists() and not needs_rebuild:
+        needs_rebuild = args.all or not zip_path.exists() or skill_dir.name in changed_names
+        if args.mtime and zip_path.exists() and not needs_rebuild:
             needs_rebuild = latest_mtime(skill_dir) > zip_path.stat().st_mtime
         if needs_rebuild:
             print(f"rebuild {zip_path.name}")
@@ -131,7 +171,7 @@ def main() -> int:
         path = package_root / name
         if path.exists():
             upload_files.append(path)
-    upload_files.extend(sorted(skills_root.glob("*.zip")) if skills_root.exists() else [])
+    upload_files.extend(rebuilt)
 
     print("== Upload checklist ==")
     for path in upload_files:
