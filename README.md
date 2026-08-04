@@ -24,9 +24,10 @@ npx skills@latest update fastapi-starlette-admin
 npx skills@latest update ssh-key-setup
 npx skills@latest update branch-management
 npx skills@latest update consensus-tech-research
+npx skills@latest update agent-package-sync
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management consensus-tech-research
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management consensus-tech-research agent-package-sync
 ```
 
 ## 技能列表
@@ -69,6 +70,10 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 
 - **fastapi-starlette-admin** — 给 FastAPI 项目快速集成 starlette-admin 管理面板。自动检测项目结构（从零开始 or 已有项目），处理 async/sync 引擎双轨制，生成完整的 admin 配置（含 AuthProvider、ModelView、batch actions、自定义 Dashboard、i18n 语言切换），标注 database.py 和 main.py 的修改点。基于真实项目经验，包含 11 条踩坑记录。
 
+### 公司
+
+- **agent-package-sync** — 公司内部 agent/专家结果包上传前同步工作流。用于检查 result 包改动、同步 AGENTS.md 命名、按实际 skills 目录重打 zip、排除缓存并输出上传清单；不执行 git commit 或 push。
+
 ## 目录结构
 
 ```
@@ -81,12 +86,14 @@ skills/
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
 │   ├── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
-│   └── branch-management/ # 通用 Git 分支管理操作
+│   ├── branch-management/ # 通用 Git 分支管理操作
 │   └── consensus-tech-research/ # 基于共识的技术选型调研
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
-└── backend/           # 后端开发类技能
-    └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
+├── backend/           # 后端开发类技能
+│   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
+└── company/           # 公司内部工作流技能
+    └── agent-package-sync/  # agent/专家结果包上传前同步
 ```
 
 ## 后续计划

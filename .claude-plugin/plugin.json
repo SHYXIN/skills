@@ -12,6 +12,7 @@
     "./skills/backend/fastapi-starlette-admin",
     "./skills/productivity/verify-manual-after-implementation",
     "./skills/frontend/miniprogram-iconfont",
-    "./skills/productivity/consensus-tech-research"
+    "./skills/productivity/consensus-tech-research",
+    "./skills/company/agent-package-sync"
   ]
 }

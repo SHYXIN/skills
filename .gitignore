@@ -2,3 +2,5 @@
 .claude/
 /skills-lock.json
 /tmp/
+__pycache__/
+*.pyc
