@@ -23,12 +23,13 @@ npx skills@latest update interview-coach
 npx skills@latest update fastapi-starlette-admin
 npx skills@latest update ssh-key-setup
 npx skills@latest update branch-management
+npx skills@latest update grill-one
 npx skills@latest update consensus-tech-research
 npx skills@latest update upward-networking
 npx skills@latest update agent-package-sync
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management consensus-tech-research upward-networking agent-package-sync
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync
 ```
 
 ## 技能列表
@@ -59,6 +60,8 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 
 - **guided-book-reader** — 带读英文技术书 PDF 的工作流技能。用于认真阅读英文技术书、论文集或长篇 PDF：先读取和解析 PDF、转成 txt、按章节拆分，再用中文为主的 teach 风格逐小节讲解、出选择题检查理解，并把每节阅读总结追加到 notes markdown。
 
+- **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，适合更慢、更聚焦的设计访谈。
+
 - **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
 
 - **branch-management** — 通用 Git 分支管理操作技能。默认以 wangxin/wx 身份从 `develop` 创建 `feature/wx-YYYYMMDD-<task>`，帮你执行新建 feature、同步基线、提交并 push、MR 前检查、合并后清理分支；历史重写、远端删除、生产分支相关动作会先确认。
@@ -88,6 +91,7 @@ skills/
 │   ├── anysearch/     # 搜索类技能（含代理适配）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
+│   ├── grill-one/  # 单问版 grilling
 │   ├── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
 │   ├── branch-management/ # 通用 Git 分支管理操作
 │   ├── consensus-tech-research/ # 基于共识的技术选型调研
