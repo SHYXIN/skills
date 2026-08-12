@@ -11,6 +11,7 @@
     "./skills/productivity/branch-management",
     "./skills/productivity/grill-one",
     "./skills/productivity/writing-for-agents-wx",
+    "./skills/productivity/wait-what-wx",
     "./skills/backend/fastapi-starlette-admin",
     "./skills/productivity/verify-manual-after-implementation",
     "./skills/frontend/miniprogram-iconfont",

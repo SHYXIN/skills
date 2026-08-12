@@ -1,0 +1,5 @@
+interface:
+  display_name: "没懂就重讲"
+  short_description: "让 agent 把上一句重讲清楚——更短、补上缺的上下文"
+policy:
+  allow_implicit_invocation: false
