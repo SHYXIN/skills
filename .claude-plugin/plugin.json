@@ -10,6 +10,7 @@
     "./skills/productivity/guided-book-reader",
     "./skills/productivity/branch-management",
     "./skills/productivity/grill-one",
+    "./skills/productivity/writing-for-agents-wx",
     "./skills/backend/fastapi-starlette-admin",
     "./skills/productivity/verify-manual-after-implementation",
     "./skills/frontend/miniprogram-iconfont",
