@@ -17,7 +17,7 @@ curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | b
 自定义 agent 列表：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy codex"
+curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy claude-code codex"
 ```
 
 **方式二 · 克隆后本地运行**
