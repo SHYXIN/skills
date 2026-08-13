@@ -1,0 +1,5 @@
+interface:
+  display_name: "技能打包上传"
+  short_description: "把用户 skills 批量打成 zip，方便上传到平台"
+policy:
+  allow_implicit_invocation: false
