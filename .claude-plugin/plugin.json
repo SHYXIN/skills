@@ -12,6 +12,7 @@
     "./skills/productivity/grill-one",
     "./skills/productivity/writing-for-agents-wx",
     "./skills/productivity/wait-what-wx",
+    "./skills/productivity/wizard-wx",
     "./skills/backend/fastapi-starlette-admin",
     "./skills/productivity/verify-manual-after-implementation",
     "./skills/frontend/miniprogram-iconfont",

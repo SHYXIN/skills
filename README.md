@@ -29,9 +29,10 @@ npx skills@latest update upward-networking
 npx skills@latest update agent-package-sync
 npx skills@latest update writing-for-agents-wx
 npx skills@latest update wait-what-wx
+npx skills@latest update wizard-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx
 ```
 
 ## 技能列表
@@ -72,6 +73,8 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 
 - **wait-what-wx** — 中文版「没懂就喊停」：agent 上一句没说清时，让你手动触发它重讲——补上下文、用更短更主动的句式（技术词保留英文原词）、并套 `CONTEXT.md` 的通用语言。user-invoked，模型不会自触发。
 
+- **wizard-wx** — 中文版手把手向导生成器：生成一个互动式 bash 脚本，一步步带着人完成只有人能做的操作（配置凭据 / CI secret、走陌生第三方后台、跑一次性迁移）。带 `template.sh` 库（分阶段进度、确认闸门、跨平台开 URL、隐藏式 secret 输入、幂等 `.env` 更新、`gh secret` / `gh variable` 写入）。model-invoked。
+
 - **upward-networking** — 仅当用户明确调用 upward-networking 或要求使用本技能时使用。帮助用户设计真诚、克制、可执行的向上社交和高价值关系经营动作，支持邀约、请教、跟进、复盘，以及可选的 Obsidian 笔记草稿。
 
 ### 前端开发
@@ -102,6 +105,8 @@ skills/
 │   ├── branch-management/ # 通用 Git 分支管理操作
 │   ├── consensus-tech-research/ # 基于共识的技术选型调研
 │   ├── writing-for-agents-wx/  # 写给 agent 的文档（中文版写作规范）
+│   ├── wait-what-wx/  # 没懂就喊停（中文版）
+│   ├── wizard-wx/  # 生成手把手 bash 向导（中文版）
 │   └── upward-networking/ # 向上社交和高价值关系经营
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
