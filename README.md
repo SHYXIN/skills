@@ -20,6 +20,12 @@ curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | b
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy claude-code codex"
 ```
 
+如需固定到某个稳定版本（推荐生产环境使用），把 URL 中的 `master` 换成 release tag，例如 `v1.0.0`：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/v1.0.0/install.sh | bash
+```
+
 **方式二 · 克隆后本地运行**
 
 ```bash
