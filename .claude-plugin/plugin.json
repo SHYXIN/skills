@@ -14,6 +14,7 @@
     "./skills/productivity/wait-what-wx",
     "./skills/productivity/wizard-wx",
     "./skills/productivity/skill-bundler",
+    "./skills/productivity/ai-daily-brief",
     "./skills/backend/fastapi-starlette-admin",
     "./skills/productivity/verify-manual-after-implementation",
     "./skills/frontend/miniprogram-iconfont",

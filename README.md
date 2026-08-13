@@ -31,9 +31,10 @@ npx skills@latest update writing-for-agents-wx
 npx skills@latest update wait-what-wx
 npx skills@latest update wizard-wx
 npx skills@latest update skill-bundler
+npx skills@latest update ai-daily-brief
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief
 ```
 
 ## 技能列表
@@ -78,6 +79,8 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 
 - **skill-bundler** — 中文版技能打包上传器：把 `~/.agents/skills` 下的 skill 批量打成一个 zip，保留 `skills/<name>/` 目录树并附 `MANIFEST.txt`，方便上传到平台。支持按名字筛选 / 排除，自动剔除 `__pycache__`/`node_modules`/`.git`/`*.zip` 等缓存与旧包。user-invoked。
 
+- **ai-daily-brief** — AI 每日简报：把「AI HOT 当日精选新闻」与「GitHub 热门仓库」合并成一份中文简报，一次调用出完整结果。AI 新闻走 aihot.virxact.com 匿名只读 API，GitHub trending 走 github.com/trending（WebFetch），均免 API Key；支持「今天(24h)」「本周(7d)」「最热(hot-topics)」三种模式。model-invoked。
+
 - **upward-networking** — 仅当用户明确调用 upward-networking 或要求使用本技能时使用。帮助用户设计真诚、克制、可执行的向上社交和高价值关系经营动作，支持邀约、请教、跟进、复盘，以及可选的 Obsidian 笔记草稿。
 
 ### 前端开发
@@ -111,6 +114,7 @@ skills/
 │   ├── wait-what-wx/  # 没懂就喊停（中文版）
 │   ├── wizard-wx/  # 生成手把手 bash 向导（中文版）
 │   ├── skill-bundler/  # 把用户 skills 批量打包成 zip 上传（中文版）
+│   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending 合并）
 │   └── upward-networking/ # 向上社交和高价值关系经营
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
