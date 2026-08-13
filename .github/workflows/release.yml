@@ -23,5 +23,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+          # 把 install.sh 作为该版本的独立下载附件
+          files: install.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
