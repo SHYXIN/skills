@@ -1,12 +1,12 @@
 ---
 name: ai-daily-brief
-description: 一次性生成「AI HOT 每日新闻 + GitHub 热门仓库」中文简报。用户说"今天AI圈新闻""AI每日简报""AI HOT""github热门仓库""AI圈动态"时使用。AI 新闻走 aihot.virxact.com 匿名只读 API，GitHub trending 走 github.com/trending（WebFetch），均免 API Key。支持「今天(24h)」「本周(7d)」「最热(hot-topics)」三种模式。
+description: 一次性生成「AI HOT 每日新闻 + GitHub 热门仓库 + Star History 月报」中文简报。用户说"今天AI圈新闻""AI每日简报""AI HOT""github热门仓库""AI圈动态"时使用。AI 新闻走 aihot.virxact.com 匿名只读 API，GitHub trending 走 github.com/trending（WebFetch），Star History 走其 newsletter RSS，均免 API Key。支持「今天(24h)」「本周(7d)」「最热(hot-topics)」三种模式。
 ---
 
 # AI 每日简报（ai-daily-brief）
 
-把「AI HOT 当日精选新闻」和「GitHub 热门仓库」合并成一份中文简报，一次调用出完整结果。
-默认覆盖过去 24 小时；支持切换到「本周」和「最热」模式。
+把「AI HOT 当日精选新闻」、「GitHub 热门仓库」和「Star History 月报」合并成一份中文简报，一次调用出完整结果。
+默认覆盖过去 24 小时；支持切换到「本周」和「最热」模式。Star History 只在默认模式下显示，且只展示最近 35 天内、AI / Agent / LLM 相关的最新一期，并压成 3—5 个要点。
 
 ## 安全边界
 
@@ -43,7 +43,12 @@ description: 一次性生成「AI HOT 每日新闻 + GitHub 热门仓库」中�
    - 提示词：提取仓库全名(owner/name)、简介、主要语言、总 Star、今日(或本周)新增 Star，取前 20。
    - **筛选**：只保留与 AI / Agent / LLM / 多模态生成 / RAG / 推理 相关的仓库；在板块末尾注明"如需全量趋势可说一声"。
 
-3. **组装中文简报**（见下「输出格式」）。
+3. **抓 Star History 月报**（用 WebFetch，读 RSS 订阅源）:
+   - URL：`https://rss.beehiiv.com/feeds/BbNzf9ozGZ.xml`
+   - 提示词：提取最新一期标题、发布时间、主题、3—5 个要点；只保留 AI / Agent / LLM 相关主题；如果最新一期早于 35 天，就跳过这一板块。
+   - 只输出最新一期，不做历史列表。
+
+4. **组装中文简报**（见下「输出格式」）。
 
 ## 输出格式
 
@@ -67,8 +72,21 @@ description: 一次性生成「AI HOT 每日新闻 + GitHub 热门仓库」中�
 | [owner/name](https://github.com/owner/name) | 简介 | 语言 | +今日 | 总 |
 
 **看点**：一句话总结今天 trending 的主旋律。
+
 ---
-> 提示：AI 新闻来自 AI HOT 公开 API；GitHub trending 来自 github.com/trending 实时页。引用具体数字或原文建议回原链接核对。
+## Star History 月报（来源：rss.beehiiv.com）
+
+> 仅在默认模式显示；只取最近 35 天内、AI / Agent / LLM 相关的最新一期，压成 3—5 个要点。
+
+1. [最新一期标题](source.link)
+   - 发布时间 · 主题
+   - 主题一句话摘要
+   - 要点 1
+   - 要点 2
+   - 要点 3
+
+---
+> 提示：AI 新闻来自 AI HOT 公开 API；GitHub trending 来自 github.com/trending 实时页；Star History 来自其 newsletter RSS。引用具体数字或原文建议回原链接核对。
 ```
 
 - 模式为「本周」时，两处标题与"时间窗"说明相应改成"过去 7 天 / 本周"；「最热」时 AI 部分标题改为"当前最热（来源：AI HOT hot-topics）"。
