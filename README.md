@@ -4,11 +4,39 @@
 
 ## 安装
 
+本仓库的技能通过 [vercel-labs/skills](https://github.com/vercel-labs/skills) 提供的 `npx skills` 工具安装。
+
+**方式一 · 一键脚本（推荐）**
+
+克隆本仓库后运行：
+
 ```bash
-npx skills@latest add SHYXIN/skills
+./install.sh                      # 默认装到 codebuddy claude-code codex（全局）
+./install.sh codebuddy           # 只装 codebuddy
+./install.sh "codebuddy codex"   # 自定义 agent 列表
 ```
 
-安装后，在 Claude Code 中即可使用以下技能。
+脚本会同时安装本仓库技能与下方「推荐搭配」的 `mattpocock/skills`。
+
+**方式二 · 手动命令**
+
+```bash
+# 安装本仓库技能
+npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex
+
+# 同时安装推荐搭配（mattpocock/skills）
+npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
+```
+
+安装后，在对应 agent 中即可使用以下技能。
+
+## 推荐搭配：mattpocock/skills
+
+[mattpocock/skills](https://github.com/mattpocock/skills) 是社区高质量技能集（TypeScript / 工程实践向）。上面的一键脚本已默认一并安装；如需单独安装：
+
+```bash
+npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
+```
 
 ## 更新
 
@@ -36,6 +64,70 @@ npx skills@latest update ai-daily-brief
 # 或者同时更新多个
 npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief
 ```
+
+## npx skills 用法示例
+
+以下示例结合本仓库 `SHYXIN/skills` 与推荐搭配 `mattpocock/skills`，覆盖 `npx skills` 的常用子命令。
+
+### 安装 add
+
+```bash
+npx skills add SHYXIN/skills                        # 安装全部技能
+npx skills add SHYXIN/skills --skill socratic-tutor # 只装某个技能
+npx skills add mattpocock/skills -g -a codebuddy -y # 全局 + 指定 agent + 跳过确认
+npx skills add https://github.com/SHYXIN/skills     # 也支持完整 URL
+```
+
+### 查看已安装 list
+
+```bash
+npx skills list
+npx skills ls -g                    # 只看全局安装的技能
+npx skills ls -a codebuddy -a claude-code  # 按 agent 过滤
+```
+
+### 更新 update
+
+```bash
+npx skills update                    # 更新全部
+npx skills update socratic-tutor     # 只更新指定技能
+npx skills update -g                 # 只更新全局范围
+npx skills update -y                 # 跳过范围确认
+```
+
+### 卸载 remove
+
+```bash
+npx skills remove socratic-tutor
+npx skills rm mattpocock/skills      # rm 是 remove 的别名
+npx skills remove --all              # 全部卸载（--skill '*' --agent '*' -y）
+```
+
+### 更多用法
+
+<details>
+<summary>use / find / init</summary>
+
+**use — 不安装即用（写入临时目录并打印提示）**
+
+```bash
+npx skills use SHYXIN/skills --skill socratic-tutor --agent codebuddy
+```
+
+**find — 搜索技能**
+
+```bash
+npx skills find typescript
+npx skills find react --owner mattpocock   # 跨某作者/组织下的所有仓库搜索
+```
+
+**init — 新建技能模板**
+
+```bash
+npx skills init my-skill
+```
+
+</details>
 
 ## 技能列表
 
