@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 # 一键安装 SHYXIN/skills + mattpocock/skills 到本地 agent
 #
-# 用法:
+# 远程一键运行（无需克隆仓库）:
+#   curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy codex"
+#
+# 本地运行:
 #   ./install.sh                      # 默认装到 codebuddy claude-code codex（全局）
 #   ./install.sh codebuddy            # 只装 codebuddy
 #   ./install.sh "codebuddy codex"    # 自定义 agent 列表

@@ -4,21 +4,33 @@
 
 ## 安装
 
-本仓库的技能通过 [vercel-labs/skills](https://github.com/vercel-labs/skills) 提供的 `npx skills` 工具安装。
+本仓库的技能通过 [vercel-labs/skills](https://github.com/vercel-labs/skills) 提供的 `npx skills` 工具安装，**无需克隆本仓库**。
 
-**方式一 · 一键脚本（推荐）**
-
-克隆本仓库后运行：
+**方式一 · 一键安装（推荐，免下载仓库）**
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
+```
+
+脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」的 `mattpocock/skills`（默认装到 `codebuddy claude-code codex`，全局）。
+
+自定义 agent 列表：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy codex"
+```
+
+**方式二 · 克隆后本地运行**
+
+```bash
+git clone https://github.com/SHYXIN/skills.git
+cd skills
 ./install.sh                      # 默认装到 codebuddy claude-code codex（全局）
 ./install.sh codebuddy           # 只装 codebuddy
 ./install.sh "codebuddy codex"   # 自定义 agent 列表
 ```
 
-脚本会同时安装本仓库技能与下方「推荐搭配」的 `mattpocock/skills`。
-
-**方式二 · 手动命令**
+**方式三 · 手动命令**
 
 ```bash
 # 安装本仓库技能
