@@ -20,6 +20,7 @@
     "./skills/frontend/miniprogram-iconfont",
     "./skills/productivity/consensus-tech-research",
     "./skills/productivity/upward-networking",
-    "./skills/company/agent-package-sync"
+    "./skills/company/agent-package-sync",
+    "./skills/productivity/doc-append-log"
   ]
 }
