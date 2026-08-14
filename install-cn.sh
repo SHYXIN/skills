@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # 国内一键安装 SHYXIN/skills + mattpocock/skills（均从 Gitee 拉取，免翻墙）
 #
-# 远程一键运行（从 Gitee 拉取本脚本，需先在 Gitee 上建好 theshyxin/skills 镜像）：
-#   curl -fsSL https://gitee.com/theshyxin/skills/raw/master/install-cn.sh | bash
-#   curl -fsSL https://gitee.com/theshyxin/skills/raw/master/install-cn.sh | bash -s -- "codebuddy,claude-code,codex"
+# 远程一键运行（Gitee 对 raw 文件有反爬拦截，curl 直接拉 /raw/ 会 403，请用 clone 方式）：
+#   git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh; rm -rf /tmp/skills-cn
+#   git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh "codebuddy,claude-code,codex"; rm -rf /tmp/skills-cn
 #
 # 本地运行：
 #   ./install-cn.sh                          # 默认装到 codebuddy,claude-code,codex（全局）

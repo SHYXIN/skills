@@ -8,10 +8,12 @@
 
 本仓库已镜像到 Gitee（`theshyxin/skills`），配合 [cn-skills-cli](https://github.com/SHYXIN/cn-skills-cli) 可从 Gitee 拉取，**无需翻墙**。`cn-skills-cli` 已内置别名：`SHYXIN/skills` / `mattpocock/skills` 会自动路由到 Gitee 镜像（需 `cn-skills-cli >= 0.1.10`）。
 
-**方式一 · 一键安装（推荐，免下载仓库）**
+**方式一 · 一键安装（推荐）**
+
+> ⚠️ 注意：Gitee 对 raw 文件下载有反爬拦截，`curl .../raw/...` 会直接返回 **403**，所以不要用 raw 链接。请改用下面的 `git clone` 方式（已验证国内可通，仓库为公开仓库，匿名 clone 即可）。
 
 ```bash
-curl -fsSL https://gitee.com/theshyxin/skills/raw/master/install-cn.sh | bash
+git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh; rm -rf /tmp/skills-cn
 ```
 
 脚本会先确保 `cn-skills-cli` 已安装（国内走 npmmirror），再依次安装本仓库技能与 `mattpocock/skills`（均从 Gitee 拉取，默认装到 `codebuddy,claude-code,codex`，全局）。
@@ -19,10 +21,10 @@ curl -fsSL https://gitee.com/theshyxin/skills/raw/master/install-cn.sh | bash
 自定义 agent 列表（逗号分隔）：
 
 ```bash
-curl -fsSL https://gitee.com/theshyxin/skills/raw/master/install-cn.sh | bash -s -- "codebuddy,claude-code,codex"
+git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh "codebuddy,claude-code,codex"; rm -rf /tmp/skills-cn
 ```
 
-**方式二 · 手动命令**
+**方式二 · 手动命令（最稳，零依赖）**
 
 ```bash
 # 1) 安装 cn-skills-cli（国内镜像加速）
