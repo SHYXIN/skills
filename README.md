@@ -2,9 +2,49 @@
 
 个人 Claude Code 技能集。
 
-## 安装
+> 国内用户请走「国内安装」（从 Gitee 拉取，免翻墙）；国外用户走「国外安装」（GitHub + npx skills）。
 
-本仓库的技能通过 [vercel-labs/skills](https://github.com/vercel-labs/skills) 提供的 `npx skills` 工具安装，**无需克隆本仓库**。
+## 国内安装（免翻墙，推荐）
+
+本仓库已镜像到 Gitee（`theshyxin/skills`），配合 [cn-skills-cli](https://github.com/SHYXIN/cn-skills-cli) 可从 Gitee 拉取，**无需翻墙**。`cn-skills-cli` 已内置别名：`SHYXIN/skills` / `mattpocock/skills` 会自动路由到 Gitee 镜像（需 `cn-skills-cli >= 0.1.10`）。
+
+**方式一 · 一键安装（推荐，免下载仓库）**
+
+```bash
+curl -fsSL https://gitee.com/theshyxin/skills/raw/master/install-cn.sh | bash
+```
+
+脚本会先确保 `cn-skills-cli` 已安装（国内走 npmmirror），再依次安装本仓库技能与 `mattpocock/skills`（均从 Gitee 拉取，默认装到 `codebuddy,claude-code,codex`，全局）。
+
+自定义 agent 列表（逗号分隔）：
+
+```bash
+curl -fsSL https://gitee.com/theshyxin/skills/raw/master/install-cn.sh | bash -s -- "codebuddy,claude-code,codex"
+```
+
+**方式二 · 手动命令**
+
+```bash
+# 1) 安装 cn-skills-cli（国内镜像加速）
+npm install -g cn-skills-cli --registry=https://registry.npmmirror.com
+
+# 2) 安装本仓库技能（自动走 Gitee）
+cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex
+
+# 3) 安装推荐搭配 mattpocock/skills（Gitee 镜像）
+cn-skills add mattpocock/skills --yes --global --agent codebuddy,claude-code,codex
+```
+
+**更新（国内）**
+
+```bash
+cn-skills update            # 更新全部
+cn-skills update socratic-tutor   # 只更新某个
+```
+
+## 国外安装（GitHub + npx skills）
+
+本仓库技能通过 [vercel-labs/skills](https://github.com/vercel-labs/skills) 提供的 `npx skills` 工具安装，**无需克隆本仓库**。
 
 **方式一 · 一键安装（推荐，免下载仓库）**
 
@@ -58,7 +98,16 @@ npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
 
 ## 更新
 
-当技能有新版本时，运行以下命令更新：
+国内用户（cn-skills）直接用：
+
+```bash
+cn-skills update socratic-tutor
+cn-skills update idea-alchemist
+# ……其余技能同上
+cn-skills update            # 或一次性更新全部
+```
+
+国外用户（npx skills）运行以下命令更新：
 
 ```bash
 # 更新指定技能
