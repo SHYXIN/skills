@@ -10,13 +10,11 @@
 
 **方式一 · 一键安装（推荐）**
 
-> ⚠️ 注意：Gitee 对 raw 文件下载有反爬拦截，`curl .../raw/...` 会直接返回 **403**，所以不要用 raw 链接。请改用下面的 `git clone` 方式（已验证国内可通，仓库为公开仓库，匿名 clone 即可）。
-
 ```bash
 git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh; rm -rf /tmp/skills-cn
 ```
 
-脚本会先确保 `cn-skills-cli` 已安装（国内走 npmmirror），再依次安装本仓库技能与 `mattpocock/skills`（均从 Gitee 拉取，默认装到 `codebuddy,claude-code,codex`，全局）。
+默认装到 `codebuddy,claude-code,codex`（全局）。
 
 自定义 agent 列表（逗号分隔）：
 
@@ -54,7 +52,7 @@ cn-skills update socratic-tutor   # 只更新某个
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
 ```
 
-脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」的 `mattpocock/skills`（默认装到 `codebuddy claude-code codex`，全局）。
+默认装到 `codebuddy claude-code codex`（全局）。
 
 自定义 agent 列表：
 
