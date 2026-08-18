@@ -23,6 +23,7 @@
     "./skills/company/agent-package-sync",
     "./skills/productivity/doc-append-log",
     "./skills/productivity/next-step",
-    "./skills/productivity/cn-brief-wx"
+    "./skills/productivity/cn-brief-wx",
+    "./skills/productivity/research-wx"
   ]
 }
