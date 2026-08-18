@@ -103,6 +103,7 @@ npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
 ```bash
 cn-skills update socratic-tutor
 cn-skills update idea-alchemist
+cn-skills update next-step
 # ……其余技能同上
 cn-skills update            # 或一次性更新全部
 ```
@@ -128,9 +129,10 @@ npx skills@latest update wizard-wx
 npx skills@latest update skill-bundler
 npx skills@latest update ai-daily-brief
 npx skills@latest update doc-append-log
+npx skills@latest update next-step
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step
 ```
 
 ## npx skills 用法示例
@@ -244,6 +246,7 @@ npx skills init my-skill
 - **upward-networking** — 仅当用户明确调用 upward-networking 或要求使用本技能时使用。帮助用户设计真诚、克制、可执行的向上社交和高价值关系经营动作，支持邀约、请教、跟进、复盘，以及可选的 Obsidian 笔记草稿。
 
 - **doc-append-log** — 只追加、不改写的文档/日志历史机制。每次变更新建 `YYYY-MM-DD_主题.md`，并用 `INDEX.md` 时间线索引（含"当前事实/当前参考/历史背景"状态）串联，供 CodeBuddy / Claude Code / Codex 等智能体阅读完整历史；目录无关（自动定位 docs/log/logs/ 等，也接受显式路径），附带 `init_index.sh` / `append_entry.sh` / `locate_docs.sh` 三个幂等脚本。model-invoked。
+- **next-step** — 规划"下一步做什么"：用户做完一段事或卡住时，列出 3-5 个带价值/代价/何时选/可照做动作的下一步并标出性价比最高者。触发：用户说"下一步""接下来""还能做什么""给点建议""不知道该干嘛""帮我理一下"，或一段回答结束、用户流露犹豫。适用代码/学习/生活/通用。model-invoked。
 
 ### 前端开发
 
@@ -278,7 +281,8 @@ skills/
 │   ├── skill-bundler/  # 把用户 skills 批量打包成 zip 上传（中文版）
 │   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending 合并）
 │   ├── upward-networking/ # 向上社交和高价值关系经营
-│   └── doc-append-log/  # 只追加文档/日志历史机制（INDEX.md + 脚本，目录无关）
+│   ├── doc-append-log/  # 只追加文档/日志历史机制（INDEX.md + 脚本，目录无关）
+│   └── next-step/  # 下一步规划：复盘现状 + 3-5 个带价值/代价/何时选的下一步，标出性价比最高
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 ├── backend/           # 后端开发类技能
