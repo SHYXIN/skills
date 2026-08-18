@@ -252,7 +252,7 @@ npx skills init my-skill
 - **doc-append-log** — 只追加、不改写的文档/日志历史机制。每次变更新建 `YYYY-MM-DD_主题.md`，并用 `INDEX.md` 时间线索引（含"当前事实/当前参考/历史背景"状态）串联，供 CodeBuddy / Claude Code / Codex 等智能体阅读完整历史；目录无关（自动定位 docs/log/logs/ 等，也接受显式路径），附带 `init_index.sh` / `append_entry.sh` / `locate_docs.sh` 三个幂等脚本。model-invoked。
 - **next-step** — 规划"下一步做什么"：用户做完一段事或卡住时，列出 3-5 个带价值/代价/何时选/可照做动作的下一步并标出性价比最高者。触发：用户说"下一步""接下来""还能做什么""给点建议""不知道该干嘛""帮我理一下"，或一段回答结束、用户流露犹豫。适用代码/学习/生活/通用。model-invoked。
 - **cn-brief-wx** — 中文简报：agent 刚才的英文步骤/工具调用/输出看不懂时，用中文复述"做了什么、为什么、现在到哪"，不替你改方向。model-invoked。
-- **research-wx** — 中文版研究技能：把查资料脏活交给后台 agent，只信一手来源（官方文档/源码/规范/第一方 API），结论写成带出处引用的 Markdown 存进仓库。model-invoked。
+- **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
 
 ### 前端开发
 
