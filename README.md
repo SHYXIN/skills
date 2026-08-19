@@ -141,6 +141,8 @@ npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-rea
 
 ## npx skills 用法示例
 
+> 完整命令参考（来源格式、私有仓库、选项表、安装范围/方式、环境变量、本地克隆后安装等）见 **[NPX-SKILLS.md](./NPX-SKILLS.md)**。
+
 以下示例结合本仓库 `SHYXIN/skills` 与推荐搭配 `mattpocock/skills`，覆盖 `npx skills` 的常用子命令。
 
 ### 安装 add
