@@ -1,0 +1,3 @@
+interface:
+  display_name: "出处追踪"
+  short_description: "追踪回答的原始依据与来源"
