@@ -52,12 +52,12 @@ cn-skills update socratic-tutor   # 只更新某个
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
 ```
 
-默认装到 `codebuddy claude-code codex`（全局）。
+脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`cathrynlavery/diagram-design`、`tt-a1i/archify`），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
 
 自定义 agent 列表：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy claude-code codex"
+curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy claude-code codex hermes-agent"
 ```
 
 如需固定到某个稳定版本（推荐生产环境使用），把 URL 中的 `master` 换成 release tag，例如 `v1.0.0`：
@@ -71,7 +71,7 @@ curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/v1.0.0/install.sh | b
 ```bash
 git clone https://github.com/SHYXIN/skills.git
 cd skills
-./install.sh                      # 默认装到 codebuddy claude-code codex（全局）
+./install.sh                      # 默认装到 codebuddy claude-code codex hermes-agent（全局）
 ./install.sh codebuddy           # 只装 codebuddy
 ./install.sh "codebuddy codex"   # 自定义 agent 列表
 ```
@@ -80,20 +80,40 @@ cd skills
 
 ```bash
 # 安装本仓库技能
-npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex
+npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex hermes-agent
 
-# 同时安装推荐搭配（mattpocock/skills）
-npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
+# 同时安装推荐搭配
+npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add cathrynlavery/diagram-design -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add tt-a1i/archify -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
 安装后，在对应 agent 中即可使用以下技能。
 
-## 推荐搭配：mattpocock/skills
+## 推荐搭配
+
+### mattpocock/skills
 
 [mattpocock/skills](https://github.com/mattpocock/skills) 是社区高质量技能集（TypeScript / 工程实践向）。上面的一键脚本已默认一并安装；如需单独安装：
 
 ```bash
-npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
+npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
+```
+
+### cathrynlavery/diagram-design
+
+[cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design) 提供 27 种编辑风图表类型（自包含 HTML + SVG，无阴影、无 Mermaid 套版）。一键脚本已默认一并安装；如需单独安装：
+
+```bash
+npx skills@latest add cathrynlavery/diagram-design -y -g -a codebuddy claude-code codex hermes-agent
+```
+
+### tt-a1i/archify
+
+[tt-a1i/archify](https://github.com/tt-a1i/archify) 用于生成美观、可验证的架构图 / 工作流图 / 时序图 / 数据流图 / 生命周期图（自包含 HTML，带动效与清晰导出）。一键脚本已默认一并安装；如需单独安装：
+
+```bash
+npx skills@latest add tt-a1i/archify -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
 ## 更新
