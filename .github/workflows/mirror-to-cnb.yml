@@ -1,0 +1,28 @@
+name: Mirror to CNB
+
+# 每次 push 到 master 时，自动将仓库镜像推送到 CNB（shy-xin/skills），
+# 供国内用户经 cnb.cool 免翻墙安装。
+# 注意：CNB 的 SSH 公钥仅用于提交签名验证，不能用于 push 认证，
+# 因此这里使用 HTTPS + Personal Access Token（用户名固定为 cnb）。
+on:
+  push:
+    branches: [master]
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Push to CNB
+        run: |
+          git remote add cnb https://cnb:${{ secrets.CNB_TOKEN }}@cnb.cool/shy-xin/skills.git
+          git push cnb master --force --tags
