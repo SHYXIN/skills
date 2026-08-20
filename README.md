@@ -126,6 +126,7 @@ cn-skills update idea-alchemist
 cn-skills update next-step
 cn-skills update cn-brief-wx
 cn-skills update research-wx
+cn-skills update cnb-token
 # ……其余技能同上
 cn-skills update            # 或一次性更新全部
 ```
@@ -154,9 +155,10 @@ npx skills@latest update doc-append-log
 npx skills@latest update next-step
 npx skills@latest update cn-brief-wx
 npx skills@latest update research-wx
+npx skills@latest update cnb-token
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token
 ```
 
 ## npx skills 用法示例
@@ -293,6 +295,10 @@ npx skills init my-skill
 - **visualise** — 内联可视化渲染技能。把 SVG 图表、HTML 交互组件、Chart.js 图表等直接渲染进对话（sandboxed iframe，token 流式输出），用于画流程图、架构图、数据可视化、UI mockup、对比布局等；内置 design-system / diagrams / components / charts 四套参考规范（位于 `references/`）。触发：用户说"画个图""visualize""diagram""show me""对比布局"。
 - **visual-verdict** — 结构化视觉 QA 判定技能。把生成的 UI 截图与一张或多张参考图对比，返回严格 JSON 判定（`score` 0-100 / `verdict` pass·revise·fail / `category_match` / `differences` / `suggestions` / `reasoning`），用于截图还原度、布局/间距/字体/配色一致性验收；目标阈值 90+。源自 oh-my-claudecode，可直接作为"截图对比检查清单"使用。
 
+### CNB
+
+- **cnb-token** — 引导用户创建或粘贴 CNB 访问令牌（PAT）并持久化，使 cnb CLI 与 git push/pull 到 cnb.cool 免密可用；仅负责拿 token，建仓/推送交给 cnb-api、cnb-code-commit 等技能。
+
 ## 目录结构
 
 ```
@@ -325,6 +331,8 @@ skills/
 │   └── visual-verdict/ # 截图 vs 参考图 结构化视觉 QA 判定
 ├── backend/           # 后端开发类技能
 │   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
+├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
+│   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
 └── company/           # 公司内部工作流技能
     └── agent-package-sync/  # agent/专家结果包上传前同步
 ```

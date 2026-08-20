@@ -25,6 +25,7 @@
     "./skills/productivity/next-step",
     "./skills/productivity/cn-brief-wx",
     "./skills/productivity/research-wx",
-    "./skills/productivity/source-trace-wx"
+    "./skills/productivity/source-trace-wx",
+    "./skills/cnb/cnb-token"
   ]
 }
