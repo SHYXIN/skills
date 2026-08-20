@@ -1,14 +1,14 @@
 # CNB 为主平台时的镜像编排。
-# 触发：push 到 master 分支。
-# 动作：把仓库同步到 GitHub 与 Gitee（Gitee 为终点，无回推，不会形成环）。
-# 依赖 CNB 仓库密钥（Settings → 密钥）：
-#   GITHUB_TOKEN  : 具备 repo 写权限的 GitHub Personal Access Token
-#   GITEE_SSH_KEY : Gitee 私钥（与 GitHub 上 GITEE_SSH_KEY 同源）
-# 注意：GitHub 上的 mirror-to-cnb.yml 已改名为 .disabled 禁用，避免 CNB↔GitHub 死循环。
+# 依赖「密钥仓库」shy-xin/secrets 中的 skills/envs.yml（经 imports 注入为环境变量）：
+#   GITHUB_TOKEN  : 具备 repo 写权限的 GitHub PAT
+#   GITEE_SSH_KEY : Gitee 私钥全文
+# 注意：CNB 不会自动把仓库设置里的密钥注入脚本，必须用 imports 从密钥仓库引入
+#       （仓库 设置→变量/密钥 那处不生效，这就是上次 $GITHUB_TOKEN 为空的原因）。
 
 master:
   push:
     - name: mirror-to-github-and-gitee
+      imports: https://cnb.cool/shy-xin/secrets/-/blob/master/skills/envs.yml
       stages:
         - name: mirror
           image: node:20
@@ -16,7 +16,7 @@ master:
             apt-get update -y && apt-get install -y git openssh-client
             git config --global user.name "cnb-mirror[bot]"
             git config --global user.email "cnb-mirror[bot]@cnb.cool"
-            git fetch --unshallow --tags || true
+            git fetch origin --tags
 
             # → GitHub (HTTPS + PAT)
             git remote add github https://$GITHUB_TOKEN@github.com/SHYXIN/skills.git
