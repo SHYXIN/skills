@@ -288,6 +288,11 @@ npx skills init my-skill
 
 - **agent-package-sync** — 公司内部 agent/专家结果包上传前同步工作流。用于检查 result 包改动、同步 AGENTS.md 命名、按实际 skills 目录重打 zip、排除缓存并输出上传清单；不执行 git commit 或 push。
 
+### 设计
+
+- **visualise** — 内联可视化渲染技能。把 SVG 图表、HTML 交互组件、Chart.js 图表等直接渲染进对话（sandboxed iframe，token 流式输出），用于画流程图、架构图、数据可视化、UI mockup、对比布局等；内置 design-system / diagrams / components / charts 四套参考规范（位于 `references/`）。触发：用户说"画个图""visualize""diagram""show me""对比布局"。
+- **visual-verdict** — 结构化视觉 QA 判定技能。把生成的 UI 截图与一张或多张参考图对比，返回严格 JSON 判定（`score` 0-100 / `verdict` pass·revise·fail / `category_match` / `differences` / `suggestions` / `reasoning`），用于截图还原度、布局/间距/字体/配色一致性验收；目标阈值 90+。源自 oh-my-claudecode，可直接作为"截图对比检查清单"使用。
+
 ## 目录结构
 
 ```
@@ -315,6 +320,9 @@ skills/
 │   └── research-wx/  # 中文版研究：后台 agent 调研一手来源，结论带出处存进仓库
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
+├── design/            # 设计 / 可视化类技能
+│   ├── visualise/      # 内联可视化渲染（SVG/HTML/Chart.js，含 references/ 规范）
+│   └── visual-verdict/ # 截图 vs 参考图 结构化视觉 QA 判定
 ├── backend/           # 后端开发类技能
 │   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
 └── company/           # 公司内部工作流技能
