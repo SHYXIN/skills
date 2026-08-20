@@ -22,10 +22,14 @@ master:
             git remote add github https://$GITHUB_TOKEN@github.com/SHYXIN/skills.git
             git push github master --force --tags
 
-            # → Gitee (HTTPS + 密码)；未配置 GITEE_PASS 时跳过，避免构建失败
-            if [ -n "$GITEE_PASS" ]; then
-              git remote add gitee https://theshyxin:$GITEE_PASS@gitee.com/theshyxin/skills.git
+            # → Gitee (SSH key)；未配置 GITEE_SSH_KEY 时跳过，避免构建失败
+            if [ -n "$GITEE_SSH_KEY" ]; then
+              mkdir -p ~/.ssh
+              printf '%s\n' "$GITEE_SSH_KEY" > ~/.ssh/id_rsa
+              chmod 600 ~/.ssh/id_rsa
+              ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+              git remote add gitee git@gitee.com:theshyxin/skills.git
               git push gitee master --force --tags
             else
-              echo "GITEE_PASS 未配置，跳过 Gitee 同步"
+              echo "GITEE_SSH_KEY 未配置，跳过 Gitee 同步"
             fi

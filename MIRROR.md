@@ -19,7 +19,7 @@ CNB 不会把仓库设置里的密钥注入 `.cnb.yml`，需用「密钥仓库�
 - 密钥仓库：`shy-xin/secrets`（私有）
 - 文件：`skills/envs.yml`，经 `.cnb.yml` 顶部 `imports:` 注入为环境变量：
   - `GITHUB_TOKEN`：具备 `repo` 权限的 GitHub PAT
-  - `GITEE_PASS`：Gitee 账号密码（HTTPS 认证；可选，未配置时跳过 Gitee 同步）
+  - `GITEE_SSH_KEY`：本机 `~/.ssh/id_rsa` 私钥全文（Gitee SSH 认证；可选，未配置时跳过 Gitee 同步）
 
 ## 改代码走 CNB
 
