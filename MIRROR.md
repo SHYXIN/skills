@@ -24,3 +24,17 @@ CNB 不会把仓库设置里的密钥注入 `.cnb.yml`，需用「密钥仓库�
 ## 改代码走 CNB
 
 在 CNB 上 push `master` 即自动镜像到 GitHub 与 Gitee。直接推 GitHub 也行，会经 `mirror-to-gitee.yml` 兜底到 Gitee（不回推 CNB）。
+
+## 参考来源 / References
+
+> 每条技术断言的来源与信任等级见 `sources/cnb-mirror-setup.md`。下面仅列关键一手链接。
+
+- CNB CLI 文档：https://docs.cnb.cool/zh/plugin/public/cnbcool/cnb-cli.html
+- CNB 流水线语法（grammar）：https://docs.cnb.cool/zh/build/grammar.html
+- CNB 环境变量（env）：https://docs.cnb.cool/zh/build/env.html
+- CNB OpenAPI 规范（swagger.json）：https://api.cnb.cool/swagger.json
+- CNB 提交签名验证指南：https://docs.cnb.cool/zh/guide/commit-signature-verification.html
+- Gitee 帮助中心（仓库镜像 / 私人令牌）：https://help.gitee.com/repository/settings/sync-between-gitee-github
+- GitHub 个人访问令牌文档：https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+
+> 安全提示：文档中不得出现真实密钥值（GITHUB_TOKEN、GITEE_SSH_KEY、CNB PAT）。密钥仅经 `shy-xin/secrets` 仓库的 `skills/envs.yml` 通过 `imports:` 注入。
