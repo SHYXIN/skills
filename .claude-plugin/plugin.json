@@ -26,6 +26,7 @@
     "./skills/productivity/cn-brief-wx",
     "./skills/productivity/research-wx",
     "./skills/productivity/source-trace-wx",
-    "./skills/cnb/cnb-token"
+    "./skills/cnb/cnb-token",
+    "./skills/productivity/rust-windows-setup"
   ]
 }
