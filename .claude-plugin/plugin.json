@@ -3,6 +3,7 @@
   "skills": [
     "./skills/teaching/socratic-tutor",
     "./skills/teaching/teach-wx",
+    "./skills/teaching/eli5-zh",
     "./skills/productivity/idea-alchemist",
     "./skills/productivity/anysearch",
     "./skills/productivity/interview-coach",
