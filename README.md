@@ -127,6 +127,12 @@ cn-skills update next-step
 cn-skills update cn-brief-wx
 cn-skills update research-wx
 cn-skills update cnb-token
+cn-skills update gitlab-runner-provision
+cn-skills update weekly-report
+cn-skills update skill-curator
+cn-skills update visualise
+cn-skills update visual-verdict
+cn-skills update teach-wx
 # ……其余技能同上
 cn-skills update            # 或一次性更新全部
 ```
@@ -157,9 +163,15 @@ npx skills@latest update cn-brief-wx
 npx skills@latest update research-wx
 npx skills@latest update cnb-token
 npx skills@latest update rust-windows-setup
+npx skills@latest update gitlab-runner-provision
+npx skills@latest update weekly-report
+npx skills@latest update skill-curator
+npx skills@latest update visualise
+npx skills@latest update visual-verdict
+npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token rust-windows-setup
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict teach-wx
 ```
 
 ## npx skills 用法示例
@@ -236,6 +248,8 @@ npx skills init my-skill
 
 - **eli5-zh** — 像给五岁小孩一样解释（ELI5）中文版。按受众的年龄、学历、职业角色或关系，自动调整讲解的词汇、类比、语气、深度与切入角度，把任意主题、代码、概念或报错讲得任何人都能听懂。触发词如「用五岁小孩能懂的话说」「给我经理解释一下」「给我妈解释这个报错」「给设计师简化一下」。改编自 DreambigOu/ELI5，全中文化并做了适度本地化。
 
+- **teach-wx** — 中文优先的技术学习 skill。用于快速了解技术概念、阅读 GitHub 仓库/代码库、系统学习某个主题、澄清技术问题，或生成可复习的 HTML lesson。默认初始化学习区、主线讲课产出 HTML，节奏可调；专业名词保留英文或常用缩写，但必须用中文解释其作用和边界。
+
 ### 面试
 
 - **interview-coach** — 面试备战教练。通过知识梳理、问答练习和全真模拟三种模式，帮求职者系统准备面试。覆盖技术面试（算法、系统设计、编码）和行为面试（STAR、文化匹配）。内置 5 家公司情报（字节/阿里/Google/Amazon/腾讯），支持能力图谱追踪、错题本和艾宾浩斯复习计划。进度文件独立存储于 `~/.interview-coach/`，更新 skill 不丢数据。
@@ -281,6 +295,15 @@ npx skills init my-skill
 - **next-step** — 规划"下一步做什么"：用户做完一段事或卡住时，列出 3-5 个带价值/代价/何时选/可照做动作的下一步并标出性价比最高者。触发：用户说"下一步""接下来""还能做什么""给点建议""不知道该干嘛""帮我理一下"，或一段回答结束、用户流露犹豫。适用代码/学习/生活/通用。model-invoked。
 - **cn-brief-wx** — 中文简报：agent 刚才的英文步骤/工具调用/输出看不懂时，用中文复述"做了什么、为什么、现在到哪"，不替你改方向。model-invoked。
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
+- **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
+
+### DevOps
+
+- **gitlab-runner-provision** — GitLab Runner 新机器部署全流程引导：SSH 免登录 → 安装 Docker → 安装/注册 GitLab Runner → 最小 CI/CD 流水线跑通。半自动（scripts/ 做检测/生成/校验），通用化不绑定具体机器，验收标准是 push hello-world 流水线变绿。
+
+### 个人
+
+- **weekly-report** — 周报生成器。把多人的例会全文（如钉钉/飞书导出的周会记录）整理成单人周报邮件正文，自动提取指定成员（默认 王鑫）的「本周内容/进度」与「下周计划」，并起草「新技术/个人思考」一段，输出带主题行的三段式邮件正文。调用：`/weekly-report [成员名]`。
 
 ### 前端开发
 
@@ -338,8 +361,13 @@ skills/
 │   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
-└── company/           # 公司内部工作流技能
-    └── agent-package-sync/  # agent/专家结果包上传前同步
+├── company/           # 公司内部工作流技能
+│   └── agent-package-sync/  # agent/专家结果包上传前同步
+├── devops/            # 运维 / CI-CD 类技能
+│   └── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
+├── personal/          # 个人效率类技能
+│   └── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
+└── skill-curator/     # 技能市场策展（plugin.json / README / 磁盘三者一致）
 ```
 
 ## 后续计划

@@ -28,6 +28,11 @@
     "./skills/productivity/research-wx",
     "./skills/productivity/source-trace-wx",
     "./skills/cnb/cnb-token",
-    "./skills/productivity/rust-windows-setup"
+    "./skills/productivity/rust-windows-setup",
+    "./skills/devops/gitlab-runner-provision",
+    "./skills/design/visualise",
+    "./skills/design/visual-verdict",
+    "./skills/personal/weekly-report",
+    "./skills/skill-curator"
   ]
 }
