@@ -25,7 +25,7 @@ description: "用「最小实例 → 逐部件扩展 → 全景可视化」的�
 - **代码类**（框架/库/算法）：写一个**尽可能小**、能跑、只覆盖核心路径的示例。能 20 行讲清楚就别写 200 行。让用户能本地跑起来看到结果。
 - **非代码类**（协议/流程/概念）：构造一个**最小具体例子**——一次真实的端到端交互、一个 n=3 的小样例、一条最简链路。让用户"体验"到它怎么运作。
 
-把 demo 存到本主题的 workspace（见第四步路径），文件名为 `demo`（代码类加合适扩展名，非代码类用 `demo.md` 描述步骤）。
+把 demo 存到本主题的 workspace（见第四步路径）。**每次扩展都保留历史版本**：代码类每步另存为 `demo-v1.html`、`demo-v2.html`…（N 为第几步），`index.html` 始终等于最新版，方便直接打开运行；非代码类写 `demo-v1.md …`，`index.md` 等于最新。这样既能看当前实例，也能回看代码演变。
 
 ### 2.2 学习地图（MAP.md，Mermaid）
 
@@ -62,7 +62,8 @@ graph TD
 1. **讲解**：用一句话点出它"干嘛的"，再展开机制。结合 demo 中对应的那一小块——如果是代码类，把 demo 扩展一两行让该部件真正参与进来；如果是非代码类，用刚才的最小例子走一遍该步骤。
 2. **高亮**：把 `MAP.md` 里该节点从 `core`/`pending` 改为 `current`，保存。
 3. **校验**（见第五步）：出一道选择题或判断题，确认真懂了。
-4. **过关后**：把节点改为 `learned`，在 `notes.md` 写一句该部件的要点，然后进入下一个节点。
+4. **记录（讲解持久化）**：把本节点的讲解**全文**追加写进 `notes.md`——一句话定义 + 机制展开 + 对应 demo 片段（标注该步的 `demo-vN` 文件名）。`notes.md` 因此成为一份可离线回看的"讲义"，而不只是一行要点。
+5. **过关后**：把 `MAP.md` 里该节点改为 `learned`，然后进入下一个节点。
 
 进入下一个节点前，若它依赖新概念，**在地图里长出新节点**（加 `pending` 节点并连边），让地图随学习自然扩展。如此往复，直到当前范围内的节点全部 `learned`。
 
@@ -77,12 +78,16 @@ graph TD
 每个主题用独立 workspace，固定路径（用户主目录下，与技能安装位置无关，更新技能不丢进度）：
 
 ```
-~/.learn-by-minimal/<主题-slug>/demo         # 最小实例
-~/.learn-by-minimal/<主题-slug>/MAP.md       # Mermaid 学习地图（含进度状态）
-~/.learn-by-minimal/<主题-slug>/notes.md     # 各部件要点
+~/.learn-by-minimal/<主题-slug>/index.html    # 当前最新版最小实例（= 最新 demo-vN）
+~/.learn-by-minimal/<主题-slug>/demo-v1.html  # 第 1 步的 demo（保留历史，便于回看演变）
+~/.learn-by-minimal/<主题-slug>/demo-v2.html  # 第 2 步的 demo（依此类推）
+~/.learn-by-minimal/<主题-slug>/MAP.md        # Mermaid 学习地图（含进度状态）
+~/.learn-by-minimal/<主题-slug>/notes.md      # 讲义：各节点讲解全文（可离线回看）
 ```
 
 Windows 示例：`C:\Users\<用户名>\.learn-by-minimal\react\MAP.md`
+
+**如何回看**：忘了一段内容，直接打开 `notes.md`（讲解全文）或对应 `demo-vN.html`（代码演变），`MAP.md` 是结构全景。讲解不依赖对话记录，关掉对话也能复习。
 
 **开始新主题前，先读取该路径是否已存在 `MAP.md`**：
 - 存在 → 恢复进度，从第一个非 `learned` 的节点继续，不打断已学内容。
