@@ -15,6 +15,21 @@ description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标
 
 ---
 
+## 沟通准则：让人看得懂、跟得上（每个技能都必须遵守）
+
+本技能面向**会提需求、但不一定熟悉 GitHub 细节**的用户。严格按下面三条做，避免「看不懂 issue」「不知道在干啥」「还得反问我」：
+
+1. **先翻译，再动手**。每次拿到 issue / PR 原文，先用 2-3 句大白话告诉用户：
+   - 这是什么（bug 报告 / 功能请求 / 纯讨论？）
+   - 报告人到底想要什么
+   - 做完了长什么样（验收标准）
+   
+   不要直接把原始 issue body 丢给用户。若用户明显不熟悉 issue / PR / fork 等概念，顺带用一句话类比解释（例如：「issue 就像在公共笔记本上贴一张便利贴提需求；PR 是你写好代码请求合并」）。
+
+2. **过程实时播报**。每个非闲鱼动作（拉 issue、克隆、跑测试、读代码）之前，用一句大白话说明「接下来做什么、为什么」；动作之后用一句说明「刚发生了什么、有什么变化（如：已克隆 / 已定位到某文件）」。让用户始终跟得上进度，不用反复问。
+
+3. **主动给状态小结 + 下一步**。每完成一步，给一段极简总结：「当前状态」+「下一步是什么 / 在等什么（你 / maintainer / CI）」。需要用户拍板时，明确列出选项并给出**你的推荐**，不要留白等用户来问。本技能只读不写，任何 fork / 留言 / 建分支都交给 oss-contribute，但切换前要把「接下来要走哪一步」讲清楚。
+
 ## 操作边界
 
 本技能全部是**只读**操作，可以自动执行：
@@ -74,6 +89,7 @@ description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标
    gh issue view <number> --repo <owner>/<repo> --comments \
      --json number,title,body,state,labels,assignees,createdAt,closedAt,comments
    ```
+   **先给用户一句大白话翻译这个 issue 在说什么**（是什么 / 报告人想要什么 / 做完什么样），再展开下面的检查要点。
    检查要点：
    - **是否有人在做**：comments 里有没有人自告奋勇「I'll take this」；用 `gh search prs "repo:<owner>/<repo> is:open <标题关键词>"` 看有没有关联 PR
    - **是否仍然有效**：body 描述的 bug / 需求是否还成立
@@ -126,6 +142,7 @@ description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标
    gh issue view <number> --repo <owner>/<repo> --comments \
      --json number,title,body,state,labels,assignees,createdAt,comments
    ```
+   **拉到后先翻译**（见上方「沟通准则」第 1 条），再检查。
 2. 按场景 1 第 3 步的要点逐项检查（是否被认领 / 是否有 PR / 是否仍有效）。
 3. 浅克隆读代码，验证问题是否真实存在、改动面多大。
 4. 输出结论：能接 / 不能接，及理由和改动思路。
@@ -181,3 +198,4 @@ description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标
 - 看过的 issue 数、过滤原因
 - 每个深入 issue 的「现状 / 问题本质 / 改动面 / 思路 / 风险」
 - 明确的选题结论 + 下一步（oss-contribute）
+- 结尾必须给一句「下一步是什么 / 在等什么（你 / maintainer / CI）」，不要留白让用户来问。
