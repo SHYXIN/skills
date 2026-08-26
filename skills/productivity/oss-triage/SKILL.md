@@ -1,6 +1,6 @@
 ---
 name: oss-triage
-description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标仓库（用户指定或 oss-finder 选出的候选），用 gh CLI 拉取候选 issue（good first issue / help wanted），筛选出「未分配、无关联 PR、仍有效」的可接 issue，浅克隆到 ~/.oss 读代码，验证 issue 现状并给出「选题 + 改动方案」。触发词：「给 <repo> 挑个 issue」「这个项目能做什么」「看看这个 issue 能不能接」。
+description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标仓库（用户指定或 oss-finder 选出的候选），用 gh CLI 拉取候选 issue（good first issue / help wanted），筛选出「未分配、无关联 PR、仍有效」的可接 issue，浅克隆到 <root> 读代码，验证 issue 现状并给出「选题 + 改动方案」。触发词：「给 <repo> 挑个 issue」「这个项目能做什么」「看看这个 issue 能不能接」。
 ---
 
 # OSS Triage
@@ -11,7 +11,7 @@ description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标
 - 用户指定：「我想给 facebook/react 贡献」「帮我看下 cli/cli 这个仓库」
 - oss-finder 推荐：上一环节产出的候选清单里选一个
 
-本技能工作目录约定：`~/.oss/<owner>/<repo>`（浅克隆，只读分析用）。**不污染当前工作区。**
+本技能工作目录约定：`<root>/<owner>/<repo>`（浅克隆，只读分析用）。**不污染当前工作区。** `<root>` 默认 `C:/code_proj/github-proj/oss-proj`；你口述了别的目录时，用你说的路径替换 `<root>`。
 
 ---
 
@@ -36,7 +36,7 @@ description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标
 - `gh issue list` / `gh issue view` / `gh api repos/<owner>/<repo>/issues`
 - `gh search issues` / `gh search prs`
 - `gh repo view`
-- `git clone --depth 1`（浅克隆到 `~/.oss/<owner>/<repo>`）
+- `git clone --depth 1`（浅克隆到 `<root>/<owner>/<repo>`）
 - 工作区内的 `Grep` / `Read` / `Glob` 读代码
 
 本技能**不**创建 fork、不写 issue 评论、不建分支、不 push。一切结果只输出给用户看。
@@ -98,15 +98,15 @@ description: GitHub 开源贡献第二步：选 issue + 读代码。给定目标
 
 4. **浅克隆并读代码**，验证「接这个 issue 要动哪些文件、难度如何」：
    ```bash
-   mkdir -p ~/.oss/<owner>
-   git clone --depth 1 https://github.com/<owner>/<repo>.git ~/.oss/<owner>/<repo>
+   mkdir -p <root>/<owner>
+   git clone --depth 1 https://github.com/<owner>/<repo>.git <root>/<owner>/<repo>
    ```
    已存在则更新：
    ```bash
-   git -C ~/.oss/<owner>/<repo> fetch --depth 1 origin
-   git -C ~/.oss/<owner>/<repo> reset --hard origin/HEAD
+   git -C <root>/<owner>/<repo> fetch --depth 1 origin
+   git -C <root>/<owner>/<repo> reset --hard origin/HEAD
    ```
-   然后在 `~/.oss/<owner>/<repo>` 里用 Grep / Read / Glob 定位 issue 涉及的代码：
+   然后在 `<root>/<owner>/<repo>` 里用 Grep / Read / Glob 定位 issue 涉及的代码：
    - 按 issue body 里的关键词（报错信息、函数名、模块名）搜索
    - 读相关文件确认改动面
    - 对 bug 类 issue：尽量在代码里走一遍问题路径，判断「问题是否真存在」

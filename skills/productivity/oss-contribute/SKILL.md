@@ -1,6 +1,6 @@
 ---
 name: oss-contribute
-description: GitHub 开源贡献第三步：fork → 改 → PR。在 ~/.oss/<owner>/<repo> 工作区建分支、实现 oss-triage 选出的 issue 改动、本地验证、push 到自己的 fork、按上游 CONTRIBUTING 开 PR，并在 review 后跟进。fork、push、开 PR、issue 留言等改动 GitHub 共享状态的操作一律先征得确认。触发词：「提 PR」「贡献到 <repo>」「把 #<n> 做掉」。
+description: GitHub 开源贡献第三步：fork → 改 → PR。在 <root>/<owner>/<repo> 工作区建分支、实现 oss-triage 选出的 issue 改动、本地验证、push 到自己的 fork、按上游 CONTRIBUTING 开 PR，并在 review 后跟进。fork、push、开 PR、issue 留言等改动 GitHub 共享状态的操作一律先征得确认。触发词：「提 PR」「贡献到 <repo>」「把 #<n> 做掉」。
 ---
 
 # OSS Contribute
@@ -10,7 +10,7 @@ description: GitHub 开源贡献第三步：fork → 改 → PR。在 ~/.oss/<ow
 默认用户身份：
 - GitHub 账号：`SHYXIN`（fork 归到该账号下）
 
-工作目录约定：`~/.oss/<owner>/<repo>`（与 oss-triage 共用，避免污染工作区）。
+工作目录约定：`<root>/<owner>/<repo>`（与 oss-triage 共用，避免污染工作区）。`<root>` 默认 `C:/code_proj/github-proj/oss-proj`；你口述了别的目录时，用你说的路径替换 `<root>`。
 
 ---
 
@@ -94,8 +94,8 @@ gh repo fork <owner>/<repo> --remote=false --clone=false
 
 ```bash
 # 没有本地 clone 则浅克隆上游
-git clone --depth 1 https://github.com/<owner>/<repo>.git ~/.oss/<owner>/<repo>
-cd ~/.oss/<owner>/<repo>
+git clone --depth 1 https://github.com/<owner>/<repo>.git <root>/<owner>/<repo>
+cd <root>/<owner>/<repo>
 
 # 挂两个远端：upstream = 上游，fork = 你的副本
 git remote add upstream https://github.com/<owner>/<repo>.git 2>/dev/null || true
@@ -196,7 +196,7 @@ Fixes #<number>
    git status --short
    git log --oneline origin/HEAD..HEAD
    ```
-2. 若工作区在别处而非 `~/.oss/<owner>/<repo>`：说明本技能默认在 `~/.oss/<owner>/<repo>` 工作；可把改动搬到该目录，或让用户确认在当前位置继续。
+2. 若工作区在别处而非 `<root>/<owner>/<repo>`：说明本技能默认在 `<root>/<owner>/<repo>` 工作；可把改动搬到该目录，或让用户确认在当前位置继续。
 3. 从第 4 步（push）开始执行，前提是 fork / 远端已就绪（没有则按场景 1 补齐）。
 4. 若改动对应的 issue 还没有方案记录，简单核对改动内容与 issue 是否匹配，不匹配先停下问用户。
 
@@ -229,8 +229,8 @@ Fixes #<number>
 ### fork 已存在但落后上游
 
 ```bash
-git -C ~/.oss/<owner>/<repo> fetch upstream --depth 1
-git -C ~/.oss/<owner>/<repo> push fork upstream/<base>:<base> 2>/dev/null || echo "同步 fork 失败，可手动：gh repo sync SHYXIN/<repo>"
+git -C <root>/<owner>/<repo> fetch upstream --depth 1
+git -C <root>/<owner>/<repo> push fork upstream/<base>:<base> 2>/dev/null || echo "同步 fork 失败，可手动：gh repo sync SHYXIN/<repo>"
 ```
 简化做法：`gh repo sync SHYXIN/<repo>`（同步 fork 的默认分支）。
 
@@ -255,7 +255,7 @@ git commit --amend -s   # 给最近一个 commit 加 sign-off
 
 ### 用户在非 Git 目录发起
 
-先 `git rev-parse --show-toplevel` 确认；不在仓库里就引导到 `~/.oss/<owner>/<repo>` 或克隆。
+先 `git rev-parse --show-toplevel` 确认；不在仓库里就引导到 `<root>/<owner>/<repo>` 或克隆。
 
 ---
 
