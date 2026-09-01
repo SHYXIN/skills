@@ -130,6 +130,7 @@ cn-skills update cnb-token
 cn-skills update gitlab-runner-provision
 cn-skills update weekly-report
 cn-skills update skill-curator
+cn-skills update agent-config-tidy
 cn-skills update visualise
 cn-skills update visual-verdict
 cn-skills update teach-wx
@@ -166,12 +167,13 @@ npx skills@latest update rust-windows-setup
 npx skills@latest update gitlab-runner-provision
 npx skills@latest update weekly-report
 npx skills@latest update skill-curator
+npx skills@latest update agent-config-tidy
 npx skills@latest update visualise
 npx skills@latest update visual-verdict
 npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict teach-wx
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict teach-wx agent-config-tidy
 ```
 
 ## npx skills 用法示例
@@ -302,6 +304,8 @@ npx skills init my-skill
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
 - **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
 
+- **agent-config-tidy** — 整理/收尾智能体配置（AGENTS.md、soul.md、SKILL.md、agent yaml 及脚本）：扫描并移除混进配置里的决策背景、会话说明、闲聊等不必要内容，只留运行时需要的指令；先出差异确认再改写。用于每轮 grill 迭代改完配置后的克制收尾。
+
 ### DevOps
 
 - **gitlab-runner-provision** — GitLab Runner 新机器部署全流程引导：SSH 免登录 → 安装 Docker → 安装/注册 GitLab Runner → 最小 CI/CD 流水线跑通。半自动（scripts/ 做检测/生成/校验），通用化不绑定具体机器，验收标准是 push hello-world 流水线变绿。
@@ -356,7 +360,8 @@ skills/
 │   ├── next-step/  # 下一步规划：复盘现状 + 3-5 个带价值/代价/何时选的下一步，标出性价比最高
 │   ├── cn-brief-wx/  # 中文简报：把 agent 的英文步骤/工具调用/输出翻译成中文复述
 │   ├── research-wx/  # 中文版研究：后台 agent 调研一手来源，结论带出处存进仓库
-│   └── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
+│   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
+│   └── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 ├── design/            # 设计 / 可视化类技能

@@ -37,6 +37,7 @@
     "./skills/design/visualise",
     "./skills/design/visual-verdict",
     "./skills/personal/weekly-report",
-    "./skills/skill-curator"
+    "./skills/skill-curator",
+    "./skills/productivity/agent-config-tidy"
   ]
 }
