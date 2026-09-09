@@ -131,6 +131,7 @@ cn-skills update gitlab-runner-provision
 cn-skills update weekly-report
 cn-skills update skill-curator
 cn-skills update agent-config-tidy
+cn-skills update worktree
 cn-skills update visualise
 cn-skills update visual-verdict
 cn-skills update teach-wx
@@ -168,12 +169,13 @@ npx skills@latest update gitlab-runner-provision
 npx skills@latest update weekly-report
 npx skills@latest update skill-curator
 npx skills@latest update agent-config-tidy
+npx skills@latest update worktree
 npx skills@latest update visualise
 npx skills@latest update visual-verdict
 npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict teach-wx agent-config-tidy
+npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict teach-wx agent-config-tidy worktree
 ```
 
 ## npx skills 用法示例
@@ -282,6 +284,7 @@ npx skills init my-skill
 - **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
 
 - **branch-management** — 通用 Git 分支管理操作技能。默认以 wangxin/wx 身份从 `develop` 创建 `feature/wx-YYYYMMDD-<task>`，帮你执行新建 feature、同步基线、提交并 push、MR 前检查、合并后清理分支；历史重写、远端删除、生产分支相关动作会先确认。
+- **worktree** — 通用 Git worktree 隔离工作技能。从基线分支切 feature 分支到主仓库旁的 `.wt-<短任务名>` 目录做目录级隔离，覆盖创建 → 开发 → 合并后清理全生命周期；支持多 worktree 并行与归属盘点（按分支名前缀判断，只动自己的）。分支命名/提交规范沿用 branch-management；一切删除动作（含 worktree、本地/远端分支）执行前必须先确认。
 - **oss-finder** — GitHub 开源贡献第一步：找项目。用 gh CLI 按默认画像（近期活跃、中等规模、带 good first issue）搜索候选仓库，按活跃度 / 社区健康 / 贡献友好度打分，输出候选清单与推荐理由。
 - **oss-triage** — GitHub 开源贡献第二步：选 issue + 读代码。给定目标仓库，拉取 good first issue / help wanted 候选，筛掉已认领、有关联 PR、已过期的，浅克隆到 `~/.oss/<owner>/<repo>` 读代码验证，输出「选题 + 改动方案」。
 - **oss-contribute** — GitHub 开源贡献第三步：fork → 改 → PR。在 `~/.oss` 工作区建分支实现改动、本地验证、push 到自己的 fork、按上游 CONTRIBUTING 开 PR 并跟进 review；fork、push、PR、留言一律先确认。
@@ -305,6 +308,8 @@ npx skills init my-skill
 - **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
 
 - **agent-config-tidy** — 整理/收尾智能体配置（AGENTS.md、soul.md、SKILL.md、agent yaml 及脚本）：扫描并移除混进配置里的决策背景、会话说明、闲聊等不必要内容，只留运行时需要的指令；先出差异确认再改写。用于每轮 grill 迭代改完配置后的克制收尾。
+
+- **source-trace-wx** — 追踪 agent 回答的原始依据与来源。先列出对话里真实读过的来源，再对没有出处的 claim 去一手来源（官方文档/源码/规范/第一方 API）补查，写成注明出处、区分一手/二手信任级的 Markdown 文件。触发词如「查出处」「原始依据在哪」。model-invoked。
 
 ### DevOps
 
@@ -340,7 +345,10 @@ npx skills init my-skill
 ```
 skills/
 ├── teaching/          # 教学类技能
-│   └── socratic-tutor/
+│   ├── socratic-tutor/
+│   ├── teach-wx/
+│   ├── eli5-zh/
+│   └── learn-by-minimal/
 ├── productivity/      # 效率类技能
 │   ├── idea-alchemist/
 │   ├── anysearch/     # 搜索类技能（含代理适配）
@@ -349,6 +357,7 @@ skills/
 │   ├── grill-one/  # 单问版 grilling
 │   ├── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
 │   ├── branch-management/ # 通用 Git 分支管理操作
+│   ├── worktree/  # Git worktree 隔离工作：.wt- 目录隔离、全生命周期、归属盘点
 │   ├── consensus-tech-research/ # 基于共识的技术选型调研
 │   ├── writing-for-agents-wx/  # 写给 agent 的文档（中文版写作规范）
 │   ├── wait-what-wx/  # 没懂就喊停（中文版）
