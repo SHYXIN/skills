@@ -37,6 +37,7 @@
     "./skills/devops/gitlab-runner-provision",
     "./skills/design/visualise",
     "./skills/design/visual-verdict",
+    "./skills/design/tui-diagram",
     "./skills/personal/weekly-report",
     "./skills/skill-curator",
     "./skills/productivity/agent-config-tidy",
