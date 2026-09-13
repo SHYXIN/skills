@@ -1,6 +1,6 @@
 ---
 name: tui-diagram
-description: "TUI 终端字符画图技能——用 Unicode 盒线字符（┌─┐│└┘ → ▼）在 Claude Code / CodeBuddy 等纯终端 Agent 里直接画流程图、架构图、时序图、状态机、层级树、对比矩阵、数据条、UI 线框、时间线。仅显式调用 /tui-diagram 时触发；被调用时自动分析当前对话上下文选最合适的图型。用户说"存下来"时把图追加到工作目录根部的 diagrams.md。"
+description: "TUI 终端字符画图技能——用 Unicode 盒线字符（┌─┐│└┘ → ▼）在 Claude Code / CodeBuddy 等纯终端 Agent 里直接画流程图、架构图、时序图、状态机、层级树、对比矩阵、数据条、UI 线框、时间线。仅显式调用 /tui-diagram 时触发；被调用时自动分析当前对话上下文选最合适的图型。用户说「存下来」时把图追加到工作目录根部的 diagrams.md。"
 ---
 
 # TUI Diagram（终端字符画图）
