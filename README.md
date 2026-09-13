@@ -144,10 +144,14 @@ cn-skills update            # 或一次性更新全部
 ```bash
 # 更新指定技能
 npx skills@latest update socratic-tutor
+npx skills@latest update eli5-zh
+npx skills@latest update learn-by-minimal
 npx skills@latest update idea-alchemist
+npx skills@latest update anysearch
 npx skills@latest update guided-book-reader
 npx skills@latest update interview-coach
 npx skills@latest update fastapi-starlette-admin
+npx skills@latest update miniprogram-iconfont
 npx skills@latest update ssh-key-setup
 npx skills@latest update branch-management
 npx skills@latest update grill-one
@@ -156,6 +160,7 @@ npx skills@latest update upward-networking
 npx skills@latest update agent-package-sync
 npx skills@latest update writing-for-agents-wx
 npx skills@latest update wait-what-wx
+npx skills@latest update where-am-i-wx
 npx skills@latest update wizard-wx
 npx skills@latest update skill-bundler
 npx skills@latest update ai-daily-brief
@@ -163,6 +168,7 @@ npx skills@latest update doc-append-log
 npx skills@latest update next-step
 npx skills@latest update cn-brief-wx
 npx skills@latest update research-wx
+npx skills@latest update source-trace-wx
 npx skills@latest update cnb-token
 npx skills@latest update rust-windows-setup
 npx skills@latest update gitlab-runner-provision
@@ -170,12 +176,16 @@ npx skills@latest update weekly-report
 npx skills@latest update skill-curator
 npx skills@latest update agent-config-tidy
 npx skills@latest update worktree
+npx skills@latest update oss-finder
+npx skills@latest update oss-triage
+npx skills@latest update oss-contribute
 npx skills@latest update visualise
 npx skills@latest update visual-verdict
+npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict teach-wx agent-config-tidy worktree
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
@@ -293,6 +303,8 @@ npx skills init my-skill
 
 - **wait-what-wx** — 中文版「没懂就喊停」：agent 上一句没说清时，让你手动触发它重讲——补上下文、用更短更主动的句式（技术词保留英文原词）、并套 `CONTEXT.md` 的通用语言。user-invoked，模型不会自触发。
 
+- **where-am-i-wx** — 中文版「迷路就喊地图」：任务/对话中不知道走到哪时，手动触发画一张纯文字决策地图——已定结论、📍当前位置、未决问题、被否决的选项（附否决原因），关键节点旁标注前置知识（名词+一句话解释，深挖交给 eli5-zh / learn-by-minimal）。与 wait-what-wx 成对：单点没懂→重讲那句；整体迷路→喊地图。user-invoked，模型不会自触发。
+
 - **wizard-wx** — 中文版手把手向导生成器：生成一个互动式 bash 脚本，一步步带着人完成只有人能做的操作（配置凭据 / CI secret、走陌生第三方后台、跑一次性迁移）。带 `template.sh` 库（分阶段进度、确认闸门、跨平台开 URL、隐藏式 secret 输入、幂等 `.env` 更新、`gh secret` / `gh variable` 写入）。model-invoked。
 
 - **skill-bundler** — 中文版技能打包上传器：把 `~/.agents/skills` 下的 skill 批量打成一个 zip，保留 `skills/<name>/` 目录树并附 `MANIFEST.txt`，方便上传到平台。支持按名字筛选 / 排除，自动剔除 `__pycache__`/`node_modules`/`.git`/`*.zip` 等缓存与旧包。user-invoked。
@@ -361,6 +373,7 @@ skills/
 │   ├── consensus-tech-research/ # 基于共识的技术选型调研
 │   ├── writing-for-agents-wx/  # 写给 agent 的文档（中文版写作规范）
 │   ├── wait-what-wx/  # 没懂就喊停（中文版）
+│   ├── where-am-i-wx/  # 迷路就喊地图：当前任务/对话的决策定位图（中文版）
 │   ├── wizard-wx/  # 生成手把手 bash 向导（中文版）
 │   ├── skill-bundler/  # 把用户 skills 批量打包成 zip 上传（中文版）
 │   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending 合并）
