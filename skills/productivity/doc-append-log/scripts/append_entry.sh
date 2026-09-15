@@ -23,6 +23,14 @@ if [ -z "$TOPIC" ]; then
   TOPIC="untitled-entry"
 fi
 
+# 主题即文件名的一部分，拒绝路径穿越与分隔符，避免写到目标目录之外。
+case "$TOPIC" in
+  *..*|*/*|*"\\"*)
+    echo "错误：主题不能包含 .. 、/ 或 \\\\（收到: \"$TOPIC\"）" >&2
+    exit 1
+    ;;
+esac
+
 TODAY=$(date +%Y-%m-%d)
 FNAME="${TODAY}_${TOPIC}.md"
 INDEX="$DIR/INDEX.md"
