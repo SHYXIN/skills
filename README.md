@@ -126,6 +126,7 @@ cn-skills update worktree
 cn-skills update visualise
 cn-skills update visual-verdict
 cn-skills update tui-diagram
+cn-skills update show-me-wx
 cn-skills update teach-wx
 # ……其余技能同上
 cn-skills update            # 或一次性更新全部
@@ -174,11 +175,12 @@ npx skills@latest update oss-contribute
 npx skills@latest update visualise
 npx skills@latest update visual-verdict
 npx skills@latest update tui-diagram
+npx skills@latest update show-me-wx
 npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram show-me-wx verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
@@ -341,6 +343,7 @@ npx skills init my-skill
 - **visualise** — 内联可视化渲染技能。把 SVG 图表、HTML 交互组件、Chart.js 图表等直接渲染进对话（sandboxed iframe，token 流式输出），用于画流程图、架构图、数据可视化、UI mockup、对比布局等；内置 design-system / diagrams / components / charts 四套参考规范（位于 `references/`）。触发：用户说"画个图""visualize""diagram""show me""对比布局"。
 - **visual-verdict** — 结构化视觉 QA 判定技能。把生成的 UI 截图与一张或多张参考图对比，返回严格 JSON 判定（`score` 0-100 / `verdict` pass·revise·fail / `category_match` / `differences` / `suggestions` / `reasoning`），用于截图还原度、布局/间距/字体/配色一致性验收；目标阈值 90+。源自 oh-my-claudecode，可直接作为"截图对比检查清单"使用。
 - **tui-diagram** — TUI 终端字符画图技能。用 Unicode 盒线字符（┌─┐│└┘ → ▼）在 Claude Code / CodeBuddy 等纯终端 Agent 里直接画流程图、架构图、时序图、状态机、层级树、对比矩阵、数据条、UI 线框、时间线共 9 类图；被调用时按对话上下文自动选型，内置中英混排宽度对齐规则。说"存下来"时能转 Mermaid 的图转入工作目录根部 `diagrams.md`，转不了的以 text 块原样保留。触发：仅显式调用 /tui-diagram。
+- **show-me-wx** — 中文版可视化讲解技能——讲解当前话题时配随文视图（伪代码、调用树、组件树、文件树、diff、终端字符图），全部终端友好，不产 Mermaid 源码。终端宿主（Claude Code / CodeBuddy / Codex / Hermes Agent）优先用本技能而非 show-me。
 
 ### CNB
 
@@ -384,6 +387,7 @@ skills/
 │   ├── visualise/      # 内联可视化渲染（SVG/HTML/Chart.js，含 references/ 规范）
 │   ├── visual-verdict/ # 截图 vs 参考图 结构化视觉 QA 判定
 │   └── tui-diagram/    # TUI 终端字符画图（Unicode 盒线，9 类图型路由）
+│   └── show-me-wx/    # 中文版可视化讲解（随文视图，终端友好）
 ├── backend/           # 后端开发类技能
 │   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
