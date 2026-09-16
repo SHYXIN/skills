@@ -52,7 +52,7 @@ cn-skills update socratic-tutor   # 只更新某个
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
 ```
 
-脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`humanlayer/skills` 的 show-me），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
+脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`humanlayer/skills` 的 show-me、`cursor/plugins` 的 unslop），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
 
 自定义 agent 列表：
 
@@ -85,6 +85,7 @@ npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex hermes-
 # 同时安装推荐搭配
 npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
 npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add cursor/plugins --skill unslop -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
 安装后，在对应 agent 中即可使用以下技能。
@@ -105,6 +106,14 @@ npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex her
 
 ```bash
 npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claude-code codex hermes-agent
+```
+
+### cursor/plugins (unslop)
+
+[cursor/plugins](https://github.com/cursor/plugins) 中的 **unslop** 技能：清除 AI 写作腔——检测并改写 AI 高频套话（"highlighting/ensuring" 型悬空分词、"not just X, but Y" 句式、滥用 em-dash/冒号/加粗、聊天机器人客套话、抽象隐喻名词等 30+ 条规则），保留原意、匹配语气。user-invoked，手动触发。一键脚本已默认安装；如需单独安装：
+
+```bash
+npx skills@latest add cursor/plugins --skill unslop -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
 ## 更新
