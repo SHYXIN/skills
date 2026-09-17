@@ -1,3 +1,8 @@
+---
+name: session-forensics
+description: DeepWorks 会话取证。查询本机 opencode.db（SQLite，只读）还原 agent 实际收到的注入、思考与工具调用，定位「agent 行为和预期不符」类问题；支持 list / injections / reasoning 对比 / dump / 导出双格式（交互式 HTML + jsonl）五个子命令。当用户说「查会话」「会话取证」「agent 为什么没收到注入」「对比两个会话」时使用。
+---
+
 # session-forensics — DeepWorks 会话取证
 
 通过查询 DeepWorks 的会话库（`opencode.db`，SQLite）还原 agent 实际收到了什么、想了什么，用于定位「agent 行为和预期不符」类问题。
