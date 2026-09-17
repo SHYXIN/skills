@@ -158,7 +158,7 @@ npx skills@latest update branch-management
 npx skills@latest update grill-one
 npx skills@latest update consensus-tech-research
 npx skills@latest update upward-networking
-npx skills@latest update agent-package-sync
+npx skills@latest update session-forensics
 npx skills@latest update writing-for-agents-wx
 npx skills@latest update wait-what-wx
 npx skills@latest update where-am-i-wx
@@ -187,7 +187,7 @@ npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one consensus-tech-research upward-networking agent-package-sync writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one consensus-tech-research upward-networking session-forensics writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
@@ -343,7 +343,7 @@ npx skills init my-skill
 
 ### 公司
 
-- **agent-package-sync** — 公司内部 agent/专家结果包上传前同步工作流。用于检查 result 包改动、同步 AGENTS.md 命名、按实际 skills 目录重打 zip、排除缓存并输出上传清单；不执行 git commit 或 push。
+- **session-forensics** — DeepWorks 会话取证。查询本机 opencode.db（SQLite，只读）还原 agent 实际收到的注入、思考与工具调用，定位「agent 行为和预期不符」类问题；支持 list / injections / reasoning 对比 / dump / 导出双格式（交互式 HTML + jsonl）五个子命令。
 
 ### 设计
 
@@ -398,7 +398,7 @@ skills/
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
 ├── company/           # 公司内部工作流技能
-│   └── agent-package-sync/  # agent/专家结果包上传前同步
+│   └── session-forensics/  # DeepWorks 会话取证（查 opencode.db 定位 agent 行为分歧）
 ├── devops/            # 运维 / CI-CD 类技能
 │   └── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 ├── personal/          # 个人效率类技能
