@@ -344,6 +344,7 @@ npx skills init my-skill
 ### 公司
 
 - **dp-session-forensics** — DeepWorks 会话取证。查询本机 opencode.db（SQLite，只读）还原 agent 实际收到的注入、思考与工具调用，定位「agent 行为和预期不符」类问题；支持 list / injections / reasoning 对比 / dump / 导出双格式（交互式 HTML + jsonl）五个子命令。
+- **dev-bootstrap** — monorepo dev 环境一键体检（preflight）+ 确定性修复。检测依赖缺失、types 未构建、sidecar 缺失、native 模块 ABI 不匹配、Build Tools 未装、镜像未配等启动前置问题；轻量项 `--fix` 自动修，重量级（数 GB 安装/提权）只提示命令。声明式 profile 驱动，内置 deepworks，新仓库加 JSON 即支持；换新电脑跑一次即可拉齐环境。
 
 ### 设计
 
@@ -398,7 +399,8 @@ skills/
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
 ├── company/           # 公司内部工作流技能
-│   └── dp-session-forensics/  # DeepWorks 会话取证（查 opencode.db 定位 agent 行为分歧）
+│   ├── dp-session-forensics/  # DeepWorks 会话取证（查 opencode.db 定位 agent 行为分歧）
+│   └── dev-bootstrap/  # monorepo dev 环境体检+修复（preflight 引擎 + 声明式 profile）
 ├── devops/            # 运维 / CI-CD 类技能
 │   └── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 ├── personal/          # 个人效率类技能

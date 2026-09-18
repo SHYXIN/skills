@@ -1,0 +1,63 @@
+{
+  "match": { "packageJsonNames": ["@deepworks/workspace"] },
+  "checks": [
+    {
+      "id": "pnpm-install",
+      "severity": "fix",
+      "label": "node_modules 依赖未安装",
+      "check": { "type": "pathExists", "path": "node_modules" },
+      "fixCmd": "pnpm install"
+    },
+    {
+      "id": "types-dist",
+      "severity": "fix",
+      "label": "@openwork/types 未构建（bun NODE_ENV=production 走 exports node 条件，缺 dist 会导致 sidecar 构建失败: Cannot find module '@openwork/types/...'）",
+      "check": { "type": "pathExists", "path": "packages/types/dist" },
+      "fixCmd": "pnpm --filter @openwork/types build"
+    },
+    {
+      "id": "sidecar-opencode",
+      "severity": "fix",
+      "label": "opencode sidecar 缺失（首次启动会下载 57.7MB）",
+      "check": { "type": "pathExists", "path": "apps/desktop/resources/sidecars/opencode.exe" },
+      "fixCmd": "pnpm --filter @deepworks/desktop prepare:sidecar"
+    },
+    {
+      "id": "sidecar-rg",
+      "severity": "fix",
+      "label": "ripgrep sidecar 缺失",
+      "check": { "type": "pathExists", "path": "apps/desktop/resources/sidecars/rg.exe" },
+      "fixCmd": "pnpm --filter @deepworks/desktop prepare:sidecar"
+    },
+    {
+      "id": "better-sqlite3-native",
+      "severity": "fix",
+      "label": "better-sqlite3 无法在当前 Electron ABI 下完成 SQLite 查询（NODE_MODULE_VERSION mismatch），需 electron-builder install-app-deps 重编译",
+      "check": {
+        "type": "commandSucceeds",
+        "cmd": "node -e \"import('./scripts/lib/electron-native-dependencies.mjs').then(m => process.exit(m.probeElectronNativeDependencies('.').ok ? 0 : 1))\"",
+        "timeoutMs": 30000
+      },
+      "fixCmd": "pnpm --filter @deepworks/desktop exec electron-builder install-app-deps"
+    },
+    {
+      "id": "vs-buildtools",
+      "severity": "prompt",
+      "label": "VS 2022 Build Tools C++ workload 未检出（node-gyp 重编译 MSVC 模块必需，约 2-4GB，需提权）",
+      "check": {
+        "type": "commandSucceeds",
+        "cmd": "node -e \"const{readdirSync}=require('fs');const base='C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC';try{for(const v of readdirSync(base)){if(require('fs').existsSync(base+'/'+v+'/bin/Hostx64/x64/cl.exe')){console.log(v);process.exit(0)}}}catch(e){}process.exit(1)\"",
+        "needle": ".",
+        "timeoutMs": 10000
+      },
+      "checkHint": "未检出含 C++ workload 的 VS BuildTools。需一次性安装（数 GB、UAC 提权），安装后重跑本体检。",
+      "fixCmd": "winget install --id Microsoft.VisualStudio.2022.BuildTools --override \"--quiet --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended\""
+    },
+    {
+      "id": "electron-mirror",
+      "severity": "advisory",
+      "label": "国内网络建议 .npmrc 配置 electron_mirror 加速 Electron 本体与 node headers 下载",
+      "check": { "type": "fileContains", "path": ".npmrc", "needle": "electron_mirror" }
+    }
+  ]
+}
