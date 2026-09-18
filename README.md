@@ -159,6 +159,7 @@ npx skills@latest update grill-one grill-one-with-docs
 npx skills@latest update consensus-tech-research
 npx skills@latest update upward-networking
 npx skills@latest update dp-session-forensics
+npx skills@latest update dev-bootstrap
 npx skills@latest update writing-for-agents-wx
 npx skills@latest update wait-what-wx
 npx skills@latest update where-am-i-wx
@@ -187,7 +188,7 @@ npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dev-bootstrap writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
