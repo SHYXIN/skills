@@ -12,6 +12,7 @@
     "./skills/productivity/guided-book-reader",
     "./skills/productivity/branch-management",
     "./skills/productivity/grill-one",
+    "./skills/productivity/grill-one-with-docs",
     "./skills/productivity/writing-for-agents-wx",
     "./skills/productivity/wait-what-wx",
     "./skills/productivity/where-am-i-wx",
