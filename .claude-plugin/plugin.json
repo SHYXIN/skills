@@ -43,6 +43,7 @@
     "./skills/personal/weekly-report",
     "./skills/skill-curator",
     "./skills/productivity/agent-config-tidy",
-    "./skills/productivity/worktree"
+    "./skills/productivity/worktree",
+    "./skills/company/deepworks-dev-start"
   ]
 }
