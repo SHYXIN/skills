@@ -14,7 +14,7 @@
 ├── lessons/
 ├── learning-records/
 ├── side-questions/
-├── examples/
+├── examples/          ← 仅实操型主题创建
 │   ├── README.md
 │   └── .gitignore
 └── assets/
@@ -23,7 +23,7 @@
 
 ## 初始化规则
 
-- `MISSION.md`：先问清学习目标，再按 `MISSION-FORMAT.md` 写入。
+- `MISSION.md`：先问清学习目标，再按 `MISSION-FORMAT.md` 写入，并判定记录「主题性质：概念型 / 实操型」（概念型不创建 `examples/`）。
 - `OUTLINE.md`：先给 2-4 个可完成学习单元，再按 `OUTLINE-FORMAT.md` 写入。
 - `RESOURCES.md`：没有资源时也创建，标注“待补充”。
 - `GLOSSARY.md`：没有术语时也创建，标注“待积累”。
@@ -31,7 +31,7 @@
 - `lessons/`：主线 HTML lesson 存放处。
 - `learning-records/`：重要理解、误区修正、目标变化的记录。
 - `side-questions/`：有长期价值的旁路问答。
-- `examples/`：技术 lesson 配套的小示例和共享运行环境。格式见 `EXAMPLE-FORMAT.md`。
+- `examples/`：实操型技术 lesson 配套的小示例和共享运行环境，仅实操型主题创建。格式见 `EXAMPLE-FORMAT.md`。概念型主题不创建，lesson 用「架构观察」章节。
 - `examples/README.md`：说明共享环境和示例运行规则。
 - `examples/.gitignore`：忽略 `.venv/`、`node_modules/`、`.env`、构建产物和 Python 缓存。
 - `assets/lesson.css`：主线 lesson 共享样式。HTML lesson 默认引用它。
@@ -48,7 +48,7 @@
 - `.eyebrow` 用于 lesson 编号、主题、节奏和预计阅读时间。
 - `.lede` 用于一句话结论，克制强调，不用大面积彩色背景。
 - `.toc` 用于页内目录，链接到各章节锚点。
-- `pre` 支持 ASCII 图横向滚动；背景可以浅色或深色，但不能压过正文。
+- `pre` 支持字符图（含盒线字符 ┌─┐│）横向滚动；背景可以浅色或深色，但不能压过正文。
 - `.caption` 用于解释图表，不要和正文抢层级。
 - `.question-block` 用于自检题，边框或浅色底即可。
 - `.path`、`code`、`.links` 有统一样式。
