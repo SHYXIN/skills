@@ -1,6 +1,6 @@
 ---
-name: dev-bootstrap
-description: 快速把一个 monorepo 的 dev 环境跑起来。换新电脑/依赖缺失/native 模块重编译/sidecar 下载/build tools 安装等启动前置问题，一键体检（preflight）+ 确定性修复。内置 deepworks profile，其他仓库可加 profile 或退化到纯诊断。用户手动调用（/dev-bootstrap）。
+name: dp-dev-bootstrap
+description: 快速把一个 monorepo 的 dev 环境跑起来。换新电脑/依赖缺失/native 模块重编译/sidecar 下载/build tools 安装等启动前置问题，一键体检（preflight）+ 确定性修复。内置 deepworks profile，其他仓库可加 profile 或退化到纯诊断。用户手动调用（/dp-dev-bootstrap）。
 ---
 
 # Dev Bootstrap

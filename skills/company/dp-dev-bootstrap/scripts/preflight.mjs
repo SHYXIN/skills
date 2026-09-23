@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// dev-bootstrap preflight engine
+// dp-dev-bootstrap preflight engine
 // Usage:
 //   node preflight.mjs --repo <repoPath> [--fix] [--json] [--profile <name>]
 // Reads profiles/<name>.json (auto-matched via package.json name if --profile omitted),

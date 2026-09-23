@@ -1,6 +1,6 @@
 ---
-name: deepworks-dev-start
-description: 在 Windows Git Bash 或 PowerShell 中启动 DeepWorks 桌面开发环境。自动检查依赖、设置开发环境变量、运行桌面构建并报告启动状态；适用于本地 DeepWorks 开发启动。
+name: dp-deepworks-dev-start
+description: 在 Windows Git Bash 或 PowerShell 中启动 DeepWorks 桌面开发环境。自动检查依赖、确保 .env.development.local 存在（缺失时自动创建）、手动一条命令启动并报告状态；适用于本地 DeepWorks 开发启动。
 metadata:
   author: "deepworks-user-pb6bxh"
 ---
@@ -22,11 +22,48 @@ metadata:
 pnpm install --frozen-lockfile
 ```
 
-## Git Bash 启动方式
+## 环境变量文件（.env.development.local）
+
+开发环境变量由仓库根的 `.env.development.local` 提供（已被 deepworks 仓库 .gitignore 忽略，不会提交）。electron-dev.mjs 的加载顺序是 `.env` → `.env.development` → `.env.development.local`（后者优先，且不覆盖 shell 已 export 的值）。
+
+启动前检查该文件是否存在；缺失时自动创建，内容固定如下：
+
+```bash
+# 由 dp-deepworks-dev-start 技能创建；可按需追加本机覆盖项。
+DEEPWORKS_ELECTRON_REMOTE_DEBUG_PORT=9228
+VITE_DEEPWORKS_CLI_ENABLED=1
+```
+
+说明：
+
+- `DEEPWORKS_DEV_MODE` 不需要写，electron-dev.mjs 默认就是 1；
+- `VITE_DEEPWORKS_CLI_ENABLED=1` 用于本地强制打开 CLI 目录 / `@deepsense` 入口（仅 DEV 构建生效）；
+- 文件已存在时不改写，尊重用户已有覆盖项；
+- 临时想换端口等场景，仍可在 shell 里直接 `export` 覆盖。
+
+## 手动启动方式
+
+环境变量由 `.env.development.local` 提供后，启动只需一条命令。
 
 不要在 Windows Git Bash 中直接运行根目录 `pnpm dev`：根脚本使用 Unix 内联环境变量，但 pnpm 在 Windows 下可能交给 `cmd.exe`，导致 `DEEPWORKS_DEV_MODE` 被识别为命令。
 
-使用以下命令：
+Git Bash：
+
+```bash
+cd /c/code_proj/deepworks
+pnpm --filter @deepworks/desktop dev
+```
+
+PowerShell：
+
+```powershell
+Set-Location C:\code_proj\deepworks
+pnpm --filter @deepworks/desktop dev
+```
+
+## 备选：export 方式（不用 .env 文件时）
+
+不依赖 `.env.development.local` 时，可在启动前手动 export：
 
 ```bash
 cd /c/code_proj/deepworks
@@ -36,7 +73,7 @@ export VITE_DEEPWORKS_CLI_ENABLED=1
 pnpm --filter @deepworks/desktop dev
 ```
 
-## PowerShell 启动方式
+PowerShell 等价写法：
 
 ```powershell
 Set-Location C:\code_proj\deepworks
