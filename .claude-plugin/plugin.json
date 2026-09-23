@@ -25,7 +25,7 @@
     "./skills/productivity/consensus-tech-research",
     "./skills/productivity/upward-networking",
     "./skills/company/dp-session-forensics",
-    "./skills/company/dev-bootstrap",
+    "./skills/company/dp-dev-bootstrap",
     "./skills/productivity/doc-append-log",
     "./skills/productivity/next-step",
     "./skills/productivity/cn-brief-wx",
@@ -44,6 +44,6 @@
     "./skills/skill-curator",
     "./skills/productivity/agent-config-tidy",
     "./skills/productivity/worktree",
-    "./skills/company/deepworks-dev-start"
+    "./skills/company/dp-deepworks-dev-start"
   ]
 }
