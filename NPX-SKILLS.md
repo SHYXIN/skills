@@ -182,7 +182,7 @@ npx skills update
 npx skills update socratic-tutor
 
 # 同时更新多个
-npx skills update socratic-tutor idea-alchemist interview-coach
+npx skills update socratic-tutor interview-coach
 
 # 只更新全局 / 项目范围
 npx skills update -g

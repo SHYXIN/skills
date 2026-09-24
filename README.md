@@ -122,7 +122,6 @@ npx skills@latest add cursor/plugins --skill unslop -y -g -a codebuddy claude-co
 
 ```bash
 cn-skills update socratic-tutor
-cn-skills update idea-alchemist
 cn-skills update next-step
 cn-skills update cn-brief-wx
 cn-skills update research-wx
@@ -147,7 +146,6 @@ cn-skills update            # 或一次性更新全部
 npx skills@latest update socratic-tutor
 npx skills@latest update eli5-zh
 npx skills@latest update learn-by-minimal
-npx skills@latest update idea-alchemist
 npx skills@latest update anysearch
 npx skills@latest update guided-book-reader
 npx skills@latest update interview-coach
@@ -165,7 +163,6 @@ npx skills@latest update writing-for-agents-wx
 npx skills@latest update wait-what-wx
 npx skills@latest update where-am-i-wx
 npx skills@latest update wizard-wx
-npx skills@latest update skill-bundler
 npx skills@latest update ai-daily-brief
 npx skills@latest update doc-append-log
 npx skills@latest update next-step
@@ -189,7 +186,7 @@ npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal idea-alchemist anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx skill-bundler ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
@@ -274,10 +271,6 @@ npx skills init my-skill
 
 - **interview-coach** — 面试备战教练。通过知识梳理、问答练习和全真模拟三种模式，帮求职者系统准备面试。覆盖技术面试（算法、系统设计、编码）和行为面试（STAR、文化匹配）。内置 5 家公司情报（字节/阿里/Google/Amazon/腾讯），支持能力图谱追踪、错题本和艾宾浩斯复习计划。进度文件独立存储于 `~/.interview-coach/`，更新 skill 不丢数据。
 
-### 产品
-
-- **idea-alchemist** — 想法炼金师。通过引导式追问，帮普通人把模糊想法变成清晰的产品蓝图和技术规格。
-
 ### 验证
 
 - **verify-manual-after-implementation** — 实现完成后的通用手动验收手册生成器。适用于 `to-spec -> to-tickets -> implement` 后，自动审计仓库、必要时补 `scripts/dev.sh`，并生成 `docs/verification/manual-test-guide.md`。
@@ -311,8 +304,6 @@ npx skills init my-skill
 - **where-am-i-wx** — 中文版「迷路就喊地图」：任务/对话中不知道走到哪时，手动触发画一张纯文字决策地图——已定结论、📍当前位置、未决问题、被否决的选项（附否决原因），关键节点旁标注前置知识（名词+一句话解释，深挖交给 eli5-zh / learn-by-minimal）。与 wait-what-wx 成对：单点没懂→重讲那句；整体迷路→喊地图。user-invoked，模型不会自触发。
 
 - **wizard-wx** — 中文版手把手向导生成器：生成一个互动式 bash 脚本，一步步带着人完成只有人能做的操作（配置凭据 / CI secret、走陌生第三方后台、跑一次性迁移）。带 `template.sh` 库（分阶段进度、确认闸门、跨平台开 URL、隐藏式 secret 输入、幂等 `.env` 更新、`gh secret` / `gh variable` 写入）。model-invoked。
-
-- **skill-bundler** — 中文版技能打包上传器：把 `~/.agents/skills` 下的 skill 批量打成一个 zip，保留 `skills/<name>/` 目录树并附 `MANIFEST.txt`，方便上传到平台。支持按名字筛选 / 排除，自动剔除 `__pycache__`/`node_modules`/`.git`/`*.zip` 等缓存与旧包。user-invoked。
 
 - **ai-daily-brief** — AI 每日简报：把「AI HOT 当日精选新闻」与「GitHub 热门仓库」合并成一份中文简报，一次调用出完整结果。AI 新闻走 aihot.virxact.com 匿名只读 API，GitHub trending 走 github.com/trending（WebFetch），均免 API Key；支持「今天(24h)」「本周(7d)」「最热(hot-topics)」三种模式。model-invoked。
 
@@ -370,7 +361,6 @@ skills/
 │   ├── eli5-zh/
 │   └── learn-by-minimal/
 ├── productivity/      # 效率类技能
-│   ├── idea-alchemist/
 │   ├── anysearch/     # 搜索类技能（含代理适配）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
@@ -384,7 +374,6 @@ skills/
 │   ├── wait-what-wx/  # 没懂就喊停（中文版）
 │   ├── where-am-i-wx/  # 迷路就喊地图：当前任务/对话的决策定位图（中文版）
 │   ├── wizard-wx/  # 生成手把手 bash 向导（中文版）
-│   ├── skill-bundler/  # 把用户 skills 批量打包成 zip 上传（中文版）
 │   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending 合并）
 │   ├── upward-networking/ # 向上社交和高价值关系经营
 │   ├── doc-append-log/  # 只追加文档/日志历史机制（INDEX.md + 脚本，目录无关）
