@@ -1,0 +1,82 @@
+# xmind label → foil 本体映射配置（业务无关：换一棵 xmind 只改这个文件）
+version: 1
+
+# 节点 label（第一个 label）→ 对象类型 name（对应 reference/foil-schema-online.json）
+object_types:
+  设备: device
+  部件: components
+  维修人员: maintenance_personnel
+  维修工单: maintenance_ticket
+  现象级问题: faultproblem
+  观察特征: observation
+  排查点: checkitem
+  排查结论: checkresult
+  中间假设: hypothesis
+  根本原因: rootcause
+  解决方案: solution
+
+# 属性 label 前缀（"前缀:值" / "前缀--值"）→ 各对象类型属性 name
+# 按对象类型覆盖；未列出的类型用 common
+property_labels:
+  common:
+    名称: title
+    摘要: summary
+  device:
+    设备ID: device_id
+    名称: device_name
+    IP: device_ip
+    位置: device_location
+  components:
+    名称: title
+    子部件名称: subcomponent_name
+    子部件物料编码: subcomponent_material_code
+    子部件IOT地址: subcomponent_iot_address
+  checkitem:
+    IOT排查点: iot_check_point
+    规则: rule
+  solution:
+    维修时长: repair_duration
+    备件名称: part_name
+    备件物料编码: part_material_code
+    专用工具: special_tool
+
+# 关系 label（"关系:值" / "关系：值"）→ link_type name
+link_types:
+  有部件是: has_component
+  部件的问题是: problem_at_components
+  分配: assign
+  得出结论: has_result
+  具有观察特征: has_observation
+  根因的解决方案是: rootcause_solved_by
+  其解决方案是: rootcause_solved_by
+  确认原因: confirms_cause
+  确认根因: confirms_cause
+  下一步排查: next_check
+  支持假设: supports_hypothesis
+  验证假设: verifies_hypothesis
+  排查结论支持假设: checkresult_supports_hypothesis
+  关联维修工单: has_repair_work_order
+  需排查: need_check
+
+# schema 基准文件（相对知识库根目录）
+schema_source: reference/foil-schema-online.json
+
+# 确定性 ID：对象 id = "{type_prefix}{sha1(type_name + '|' + 路径)[:12]}"
+id_prefixes:
+  device: dev_
+  components: cmp_
+  maintenance_personnel: prs_
+  maintenance_ticket: tkt_
+  faultproblem: flt_
+  observation: obs_
+  checkitem: chk_
+  checkresult: res_
+  hypothesis: hyp_
+  rootcause: rot_
+  solution: sol_
+
+# 编译时固定注入的属性（会按 schema 声明自动剔除未声明项）
+meta_defaults:
+  all:
+    source_type: xmind
+    domain: equipment-diagnosis
