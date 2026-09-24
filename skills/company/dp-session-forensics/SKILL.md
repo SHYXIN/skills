@@ -13,19 +13,25 @@ description: DeepWorks 会话取证。查询本机 opencode.db（SQLite，只读
 - 两个会话同一操作一个成功一个失败 → dump 两边对比 reasoning 分歧
 - 需要确认平台某交互（如 @ 选择）实际下发了什么内容
 
-## 会话库位置
+## 会话库位置（双环境）
 
-```
-C:/Users/DEEPEXI/AppData/Roaming/com.deepexi.deepworks/deepworks-engine-data/xdg/data/opencode/opencode.db
-```
+| 环境 | `--env` | 库路径 |
+|---|---|---|
+| 正式 | `prod`（默认） | `~/AppData/Roaming/com.deepexi.deepworks/deepworks-engine-data/xdg/data/opencode/opencode.db` |
+| dev 测试 | `dev` | `~/AppData/Roaming/com.deepexi.deepworks.test.dev/deepworks-dev-data/xdg/data/opencode/opencode.db` |
 
-脚本已内置此默认路径，`--db` 可覆盖。只读模式打开（`mode=ro`），不会污染数据。
+`--env prod|dev` 切换（默认 prod），`--db PATH` 可指向任意路径。只读模式打开（`mode=ro`），不会污染数据。
+
+**先判断环境再查**：用户提到 DeepWorks 测试/dev 环境、或截图界面标题带「Test」、或 prod 库里找不到目标会话时，加 `--env dev` 重查。
 
 ## 五个子命令
 
-按取证流程排列：
+按取证流程排列（全局 `--env` / `--db` 放在子命令前）：
 
 ```bash
+# 0. dev 环境先切换开关
+python scripts/query_sessions.py --env dev list --limit 10
+
 # 1. 找到目标会话（按工作区目录过滤最常用）
 python scripts/query_sessions.py list --dir deepsense-mes-ws --limit 10
 
@@ -70,5 +76,5 @@ python scripts/query_sessions.py export <session_id> --out tmp
 
 ## 局限
 
-- 只能读 DeepWorks 本机会话库，跨机器/云端会话不适用
+- 只能读 DeepWorks 本机会话库，跨机器/云端会话不适用；本机也分 prod / dev 两套数据目录，prod 查不到先切 `--env dev`
 - 库 schema 随 DeepWorks 版本可能变化，报错时先重跑本文件开头验证 schema

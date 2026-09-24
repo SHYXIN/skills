@@ -2,11 +2,15 @@
 """DeepWorks 会话取证：查询 opencode.db 会话历史，定位 agent 行为分歧。
 
 用法:
-  python query_sessions.py list [--limit 20] [--dir KEYWORD]
-  python query_sessions.py dump <session_id> [--roles user,assistant] [--out FILE]
-  python query_sessions.py injections <session_id>
-  python query_sessions.py reasoning <session_id> [--grep KEYWORD]
-  python query_sessions.py export <session_id> [--out DIR]   # html + jsonl
+  python query_sessions.py [--env prod|dev] list [--limit 20] [--dir KEYWORD]
+  python query_sessions.py [--env prod|dev] dump <session_id> [--roles user,assistant] [--out FILE]
+  python query_sessions.py [--env prod|dev] injections <session_id>
+  python query_sessions.py [--env prod|dev] reasoning <session_id> [--grep KEYWORD]
+  python query_sessions.py [--env prod|dev] export <session_id> [--out DIR]   # html + jsonl
+环境:
+  --env prod  正式环境库（默认）: ~/AppData/Roaming/com.deepexi.deepworks/...
+  --env dev   dev 测试环境库:     ~/AppData/Roaming/com.deepexi.deepworks.test.dev/...
+  --db PATH   任意路径直接覆盖上述两者
 已知 schema 坑（勿绕过封装手敲 SQL）:
   - role/agent/model 都藏在 message.data 的 JSON 里，表上没有这些列
   - parts 存在独立的 part 表（按 message_id 关联），不在 message.data 里
@@ -20,10 +24,17 @@ import os
 import sqlite3
 import sys
 
-DEFAULT_DB = os.path.expandvars(
-    r"C:/Users/DEEPEXI/AppData/Roaming/com.deepexi.deepworks"
-    r"/deepworks-engine-data/xdg/data/opencode/opencode.db"
-)
+_ENV_DBS = {
+    "prod": os.path.expandvars(
+        r"C:/Users/DEEPEXI/AppData/Roaming/com.deepexi.deepworks"
+        r"/deepworks-engine-data/xdg/data/opencode/opencode.db"
+    ),
+    "dev": os.path.expandvars(
+        r"C:/Users/DEEPEXI/AppData/Roaming/com.deepexi.deepworks.test.dev"
+        r"/deepworks-dev-data/xdg/data/opencode/opencode.db"
+    ),
+}
+DEFAULT_ENV = "prod"
 
 
 def connect(db_path):
@@ -577,7 +588,9 @@ def cmd_export(args):
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--db", default=DEFAULT_DB, help="opencode.db 路径")
+    ap.add_argument("--env", choices=sorted(_ENV_DBS), default=DEFAULT_ENV,
+                    help="DeepWorks 环境（决定默认 db 路径，--db 可覆盖）")
+    ap.add_argument("--db", default=None, help="opencode.db 路径（覆盖 --env）")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("list", help="列出最近会话")
@@ -606,6 +619,8 @@ def main():
     p.set_defaults(fn=cmd_export)
 
     args = ap.parse_args()
+    if args.db is None:
+        args.db = _ENV_DBS[args.env]
     args.fn(args)
 
 
