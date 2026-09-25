@@ -135,6 +135,7 @@ cn-skills update visualise
 cn-skills update visual-verdict
 cn-skills update tui-diagram
 cn-skills update teach-wx
+cn-skills update mental-map
 # ……其余技能同上
 cn-skills update            # 或一次性更新全部
 ```
@@ -185,9 +186,10 @@ npx skills@latest update visual-verdict
 npx skills@latest update tui-diagram
 npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
+npx skills@latest update mental-map
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
@@ -267,6 +269,8 @@ npx skills init my-skill
 - **learn-by-minimal** — 从最小实例学起。用「最小可运行/可体验实例 → 逐部件点亮 → 全景可视化」的方法，带用户学会任何可拆解的知识或系统（代码框架、算法、协议、业务流程…）。先生成最小 demo 与一张 Mermaid 组件学习地图（按依赖排序），再逐个点亮部件、扩展 demo、高亮地图节点，每步用有深度的选择题/判断题校验理解，最终地图长成完整结构图即全景可视化。进度按主题存于 `~/.learn-by-minimal/<主题>/`，支持跨会话续学。
 
 - **teach-wx** — 中文优先的技术学习 skill。用于快速了解技术概念、阅读 GitHub 仓库/代码库、系统学习某个主题、澄清技术问题，或生成可复习的 HTML lesson。默认初始化学习区、主线讲课产出 HTML，节奏可调；可运行示例按主题性质判定：实操型（学库/API）配 examples/，概念型（原理/架构）用「架构观察」章节（tui-diagram 风格字符图 + 值得读的资料清单）替代；专业名词保留英文或常用缩写，但必须用中文解释其作用和边界。
+
+- **mental-map** — 领域地图师。攻克概念型学科（有理论体系、有学术争议的领域）的三阶段 skill：全量灌料（候选材料清单确认制）→ 画地图（提取专家共享的 5 个心智模型 + 3 处根本性分歧 + 共识/开放问题，产出独立可复习的 map.md）→ 自测陪练（10 道区分"真懂与背书"的鉴别题，一次一题，答错触发追问纠错）。产物按主题落盘 `learning/<主题>/`。不适用于实操型技能（学 Rust/K8s 靠动手）和单点概念澄清。user-invoked。
 
 ### 面试
 
@@ -361,7 +365,8 @@ skills/
 │   ├── socratic-tutor/
 │   ├── teach-wx/
 │   ├── eli5-zh/
-│   └── learn-by-minimal/
+│   ├── learn-by-minimal/
+│   └── mental-map/
 ├── productivity/      # 效率类技能
 │   ├── anysearch/     # 搜索类技能（含代理适配）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
