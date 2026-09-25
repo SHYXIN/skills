@@ -136,7 +136,7 @@ cn-skills update visual-verdict
 cn-skills update tui-diagram
 cn-skills update teach-wx
 cn-skills update mental-map
-# ……其余技能同上
+cn-skills update learn-by-doing
 cn-skills update            # 或一次性更新全部
 ```
 
@@ -187,9 +187,10 @@ npx skills@latest update tui-diagram
 npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 npx skills@latest update mental-map
+npx skills@latest update learn-by-doing
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
@@ -271,6 +272,8 @@ npx skills init my-skill
 - **teach-wx** — 中文优先的技术学习 skill。用于快速了解技术概念、阅读 GitHub 仓库/代码库、系统学习某个主题、澄清技术问题，或生成可复习的 HTML lesson。默认初始化学习区、主线讲课产出 HTML，节奏可调；可运行示例按主题性质判定：实操型（学库/API）配 examples/，概念型（原理/架构）用「架构观察」章节（tui-diagram 风格字符图 + 值得读的资料清单）替代；专业名词保留英文或常用缩写，但必须用中文解释其作用和边界。
 
 - **mental-map** — 领域地图师。攻克概念型学科（有理论体系、有学术争议的领域）的三阶段 skill：全量灌料（候选材料清单确认制）→ 画地图（提取专家共享的 5 个心智模型 + 3 处根本性分歧 + 共识/开放问题，产出独立可复习的 map.md）→ 自测陪练（10 道区分"真懂与背书"的鉴别题，一次一题，答错触发追问纠错）。产物按主题落盘 `learning/<主题>/`。不适用于实操型技能（学 Rust/K8s 靠动手）和单点概念澄清。user-invoked。
+
+- **learn-by-doing** — 项目驱动式技能学习。通过做出一个真实项目习得实操技能（学 Rust、学 K8s、学框架）：Agent 设计项目并写码、逐段讲解，用户带「看懂每个动作」的目标旁观学习（阶段前置小卡 + 随手提问），每阶段以一个亲手小改动验收（可查资料，代码自己敲，跑通才过关）。项目与学习文件一体落盘（`learning/` 内 plan / cards / reviews）。与 learn-by-minimal 成系列：minimal 管理解，doing 管上手。user-invoked。
 
 ### 面试
 
@@ -366,7 +369,8 @@ skills/
 │   ├── teach-wx/
 │   ├── eli5-zh/
 │   ├── learn-by-minimal/
-│   └── mental-map/
+│   ├── mental-map/
+│   └── learn-by-doing/
 ├── productivity/      # 效率类技能
 │   ├── anysearch/     # 搜索类技能（含代理适配）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
