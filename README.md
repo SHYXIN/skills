@@ -161,6 +161,7 @@ npx skills@latest update dp-session-forensics
 npx skills@latest update dp-dev-bootstrap
 npx skills@latest update dp-deepworks-dev-start
 npx skills@latest update dp-knowledge-compile
+npx skills@latest update dp-dth-key-setup
 npx skills@latest update writing-for-agents-wx
 npx skills@latest update wait-what-wx
 npx skills@latest update where-am-i-wx
@@ -190,7 +191,7 @@ npx skills@latest update mental-map
 npx skills@latest update learn-by-doing
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
 ```
 
 ## npx skills 用法示例
@@ -349,6 +350,7 @@ npx skills init my-skill
 - **dp-deepworks-dev-start** — Windows 本地启动 DeepWorks 桌面开发环境：设置开发变量、启用 CLI 灰度、运行桌面构建并报告启动状态，适用于所有 DeepWorks 本地开发场景。
 - **dp-dev-bootstrap** — monorepo dev 环境一键体检（preflight）+ 确定性修复。检测依赖缺失、types 未构建、sidecar 缺失、native 模块 ABI 不匹配、Build Tools 未装、镜像未配等启动前置问题；轻量项 `--fix` 自动修，重量级（数 GB 安装/提权）只提示命令。声明式 profile 驱动，内置 deepworks，新仓库加 JSON 即支持；换新电脑跑一次即可拉齐环境。
 - **dp-knowledge-compile** — 把 xmind 诊断树/知识树一键编译成 deepworks 知识中心可加载的本地知识库。自动生成项目骨架、拉取线上 foil schema（或用本地基准）、编译实体与关系、三层校验（spec Zod / 实例 / list-outputs）全绿才交付。业务无关，换领域只改 mappings.yaml。手动调用（/dp-knowledge-compile）。
+- **dp-dth-key-setup** — 把 DeepWorks 桌面端企业账号的积分计费 DTH/TokenHub key 接入 pi coding agent。从 Electron localStorage (leveldb) 提取 modelPlatformApiKey（纯 Node 解析，含 snappy），写入 ~/.pi/agent 三件套并端到端验证；key 轮换后重跑即可。test/prod 网关按安装版本自动判定，预留 opencode 等其他 agent 扩展位。
 
 ### 设计
 
@@ -407,7 +409,8 @@ skills/
 │   ├── dp-session-forensics/  # DeepWorks 会话取证（查 opencode.db 定位 agent 行为分歧）
 │   ├── dp-dev-bootstrap/  # monorepo dev 环境体检+修复（preflight 引擎 + 声明式 profile）
 │   ├── dp-deepworks-dev-start/  # DeepWorks 本地桌面开发启动
-│   └── dp-knowledge-compile/  # xmind 一键编译 deepworks 本地知识库（三层校验）
+│   ├── dp-knowledge-compile/  # xmind 一键编译 deepworks 本地知识库（三层校验）
+│   └── dp-dth-key-setup/  # DeepWorks 积分 DTH key 接入 pi（leveldb 提取+配置写入）
 ├── devops/            # 运维 / CI-CD 类技能
 │   └── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 ├── personal/          # 个人效率类技能

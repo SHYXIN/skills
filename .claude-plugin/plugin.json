@@ -45,6 +45,7 @@
     "./skills/productivity/agent-config-tidy",
     "./skills/productivity/worktree",
     "./skills/company/dp-deepworks-dev-start",
-    "./skills/company/dp-knowledge-compile"
+    "./skills/company/dp-knowledge-compile",
+    "./skills/company/dp-dth-key-setup"
   ]
 }
