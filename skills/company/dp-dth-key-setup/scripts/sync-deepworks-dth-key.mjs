@@ -265,6 +265,21 @@ function fingerprint(key) {
   return `${key.slice(0, 6)}...${key.slice(-4)} (len ${key.length})`;
 }
 
+function printSummary(chosen, gateway, baseUrl, piDir) {
+  const pool = gateway === "test"
+    ? "Test 版 DeepWorks 桌面端的积分池"
+    : "正式版 DeepWorks 桌面端的积分池";
+  const settings = readJson(path.join(piDir, "settings.json"), {});
+  const defaultModel = settings.defaultProvider === "dth" ? `dth/${settings.defaultModel}` : (settings.defaultModel ?? "?");
+  console.log("");
+  console.log("—— 当前 pi 生效配置 ——");
+  console.log(`账号:     ${chosen.email ?? "?"}`);
+  console.log(`Key:      ${fingerprint(chosen.key)}`);
+  console.log(`网关:     ${baseUrl} (${gateway})`);
+  console.log(`积分池:   ${pool}`);
+  console.log(`默认模型: ${defaultModel}`);
+}
+
 function main() {
   const candidates = collectCandidates();
   if (candidates.length === 0) {
@@ -295,7 +310,10 @@ function main() {
   console.log(`auth.json: ${authSame ? "已是最新" : "需要更新"}`);
   console.log(`models.json: ${modelsSame ? "已是最新" : "需要更新"}`);
 
-  if (dryRun) return;
+  if (dryRun) {
+    printSummary(chosen, gateway, baseUrl, piDir);
+    return;
+  }
   if (!authSame) {
     backup(authFile);
     auth.dth = { type: "api_key", key: chosen.key };
@@ -321,6 +339,7 @@ function main() {
     fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + "\n");
   }
   console.log("完成。pi 现在默认走 dth/DeepSeek-V4-Flash（积分计费）。");
+  printSummary(chosen, gateway, baseUrl, piDir);
 }
 
 main();

@@ -47,7 +47,8 @@ pi --provider dth --model DeepSeek-V4-Flash --no-session --no-tools -p "回复�
 
 脚本行为：
 - 自动扫 `%APPDATA%\com.deepexi.deepworks` 和 `%APPDATA%\com.deepexi.deepworks.test` 两个 userData 的 leveldb（运行中的 DeepWorks 会锁文件，脚本先拷到 temp 再解析，不会影响桌面端）
-- 多条凭据按 `updated_at` 取最新；打印账号/租户/更新时间/key 指纹（不打印完整 key）
+- 多条凭据按 `updated_at` 取最新（谁最新登录用谁）；打印账号/租户/更新时间/key 指纹（不打印完整 key）
+- 每次执行（含 --dry-run）末尾输出「当前 pi 生效配置」汇总：账号、key 指纹、网关、积分池归属（test→Test 版桌面积分池 / prod→正式版）、默认模型——直接回答"现在用谁的、哪个池子"
 - 已一致时不重写；写入前对三件套做 `*.bak-<时间戳>` 备份
 - 参数：`--gateway test|prod` 强制网关；`--pi-dir <dir>` 指定其他 pi 目录；`--deepworks-dir <dir>` 指定非默认 userData
 
