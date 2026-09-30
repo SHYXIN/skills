@@ -25,11 +25,13 @@ const DTH_MODELS = [
   { id: "Kimi-K3", name: "Kimi K3", reasoning: true, input: ["text"], contextWindow: 256000, maxTokens: 16384 },
   { id: "Kimi-K2.6", name: "Kimi K2.6", reasoning: false, input: ["text"], contextWindow: 128000, maxTokens: 16384 },
   { id: "Qwen-3.8-Max", name: "Qwen 3.8 Max", reasoning: true, input: ["text"], contextWindow: 128000, maxTokens: 16384 },
-  { id: "Qwen3.8-Flash-Next", name: "Qwen3.8 Flash Next", reasoning: false, input: ["text"], contextWindow: 128000, maxTokens: 16384 },
   { id: "Qwen3.8-27B", name: "Qwen3.8 27B", reasoning: false, input: ["text"], contextWindow: 128000, maxTokens: 16384 },
   { id: "Deepexi-E-Max-2.0", name: "Deepexi E Max 2.0", reasoning: true, input: ["text"], contextWindow: 128000, maxTokens: 16384 },
   { id: "Deepexi-E-Pro-2.0", name: "Deepexi E Pro 2.0", reasoning: true, input: ["text"], contextWindow: 128000, maxTokens: 16384 },
 ];
+
+// TokenHub 网关背后的模型不认 OpenAI 新式 developer 角色（400 invalid_parameter_error）
+const DTH_COMPAT = { supportsDeveloperRole: false };
 
 // ---------- CLI ----------
 const args = process.argv.slice(2);
@@ -289,7 +291,7 @@ function main() {
 
   const authSame = auth.dth?.type === "api_key" && auth.dth?.key === chosen.key;
   const provider = (models.providers ??= {}).dth ??= {};
-  const modelsSame = provider.baseUrl === baseUrl;
+  const modelsSame = provider.baseUrl === baseUrl && JSON.stringify(provider.compat ?? null) === JSON.stringify(DTH_COMPAT);
   console.log(`auth.json: ${authSame ? "已是最新" : "需要更新"}`);
   console.log(`models.json: ${modelsSame ? "已是最新" : "需要更新"}`);
 
@@ -303,6 +305,7 @@ function main() {
     backup(modelsFile);
     provider.baseUrl = baseUrl;
     provider.api = "openai-completions";
+    provider.compat = DTH_COMPAT;
     provider.models = DTH_MODELS;
     fs.writeFileSync(modelsFile, JSON.stringify(models, null, 2) + "\n");
   }

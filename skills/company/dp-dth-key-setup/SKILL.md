@@ -71,6 +71,8 @@ pi --provider dth --model DeepSeek-V4-Flash --no-session --no-tools -p "回复�
    - key 在 `deepworks.iamAuth.userInfo.v1` 条目里，正则 `"modelPlatformApiKey":\s*"([^"]+)"`，同时比对 `updated_at` 取新
    - `.log`（WAL）里也可能有最新未 compact 的记录，按 UTF-16 直接扫同一正则
 4. **网关连通性**：拿到 key 后先 curl `/models`，401 → 换另一个 env 网关试试；`invalid JSON body` → PowerShell 5.1 用 curl.exe 传 JSON 体常坏，改 `Invoke-WebRequest` + UTF8 bytes
+5. **400 `developer is not one of ['system','assistant',...]`**（或 GLM 系报"角色信息不正确"）：TokenHub 网关背后的模型不认 OpenAI 新式 `developer` 角色。pi 侧修复 = models.json 的 dth provider 加 `"compat": {"supportsDeveloperRole": false}`（脚本已内置）。诊断技巧：本地起一个日志代理（node http 转发并落盘请求体），把 baseUrl 临时指过去，抓 pi 真实请求做 bisect
+6. **400 `model is not configured` / `No available channel`**：网关模型目录会变（如 Qwen3.8-Flash-Next 已下线、Deepexi-E-Max-2.0 曾无渠道）。以 `/models` 实时返回为准，从 models.json 里删掉失效模型，settings.json enabledModels 同步清理
 
 ## 切回其他 provider
 
@@ -89,6 +91,6 @@ skill 当前只实现了 pi 目标。要支持其他 coding agent，在 `scripts
 
 新 agent 的写入模块做成 `sync-deepworks-dth-key-<agent>.mjs`，共享同一个提取函数；提取脚本可从 `scripts/sync-deepworks-dth-key.mjs` 里的 `collectCandidates()`/`parseTable()` 拷贝（纯 Node 零依赖，含 snappy 解码）。
 
-## 模型目录（test 网关实测，2026-09-28）
+## 模型目录（test 网关，2026-09-30 校准）
 
-DeepSeek-V4-Flash / V4-Pro / V4.1-Flash、GLM-5.2 / 5.3 / 5.3-Flash、Kimi-K3 / K2.6、Qwen-3.8-Max / Qwen3.8-Flash-Next / Qwen3.8-27B、Deepexi-E-Max-2.0 / E-Pro-2.0。应用默认模型是 Deepexi-E-Max-2.0；脚本给 pi 设的默认是 DeepSeek-V4-Flash（便宜）。目录会变，以网关 `/models` 实时返回为准。
+DeepSeek-V4-Flash / V4-Pro / V4.1-Flash、GLM-5.2 / 5.3 / 5.3-Flash、Kimi-K3 / K2.6、Qwen-3.8-Max / Qwen3.8-27B、Deepexi-E-Max-2.0 / E-Pro-2.0。应用默认模型是 Deepexi-E-Max-2.0；脚本给 pi 设的默认是 DeepSeek-V4-Flash（便宜）。**目录会变**：Qwen3.8-Flash-Next 已于 2026-09-30 前下线；以网关 `/models` 实时返回为准。全部模型必须走 `compat.supportsDeveloperRole: false`（部分模型拒绝 developer 角色，见手工路径第 5 条）。
