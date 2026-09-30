@@ -89,10 +89,10 @@ skill 当前只实现了 pi 目标。要支持其他 coding agent，在 `scripts
 
 - **opencode**：DeepWorks 源码里 DTH 本来就走 opencode `auth.set`（providerId=`"dth"`，`{type:"api",key}`）写入 `~/.local/share/opencode/auth.json`（XDG_DATA_HOME 隔离时路径不同）
 - **claude code / 其他**：凡是"OpenAI 兼容 baseUrl + api key"型配置都能接，网关 `https://tokenhub-<env>.deepexios.cn/gateway/api/v1`，模型 id 必须与网关 `/models` 返回完全一致（大小写敏感，如 `DeepSeek-V4-Flash`）
-- **GitHub Copilot CLI（BYOK）**：无需写配置文件，wrapper 脚本设 4 个环境变量即可——`COPILOT_PROVIDER_TYPE=openai`、`COPILOT_PROVIDER_BASE_URL=<网关>`、`COPILOT_MODEL=DeepSeek-V4.1-Flash`，key 用 `COPILOT_PROVIDER_API_KEY_COMMAND`（每次请求动态执行命令取 key，轮换免改脚本，如 `node ~/.local/bin/dth-key.js` 从 pi auth.json 读）。已实测 copilot CLI 发 system 角色（非 developer），V4.1-Flash 可直接用，无需 compat 处理
+- **GitHub Copilot CLI（BYOK）**：无需写配置文件，wrapper 脚本设 4 个环境变量即可——`COPILOT_PROVIDER_TYPE=openai`、`COPILOT_PROVIDER_BASE_URL=<网关>`、`COPILOT_MODEL=DeepSeek-V4-Flash-Vision-Exp`，key 用 `COPILOT_PROVIDER_API_KEY_COMMAND`（每次请求动态执行命令取 key，轮换免改脚本，如 `node <绝对路径>/dth-key.js` 从 pi auth.json 读；注意 copilot 内部执行该命令时 `$HOME`/`$USERPROFILE` 不展开，Git Bash 里要用 `cygpath -m "$HOME"` 拼出 `C:/Users/xxx` 风格绝对路径）。已实测 copilot CLI 发 system 角色（非 developer），Vision-Exp / V4.1-Flash 可直接用，无需 compat 处理
 
 新 agent 的写入模块做成 `sync-deepworks-dth-key-<agent>.mjs`，共享同一个提取函数；提取脚本可从 `scripts/sync-deepworks-dth-key.mjs` 里的 `collectCandidates()`/`parseTable()` 拷贝（纯 Node 零依赖，含 snappy 解码）。
 
 ## 模型目录（test 网关，2026-09-30 校准）
 
-DeepSeek-V4-Flash / V4-Pro / V4.1-Flash、GLM-5.2 / 5.3 / 5.3-Flash、Kimi-K3 / K2.6、Qwen-3.8-Max / Qwen3.8-27B、Deepexi-E-Max-2.0 / E-Pro-2.0。应用默认模型是 Deepexi-E-Max-2.0；脚本给 pi 设的默认是 DeepSeek-V4-Flash（便宜）。**目录会变**：Qwen3.8-Flash-Next 已于 2026-09-30 前下线；以网关 `/models` 实时返回为准。全部模型必须走 `compat.supportsDeveloperRole: false`（部分模型拒绝 developer 角色，见手工路径第 5 条）。
+DeepSeek-V4-Flash / V4-Pro / V4.1-Flash / V4-Flash-Vision-Exp、GLM-5.2 / 5.3 / 5.3-Flash、Kimi-K3 / K2.6、Qwen-3.8-Max / Qwen3.8-27B、Deepexi-E-Max-2.0 / E-Pro-2.0。应用默认模型是 Deepexi-E-Max-2.0；脚本给 pi 设的默认是 DeepSeek-V4-Flash（便宜），copilot-dth wrapper 默认是 DeepSeek-V4-Flash-Vision-Exp（已实测可用）。**目录会变**：Qwen3.8-Flash-Next 已于 2026-09-30 前下线；以网关 `/models` 实时返回为准。全部模型必须走 `compat.supportsDeveloperRole: false`（部分模型拒绝 developer 角色，见手工路径第 5 条）。
