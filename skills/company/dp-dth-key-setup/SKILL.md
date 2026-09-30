@@ -89,6 +89,7 @@ skill 当前只实现了 pi 目标。要支持其他 coding agent，在 `scripts
 
 - **opencode**：DeepWorks 源码里 DTH 本来就走 opencode `auth.set`（providerId=`"dth"`，`{type:"api",key}`）写入 `~/.local/share/opencode/auth.json`（XDG_DATA_HOME 隔离时路径不同）
 - **claude code / 其他**：凡是"OpenAI 兼容 baseUrl + api key"型配置都能接，网关 `https://tokenhub-<env>.deepexios.cn/gateway/api/v1`，模型 id 必须与网关 `/models` 返回完全一致（大小写敏感，如 `DeepSeek-V4-Flash`）
+- **GitHub Copilot CLI（BYOK）**：无需写配置文件，wrapper 脚本设 4 个环境变量即可——`COPILOT_PROVIDER_TYPE=openai`、`COPILOT_PROVIDER_BASE_URL=<网关>`、`COPILOT_MODEL=DeepSeek-V4.1-Flash`，key 用 `COPILOT_PROVIDER_API_KEY_COMMAND`（每次请求动态执行命令取 key，轮换免改脚本，如 `node ~/.local/bin/dth-key.js` 从 pi auth.json 读）。已实测 copilot CLI 发 system 角色（非 developer），V4.1-Flash 可直接用，无需 compat 处理
 
 新 agent 的写入模块做成 `sync-deepworks-dth-key-<agent>.mjs`，共享同一个提取函数；提取脚本可从 `scripts/sync-deepworks-dth-key.mjs` 里的 `collectCandidates()`/`parseTable()` 拷贝（纯 Node 零依赖，含 snappy 解码）。
 
