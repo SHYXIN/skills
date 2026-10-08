@@ -31,11 +31,11 @@ npm install -g cn-skills-cli --registry=https://registry.npmmirror.com
 # 2) 安装本仓库技能（自动走 Gitee）
 cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex
 
-# 3) 安装推荐搭配 mattpocock/skills（Gitee 镜像）
-cn-skills add mattpocock/skills --yes --global --agent codebuddy,claude-code,codex
-
-# 4) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL；当前冻结版 v0.15.15）
+# 3) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL；当前冻结版 v0.15.15）
 cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
+
+# 4) 安装推荐搭配 mattpocock/skills（Gitee 镜像；放最后，使 tdd/teach 采用 matt 版，见下「同名技能」）
+cn-skills add mattpocock/skills --yes --global --agent codebuddy,claude-code,codex
 ```
 
 **更新（国内）**
@@ -55,7 +55,7 @@ cn-skills update socratic-tutor   # 只更新某个
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
 ```
 
-脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`humanlayer/skills` 的 show-me、`pstack` 整包），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
+脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`humanlayer/skills` 的 show-me、`pstack` 整包；**matt 置于最后**，以便 `tdd`/`teach` 采用 matt 版——见「同名技能」一节），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
 
 自定义 agent 列表：
 
@@ -85,10 +85,10 @@ cd skills
 # 安装本仓库技能
 npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex hermes-agent
 
-# 同时安装推荐搭配
-npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
+# 同时安装推荐搭配（顺序有意义：matt 放最后，让 tdd/teach 采用 matt 版）
 npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claude-code codex hermes-agent
 npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
 安装后，在对应 agent 中即可使用以下技能。
@@ -126,6 +126,19 @@ pstack 还随附 `poteto-agent` 与 `Comment Sicko` 两个子代理定义（在 
 ```bash
 cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
 ```
+
+### 同名技能：tdd / teach
+
+推荐搭配之间只有两个技能重名，都发生在 pstack 与 mattpocock/skills 之间：
+
+| 技能 | pstack 版 | matt 版 |
+|------|-----------|---------|
+| `tdd` | 精简版「TDD Bug Fix」，仅在明确要求或存在便宜测试点时触发 | 完整 red-green-refactor 参考（含 tests/mocking 指南），被 matt 的 `/implement`、`/ask-matt` 内部依赖 |
+| `teach` | 一次性讲清某段代码/变更（内部跑 `/how`、`/why`） | 有状态、跨多次会话的学习工作区 |
+
+`npx skills` / `cn-skills` 把技能平铺到同一目录（`~/.agents/skills/<name>`），**同名后装者胜、无冲突提示**。因此本仓库的安装顺序**特意把 mattpocock/skills 放在 pstack 之后**，让 matt 版的 `tdd`/`teach` 覆盖 pstack 版（matt 版语义更完整且被其工作流内部引用）。pstack 的这两个是单文件，会被 matt 的多文件版本干净覆盖，不留残渣。
+
+若你更想要 pstack 版，把 `install.sh` / `install-cn.sh` 里的 pstack 块移到 matt 块**之后**即可（后装者胜）。
 
 ## 更新
 

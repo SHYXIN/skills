@@ -27,11 +27,11 @@ npx skills@latest add SHYXIN/skills
 # 推荐：全局安装到指定 agent，跳过确认
 npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex
 
-# 同时安装社区推荐搭配 mattpocock/skills
-npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
-
 # 同时安装推荐搭配 pstack 整包（约 60 个技能，按来源一条命令装齐）
 npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex
+
+# 同时安装社区推荐搭配 mattpocock/skills（放最后：同名 tdd/teach 采用 matt 版，后装者胜）
+npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
 ```
 
 安装后，在对应 agent（CodeBuddy / Claude Code / Codex 等）中即可直接调用本仓库的技能，例如 `/socratic-tutor`、`/grill-one`。
