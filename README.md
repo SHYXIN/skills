@@ -161,6 +161,8 @@ cn-skills update tui-diagram
 cn-skills update teach-wx
 cn-skills update mental-map
 cn-skills update learn-by-doing
+cn-skills update tdd-pstack
+cn-skills update teach-pstack
 cn-skills update https://gitee.com/theshyxin/pstack   # pstack 整包（按来源一行更新，不逐技能列名）
 cn-skills update            # 或一次性更新全部
 ```
@@ -214,12 +216,13 @@ npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 npx skills@latest update mental-map
 npx skills@latest update learn-by-doing
+npx skills@latest update tdd-pstack teach-pstack
 
 # 推荐搭配整包按来源更新（pstack 内部约 60 个技能，不逐个列名）
 npx skills@latest update backnotprop/pstack
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute tdd-pstack teach-pstack
 ```
 
 ## npx skills 用法示例
@@ -372,6 +375,13 @@ npx skills init my-skill
 
 - **fastapi-starlette-admin** — 给 FastAPI 项目快速集成 starlette-admin 管理面板。自动检测项目结构（从零开始 or 已有项目），处理 async/sync 引擎双轨制，生成完整的 admin 配置（含 AuthProvider、ModelView、batch actions、自定义 Dashboard、i18n 语言切换），标注 database.py 和 main.py 的修改点。基于真实项目经验，包含 11 条踩坑记录。
 
+### pstack（同名技能副本）
+
+> 从 pstack 挑选、改名后与 `mattpocock/skills` 的同名技能**并存**。安装后 `tdd`/`teach` 仍是 matt 版，这两个是 pstack 版。详见 [skills/pstack/README.md](./skills/pstack/README.md)。
+
+- **tdd-pstack** — pstack 版 TDD Bug Fix：只在有明确、便宜的测试落点时，把 bug 先写成失败测试再改产品代码；测试难写/昂贵/依赖端到端时明确跳过，用最接近的可执行回归检查替代。与 matt 版 `tdd`（完整 red-green-refactor 参考）并存。
+- **teach-pstack** — pstack 版 Teach：把一段工作讲清楚让人真正理解。内部运行 pstack 自有的 `how` / `why` 技能，把结果揉成一段平实讲解；只在用户想被「讲明白」时触发，不改动任何东西。与 matt 版 `teach`（跨会话有状态学习区）并存。
+
 ### 公司
 
 - **dp-session-forensics** — DeepWorks 会话取证。查询本机 opencode.db（SQLite，只读）还原 agent 实际收到的注入、思考与工具调用，定位「agent 行为和预期不符」类问题；支持 list / injections / reasoning 对比 / dump / 导出双格式（交互式 HTML + jsonl）五个子命令。
@@ -431,6 +441,9 @@ skills/
 │   └── tui-diagram/    # TUI 终端字符画图（Unicode 盒线，9 类图型路由）
 ├── backend/           # 后端开发类技能
 │   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
+├── pstack/            # pstack 同名技能副本（改名后与 matt 版并存）
+│   ├── tdd-pstack/    # pstack 版 TDD Bug Fix（与 matt 的 tdd 并存）
+│   └── teach-pstack/  # pstack 版 Teach（与 matt 的 teach 并存）
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
 ├── company/           # 公司内部工作流技能
