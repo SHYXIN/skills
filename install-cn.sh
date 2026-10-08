@@ -25,7 +25,7 @@ cn-skills add SHYXIN/skills --yes --global --agent "$AGENTS"
 echo "📦 安装 mattpocock/skills (Gitee 镜像) -> $AGENTS"
 cn-skills add mattpocock/skills --yes --global --agent "$AGENTS"
 
-# pstack 整包，从 Gitee 镜像仓拉取（该镜像仓为冻结快照，随本仓库同步节奏更新）
+# pstack 整包，从 Gitee 镜像仓拉取（默认分支当前对应冻结版 v0.15.15；冻结 tag 见仓内 refs/tags）
 # 用完整 gitee URL：cn-skills 的 owner/repo 简写会解析到 GitHub，而 npx skills 从 Gitee 拉取会被反爬 403
 echo "📦 安装 pstack 整包 (Gitee 镜像 theshyxin/pstack) -> $AGENTS"
 cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent "$AGENTS"

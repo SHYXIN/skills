@@ -39,7 +39,7 @@ cursor/plugins/pstack (Cursor 原始)          ← 真·上游
 
 - `backnotprop/pstack` 本身就是 cursor/plugins/pstack 的镜像，其 `main` 已叠了 harness 中立化改动、`upstream` 分支存上游原样。我们只做**二级镜像**（backnotprop → Gitee），不直接对接 cursor 原始仓。
 - 上游 `backnotprop/pstack` **没有任何 tag/release**，且 `npx skills add` 不支持 `@tag`/`--ref`，所以国外安装只能跟默认分支（`main`）。
-- 国内源是我们自己掌控的 `theshyxin/pstack`，可享受「冻结版本」：本地验证后手工打 tag（如 `v0.15.9`），安装脚本与文档引用该 ref。
+- 国内源是我们自己掌控的 `theshyxin/pstack`，可享受「冻结版本」：本地验证后手工打 tag（当前冻结版 `v0.15.15` → `3a60467`）；因工具不支持 ref，安装脚本与文档引用的是默认分支（当前即指向 `v0.15.15`）。
 - **自动同步**：`.github/workflows/sync-pstack.yml` 每周一（UTC 03:00）自动拉 `backnotprop/pstack` 的 `main`+`upstream` 两个分支、`--force` 推到 Gitee，也可在 Actions 页手动 `workflow_dispatch` 触发。复用本仓已有的 `GITEE_SSH_KEY` 密钥（与 `mirror-to-gitee.yml` 同一把），无需新配置。
 - 同步**只动分支、不搬 tag**：`git clone --bare` 不带 `--tags`，冻结版本 tag 不会被上游覆盖或前移。
 - pstack 迭代快且有过破坏性改版（其 README 记有 0.15.3 锁旧模型配置的先例），**升级应为一次显式动作**：等自动同步拉下新分支 → 本地验一遍 → 再手工打新 tag 并改脚本文档引用。

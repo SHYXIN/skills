@@ -34,7 +34,7 @@ cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex
 # 3) 安装推荐搭配 mattpocock/skills（Gitee 镜像）
 cn-skills add mattpocock/skills --yes --global --agent codebuddy,claude-code,codex
 
-# 4) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL）
+# 4) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL；当前冻结版 v0.15.15）
 cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
 ```
 
@@ -121,7 +121,7 @@ npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claud
 npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
-pstack 还随附 `poteto-agent` 与 `Comment Sicko` 两个子代理定义（在 `agents/` 下），但 `npx skills` 只安装 `skills/` 里的技能，**子代理不会自动落地**。缺失时 poteto-mode 会降级为"普通子代理 + 固定前缀"运行（pstack 的 Harness 章节写明此路径），功能可用，只是不复用 `poteto-agent` 的完整读取流程。国内安装走 Gitee 镜像仓 `theshyxin/pstack`（冻结快照，随本仓库同步节奏更新）。注意用**完整 Gitee URL**：`cn-skills` 的 `owner/repo` 简写会解析到 GitHub，而 `npx skills` 从 Gitee 拉取会被反爬 403：
+pstack 还随附 `poteto-agent` 与 `Comment Sicko` 两个子代理定义（在 `agents/` 下），但 `npx skills` 只安装 `skills/` 里的技能，**子代理不会自动落地**。缺失时 poteto-mode 会降级为"普通子代理 + 固定前缀"运行（pstack 的 Harness 章节写明此路径），功能可用，只是不复用 `poteto-agent` 的完整读取流程。国内安装走 Gitee 镜像仓 `theshyxin/pstack`（默认分支当前对应冻结版 `v0.15.15`，每周自动同步上游，冻结 tag 见仓内 `refs/tags`）。注意用**完整 Gitee URL**：`cn-skills` 的 `owner/repo` 简写会解析到 GitHub，而 `npx skills` 从 Gitee 拉取会被反爬 403：
 
 ```bash
 cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
