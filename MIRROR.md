@@ -25,6 +25,20 @@ CNB 不会把仓库设置里的密钥注入 `.cnb.yml`，需用「密钥仓库�
 
 在 CNB 上 push `master` 即自动镜像到 GitHub 与 Gitee。直接推 GitHub 也行，会经 `mirror-to-gitee.yml` 兜底到 Gitee（不回推 CNB）。
 
+## 推荐搭配 pstack 的国内镜像
+
+「推荐搭配」里的 pstack 走独立仓库镜像，不随本仓库同步：
+
+```
+backnotprop/pstack (GitHub, 上游)  ← 来源
+   └─ 手工/定时同步 → Gitee (theshyxin/pstack)  ← 国内安装源
+```
+
+- 上游 `backnotprop/pstack` **没有任何 tag/release**（`git tag` 与 GitHub API 均为空），且 `npx skills add` 不支持 `@tag`/`--ref`，所以国外安装只能跟默认分支。
+- 国内源是我们自己掌控的 `theshyxin/pstack` 快照，可享受「冻结版本」：同步时一并打 tag（如 `v0.15.9`），安装脚本与文档引用该 ref。
+- 同步沿用本仓库的 upstream/main 分支法：`upstream` 分支存上游原样，`main` 分支叠加镜像改动，避免直接覆盖抹掉改动。
+- pstack 迭代快且有过破坏性改版（其 README 记有 0.15.3 锁旧模型配置的先例），升级应为一次显式动作：同步 → 本地验一遍 → 改 tag。
+
 ## 参考来源 / References
 
 > 每条技术断言的来源与信任等级见 `sources/cnb-mirror-setup.md`。下面仅列关键一手链接。

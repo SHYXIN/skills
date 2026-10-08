@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 一键安装 SHYXIN/skills + mattpocock/skills + humanlayer/skills(show-me) + cursor/plugins(unslop) 到本地 agent
+# 一键安装 SHYXIN/skills + mattpocock/skills + humanlayer/skills(show-me) + pstack 到本地 agent
 #
 # 远程一键运行（无需克隆仓库）:
 #   curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
@@ -23,7 +23,8 @@ npx skills@latest add mattpocock/skills -y -g -a $AGENTS
 echo "📦 安装 humanlayer/skills show-me (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add humanlayer/skills --skill show-me -y -g -a $AGENTS
 
-echo "📦 安装 cursor/plugins unslop (推荐搭配) -> agents: $AGENTS"
-npx skills@latest add cursor/plugins --skill unslop -y -g -a $AGENTS
+# pstack 整包（poteto-mode 路由 + 23 playbook + 24 principle，自带 unslop，故不再单独装 cursor/plugins）
+echo "📦 安装 pstack (推荐搭配，整包) -> agents: $AGENTS"
+npx skills@latest add backnotprop/pstack -y -g -a $AGENTS
 
 echo "✅ 完成。运行 'npx skills list' 查看已安装技能。"

@@ -29,6 +29,9 @@ npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex
 
 # 同时安装社区推荐搭配 mattpocock/skills
 npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
+
+# 同时安装推荐搭配 pstack 整包（约 60 个技能，按来源一条命令装齐）
+npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex
 ```
 
 安装后，在对应 agent（CodeBuddy / Claude Code / Codex 等）中即可直接调用本仓库的技能，例如 `/socratic-tutor`、`/grill-one`。
@@ -180,6 +183,9 @@ npx skills update
 
 # 只更新某个技能
 npx skills update socratic-tutor
+
+# 整包来源按仓库更新：pstack 内部约 60 个技能，用来源名一次更新
+npx skills update backnotprop/pstack
 
 # 同时更新多个
 npx skills update socratic-tutor interview-coach

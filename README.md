@@ -33,6 +33,9 @@ cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex
 
 # 3) 安装推荐搭配 mattpocock/skills（Gitee 镜像）
 cn-skills add mattpocock/skills --yes --global --agent codebuddy,claude-code,codex
+
+# 4) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL）
+cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
 ```
 
 **更新（国内）**
@@ -52,7 +55,7 @@ cn-skills update socratic-tutor   # 只更新某个
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
 ```
 
-脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`humanlayer/skills` 的 show-me、`cursor/plugins` 的 unslop），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
+脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`humanlayer/skills` 的 show-me、`pstack` 整包），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
 
 自定义 agent 列表：
 
@@ -85,7 +88,7 @@ npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex hermes-
 # 同时安装推荐搭配
 npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
 npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claude-code codex hermes-agent
-npx skills@latest add cursor/plugins --skill unslop -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
 安装后，在对应 agent 中即可使用以下技能。
@@ -108,12 +111,20 @@ npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex her
 npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claude-code codex hermes-agent
 ```
 
-### cursor/plugins (unslop)
+### pstack
 
-[cursor/plugins](https://github.com/cursor/plugins) 中的 **unslop** 技能：清除 AI 写作腔——检测并改写 AI 高频套话（"highlighting/ensuring" 型悬空分词、"not just X, but Y" 句式、滥用 em-dash/冒号/加粗、聊天机器人客套话、抽象隐喻名词等 30+ 条规则），保留原意、匹配语气。user-invoked，手动触发。一键脚本已默认安装；如需单独安装：
+[backnotprop/pstack](https://github.com/backnotprop/pstack) 是 [cursor/plugins](https://github.com/cursor/plugins) 的独立镜像，作者 Lauren Tan（poteto）。它是一套**方法论底座**：入口技能 `/poteto-mode` 会按任务匹配 playbook（bug fix / perf / feature / refactoring / prototype / shipping / 无人值守等 23 个），再按步骤调 `/how`、`/why`、`/architect`、`/arena`、`/swarm`、`/interrogate`、`/tdd`、`/unslop` 等技能，并用 24 条 principle 作为判断标准。核心主张是"走得快先扎得深"，写更少但更高质量的代码，用可验证的工作换取自如的并行。
+
+本仓库按**整包**安装。pstack 自带 `unslop`，因此不再单独安装 `cursor/plugins` 的 unslop（两者同源，独立安装会导致同名技能双副本、更新/卸载互相打架）。一键脚本已默认安装；如需单独安装：
 
 ```bash
-npx skills@latest add cursor/plugins --skill unslop -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex hermes-agent
+```
+
+pstack 还随附 `poteto-agent` 与 `Comment Sicko` 两个子代理定义（在 `agents/` 下），但 `npx skills` 只安装 `skills/` 里的技能，**子代理不会自动落地**。缺失时 poteto-mode 会降级为"普通子代理 + 固定前缀"运行（pstack 的 Harness 章节写明此路径），功能可用，只是不复用 `poteto-agent` 的完整读取流程。国内安装走 Gitee 镜像仓 `theshyxin/pstack`（冻结快照，随本仓库同步节奏更新）。注意用**完整 Gitee URL**：`cn-skills` 的 `owner/repo` 简写会解析到 GitHub，而 `npx skills` 从 Gitee 拉取会被反爬 403：
+
+```bash
+cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
 ```
 
 ## 更新
@@ -137,6 +148,7 @@ cn-skills update tui-diagram
 cn-skills update teach-wx
 cn-skills update mental-map
 cn-skills update learn-by-doing
+cn-skills update https://gitee.com/theshyxin/pstack   # pstack 整包（按来源一行更新，不逐技能列名）
 cn-skills update            # 或一次性更新全部
 ```
 
@@ -189,6 +201,9 @@ npx skills@latest update verify-manual-after-implementation
 npx skills@latest update teach-wx
 npx skills@latest update mental-map
 npx skills@latest update learn-by-doing
+
+# 推荐搭配整包按来源更新（pstack 内部约 60 个技能，不逐个列名）
+npx skills@latest update backnotprop/pstack
 
 # 或者同时更新多个
 npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute
