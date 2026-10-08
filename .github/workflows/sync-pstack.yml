@@ -1,0 +1,70 @@
+name: Sync pstack to Gitee
+
+# 把上游镜像 backnotprop/pstack 的分支（main + upstream）同步到国内 Gitee 镜像
+# theshyxin/pstack，供 cn-skills 免翻墙安装。
+#
+# 背景：backnotprop/pstack 本身是 cursor/plugins/pstack 的镜像，其 main 分支
+# 叠了 harness 中立化改动、upstream 分支为上游原样。本仓库（wangxin/skills）
+# 已是 CNB→GitHub→Gitee 的主镜像，pstack 作为独立仓随本仓节奏单独同步。
+#
+# 只镜像分支，不动 tag：冻结版本 tag（如 v0.15.9）是升级的显式动作，需本地
+# 验证后再手工打，避免坏版本自动扩散。详见 MIRROR.md。
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # 每周一 03:00 UTC（北京时间 11:00）
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror upstream pstack to Gitee
+        env:
+          GITEE_SSH_KEY: ${{ secrets.GITEE_SSH_KEY }}
+        run: |
+          set -euo pipefail
+
+          # Gitee 认证走 SSH（与 mirror-to-gitee.yml 同一密钥）
+          mkdir -p ~/.ssh
+          printf '%s\n' "$GITEE_SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts 2>/dev/null
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 拉上游所有分支（不加 --tags：同步不搬 tag）
+          git clone --bare https://github.com/backnotprop/pstack.git pstack.git
+          cd pstack.git
+
+          # 记录同步前的 Gitee 分支 sha，用于对比
+          before_main=$(git ls-remote https://gitee.com/theshyxin/pstack.git refs/heads/main | cut -f1 || true)
+          before_upstream=$(git ls-remote https://gitee.com/theshyxin/pstack.git refs/heads/upstream | cut -f1 || true)
+          after_main=$(git rev-parse main)
+          after_upstream=$(git rev-parse upstream)
+          version=$(git show main:.cursor-plugin/plugin.json | grep -o '"version"[^,]*' | head -1 || true)
+
+          # 只推 main + upstream 分支；--force：镜像语义，上游为唯一真源
+          git push git@gitee.com:theshyxin/pstack.git \
+            main:main \
+            upstream:upstream \
+            --force
+
+          # 输出对比到 job summary
+          {
+            echo "## pstack → Gitee 同步"
+            echo ""
+            echo "| 分支 | 同步前 | 同步后 | 变化 |"
+            echo "|------|--------|--------|------|"
+            if [ "$before_main" = "$after_main" ]; then s="—"; else s="✅ 已更新"; fi
+            echo "| main | \`${before_main:-（空）}\` | \`$after_main\` | $s |"
+            if [ "$before_upstream" = "$after_upstream" ]; then s="—"; else s="✅ 已更新"; fi
+            echo "| upstream | \`${before_upstream:-（空）}\` | \`$after_upstream\` | $s |"
+            echo ""
+            echo "当前版本：$version"
+            echo ""
+            echo "> tag 不随本同步移动；冻结版本需本地验证后手工打（见 MIRROR.md）。"
+          } >> "$GITHUB_STEP_SUMMARY"
