@@ -222,7 +222,7 @@ npx skills@latest update tdd-pstack teach-pstack
 npx skills@latest update backnotprop/pstack
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute tdd-pstack teach-pstack
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram excalidraw-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute tdd-pstack teach-pstack
 ```
 
 ## npx skills 用法示例
@@ -395,6 +395,7 @@ npx skills init my-skill
 - **visualise** — 内联可视化渲染技能。把 SVG 图表、HTML 交互组件、Chart.js 图表等直接渲染进对话（sandboxed iframe，token 流式输出），用于画流程图、架构图、数据可视化、UI mockup、对比布局等；内置 design-system / diagrams / components / charts 四套参考规范（位于 `references/`）。触发：用户说"画个图""visualize""diagram""show me""对比布局"。
 - **visual-verdict** — 结构化视觉 QA 判定技能。把生成的 UI 截图与一张或多张参考图对比，返回严格 JSON 判定（`score` 0-100 / `verdict` pass·revise·fail / `category_match` / `differences` / `suggestions` / `reasoning`），用于截图还原度、布局/间距/字体/配色一致性验收；目标阈值 90+。源自 oh-my-claudecode，可直接作为"截图对比检查清单"使用。
 - **tui-diagram** — TUI 终端字符画图技能。用 Unicode 盒线字符（┌─┐│└┘ → ▼）在 Claude Code / CodeBuddy 等纯终端 Agent 里直接画流程图、架构图、时序图、状态机、层级树、对比矩阵、数据条、UI 线框、时间线共 9 类图；被调用时按对话上下文自动选型，内置中英混排宽度对齐规则。说"存下来"时能转 Mermaid 的图转入工作目录根部 `diagrams.md`，转不了的以 text 块原样保留。触发：仅显式调用 /tui-diagram。
+- **excalidraw-diagram** — 手绘风 Excalidraw 图生成技能。基于 `excalidraw-cli`（统一 `npx -y excalidraw-cli@0.0.2`，首次运行自动下载，无需全局安装）把需求变成 `.excalidraw` 文件，需要时再 `export` 成 excalidraw.com 可分享链接。内置「图要论证不是陈列」方法论、9 类图型选型（流程/关系/思维导图/架构/数据流/泳道/类图/时序/ER）与配色单一真源（浅色 + 深色）。与 `visualise`（对话内联）、`tui-diagram`（终端字符）三线分离。触发：仅显式调用 /excalidraw-diagram。
 
 ### CNB
 
@@ -438,7 +439,8 @@ skills/
 ├── design/            # 设计 / 可视化类技能
 │   ├── visualise/      # 内联可视化渲染（SVG/HTML/Chart.js，含 references/ 规范）
 │   ├── visual-verdict/ # 截图 vs 参考图 结构化视觉 QA 判定
-│   └── tui-diagram/    # TUI 终端字符画图（Unicode 盒线，9 类图型路由）
+│   ├── tui-diagram/    # TUI 终端字符画图（Unicode 盒线，9 类图型路由）
+│   └── excalidraw-diagram/ # 手绘风 Excalidraw 图生成（.excalidraw 文件 + 分享链接）
 ├── backend/           # 后端开发类技能
 │   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
 ├── pstack/            # pstack 同名技能副本（改名后与 matt 版并存）

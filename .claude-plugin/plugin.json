@@ -40,6 +40,7 @@
     "./skills/design/visualise",
     "./skills/design/visual-verdict",
     "./skills/design/tui-diagram",
+    "./skills/design/excalidraw-diagram",
     "./skills/personal/weekly-report",
     "./skills/skill-curator",
     "./skills/productivity/agent-config-tidy",
