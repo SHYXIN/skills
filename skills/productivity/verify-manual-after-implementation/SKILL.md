@@ -1,6 +1,6 @@
 ---
 name: verify-manual-after-implementation
-description: 在 to-spec -> to-tickets -> implement 或类似实现流程完成后，生成可人工打开网站/API/CLI 执行的验收手册。用于用户要求“生成测试手册”“手动验收”“怎么打开网站测试”“implement 完之后验收”“写一份手动测试指南”“补 dev.sh 后生成验收手册”等场景。会审计当前仓库、必要时创建 scripts/dev.sh，并输出 docs/verification/manual-test-guide.md。
+description: 在 to-spec -> to-tickets -> implement-spec 或类似实现流程完成后，生成可人工打开网站/API/CLI 执行的验收手册。用于用户要求“生成测试手册”“手动验收”“怎么打开网站测试”“implement 完之后验收”“写一份手动测试指南”“补 dev.sh 后生成验收手册”等场景。会审计当前仓库、必要时创建 scripts/dev.sh，并输出 docs/verification/manual-test-guide.md；手册中的验收步骤采用结构化「操作」约定，可被 verify-run 技能直接照单自动执行。
 ---
 
 # 实现后手动验收手册
@@ -173,6 +173,30 @@ description: 在 to-spec -> to-tickets -> implement 或类似实现流程完成�
 对 CLI 项目，操作要给出命令、输入文件、输出文件和退出码。
 
 对全栈项目，要覆盖从 UI 操作到后端结果持久化或报告生成的完整链路。
+
+#### 机器可执行步骤（结构化操作约定）
+
+「操作」里的每个步骤必须用统一动词开头，写成一行一个动作、可被 verify-run 技能直接照单执行的格式。人照着读不受影响，agent 也能逐行驱动 opencli / curl 执行。
+
+- Web 动词：`open <URL>`、`click <元素描述>`、`fill <字段> = <值>`、`upload <字段> = <文件路径>`、`wait <条件>`、`screenshot <名称>`
+- API 动词：`curl <方法> <URL> [body <内容或文件>]`
+- CLI 动词：`run <命令>`
+
+每步后紧跟一行 `预期:` 写可判定的预期结果（状态码、可见文本、元素出现、跳转目标等），避免“是否正常”这类模糊描述。
+
+示例：
+
+```markdown
+**操作**：
+1. open http://localhost:5173/login
+2. fill 用户名 = demo@example.com
+3. fill 密码 = demo1234
+4. click 登录按钮
+5. wait 页面出现“工作台”标题
+   预期: 跳转到 /dashboard，页面出现“工作台”标题
+6. curl GET http://localhost:8790/api/health
+   预期: HTTP 200，响应含 {"status":"ok"}
+```
 
 ### Ticket/需求覆盖矩阵
 

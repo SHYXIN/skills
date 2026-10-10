@@ -50,6 +50,8 @@
     "./skills/company/dp-dth-key-setup",
     "./skills/pstack/tdd-pstack",
     "./skills/pstack/teach-pstack",
-    "./skills/productivity/setup-opencli"
+    "./skills/productivity/setup-opencli",
+    "./skills/productivity/verify-run",
+    "./skills/productivity/verify-replay"
   ]
 }

@@ -190,7 +190,9 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 
 ### 验证
 
-- **verify-manual-after-implementation** — 实现完成后的通用手动验收手册生成器。适用于 `to-spec -> to-tickets -> implement` 后，自动审计仓库、必要时补 `scripts/dev.sh`，并生成 `docs/verification/manual-test-guide.md`。
+- **verify-manual-after-implementation** — 实现完成后的通用手动验收手册生成器。适用于 `to-spec -> to-tickets -> implement-spec` 后，自动审计仓库、必要时补 `scripts/dev.sh`，并生成 `docs/verification/manual-test-guide.md`；验收步骤采用结构化「操作」约定（open/click/fill/curl/wait 动词 + 预期），可被 verify-run 照单自动执行。
+- **verify-run** — opencli 驱动的通用自动验证执行器。三档输入自动探测：有验收手册照单执行、有仓库无手册轻量审计现场推导、只有 URL 探索式驱动；每步 pass/fail 带证据（截图/响应），产出 `docs/verification/verify-run-report.md`。与 verify-manual-after-implementation / verify-replay 成系列。
+- **verify-replay** — 验证全绿后的回放清单固化。把 verify-run 跑通的执行过程固化为 YAML 步骤清单（`docs/verification/replay.yml`），重放由 agent+opencli 逐条执行、agent 判定断言；报告有 fail 时拒绝固化（YAML 是执行产物，不是预生成物）。
 
 ### 搜索
 
@@ -297,6 +299,9 @@ skills/
 │   ├── interview-coach/  # 面试备战教练
 │   ├── grill-one/  # 单问版 grilling
 │   ├── grill-one-with-docs/  # 单问版 grill-with-docs（访谈+ADR/术语表沉淀）
+│   ├── verify-manual-after-implementation/  # 实现后手动验收手册生成（含结构化操作约定）
+│   ├── verify-run/  # opencli 通用自动验证执行器（手册/仓库/URL 三档输入）
+│   ├── verify-replay/  # 验证全绿后固化 YAML 回放清单
 │   ├── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
 │   ├── branch-management/ # 通用 Git 分支管理操作
 │   ├── worktree/  # Git worktree 隔离工作：.wt- 目录隔离、全生命周期、归属盘点
