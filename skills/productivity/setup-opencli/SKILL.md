@@ -7,13 +7,23 @@ description: 在一台新机器上配置 OpenCLI——让 AI agent 通过 Chrome
 
 让 agent 能操控用户**日常使用的真实 Chrome**（带全部登录态），走的是「扩展桥接」路线：Chrome 扩展 + 本地 daemon + `opencli` CLI。
 
-**组件关系**（三者缺一不可）：
+**组件关系**（前三者缺一不可）：
 
 | 组件 | 角色 | 本技能是否安装 |
 |------|------|--------------|
 | `opencli` CLI | 命令入口，daemon 按需自启 | 是（npm） |
 | Chrome 扩展 | 跑在用户 Chrome 里，桥接页面操作 | 引导用户手动装 |
-| `opencli-browser` 技能 | agent 的使用说明书 | 提示用 install 脚本或 npx skills 装 |
+| opencli 技能套件（5 个） | agent 的使用说明书 | 是（npx skills / install 脚本） |
+
+**opencli 技能套件**（成套设计、互相引用，建议全量安装）：
+
+| 技能 | 定位 |
+|------|------|
+| `opencli-usage` | 入口地图：opencli 能做什么、怎么发现 adapter、该加载哪个技能 |
+| `opencli-browser` | 核心驾驶：navigate / click / type / fill / extract / network 等页面操作 |
+| `smart-search` | 搜索路由：把查询路由到最佳 opencli 数据源（100+ 站点 adapter） |
+| `opencli-autofix` | 站点改版导致命令失败时，自动诊断并修复 adapter |
+| `opencli-adapter-author` | 给新站点编写 adapter（recon → 解码 → verify 全流程） |
 
 上游项目：<https://github.com/jackwener/opencli>
 
@@ -92,17 +102,17 @@ opencli browser smoke-test close
 
 ---
 
-## Step 6 —— 安装 opencli-browser 技能（agent 侧）
+## Step 6 —— 安装 opencli 技能套件（agent 侧）
 
-本技能只管「配好环境」；让 agent **会干活**还需要 `opencli-browser` 技能：
+本技能只管「配好环境」；让 agent **会干活**还需要上游 5 个技能（全量安装，它们成套互相引用）：
 
 ```bash
-npx skills add jackwener/opencli --skill opencli-browser -y -g -a codebuddy
+npx skills add jackwener/opencli -y -g -a codebuddy
 ```
 
-或直接跑本仓库的 install 脚本（已包含此步骤）。
+多 agent 就重复传 `-a`（如 `-a codebuddy claude-code codex`），或直接跑本仓库的 install 脚本（已包含此步骤）。
 
-`GREEN:` 对应 agent 的技能目录下出现 `opencli-browser/SKILL.md`。
+`GREEN:` 对应 agent 的技能目录下出现 `opencli-usage/`、`opencli-browser/`、`smart-search/`、`opencli-autofix/`、`opencli-adapter-author/` 五个目录。
 
 ---
 
@@ -121,4 +131,4 @@ npx skills add jackwener/opencli --skill opencli-browser -y -g -a codebuddy
 
 ## 完成后
 
-告诉用户：直接用自然语言说「帮我看看 B 站热门」「把我开着的这个页面提取成文本」即可；操作已开登录页时 agent 会用 `bind` 模式，不接管用户标签页生命周期。
+告诉用户：直接用自然语言说「帮我看看 B 站热门」「把我开着的这个页面提取成文本」即可；操作已开登录页时 agent 会用 `bind` 模式，不接管用户标签页生命周期。想知道 opencli 还能干什么，agent 会读 `opencli-usage` 技能回答。
