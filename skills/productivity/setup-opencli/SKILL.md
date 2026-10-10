@@ -15,16 +15,6 @@ description: 在一台新机器上配置 OpenCLI——让 AI agent 通过 Chrome
 | Chrome 扩展 | 跑在用户 Chrome 里，桥接页面操作 | 引导用户手动装 |
 | opencli 技能套件（5 个） | agent 的使用说明书 | 否，由 install 脚本或 `npx/cn-skills add jackwener/opencli` 安装 |
 
-**opencli 技能套件**（成套设计、互相引用，建议全量安装）：
-
-| 技能 | 定位 |
-|------|------|
-| `opencli-usage` | 入口地图：opencli 能做什么、怎么发现 adapter、该加载哪个技能 |
-| `opencli-browser` | 核心驾驶：navigate / click / type / fill / extract / network 等页面操作 |
-| `smart-search` | 搜索路由：把查询路由到最佳 opencli 数据源（100+ 站点 adapter） |
-| `opencli-autofix` | 站点改版导致命令失败时，自动诊断并修复 adapter |
-| `opencli-adapter-author` | 给新站点编写 adapter（recon → 解码 → verify 全流程） |
-
 上游项目：<https://github.com/jackwener/opencli>
 
 ---
@@ -117,4 +107,4 @@ opencli browser smoke-test close
 
 ## 完成后
 
-告诉用户：直接用自然语言说「帮我看看 B 站热门」「把我开着的这个页面提取成文本」即可；操作已开登录页时 agent 会用 `bind` 模式，不接管用户标签页生命周期。想知道 opencli 还能干什么，agent 会读 `opencli-usage` 技能回答。
+告诉用户：直接用自然语言说「帮我看看 B 站热门」「把我开着的这个页面提取成文本」即可；操作已开登录页时 agent 会用 `bind` 模式，不接管用户标签页生命周期。
