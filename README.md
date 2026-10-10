@@ -208,6 +208,8 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling 把成形的术语/决策随手写进术语表（CONTEXT.md）与 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
 - **rust-windows-setup** — Windows 上安装 Rust 工具链（含需要 C 编译器的项目，如 rusqlite）。覆盖 rustup 国内镜像加速、Missing manifest 修复、MinGW/MSVC 选择、dlltool/ld 的 PATH 坑。在 Windows 配 Rust 环境或遇到 'Missing manifest' / 'dlltool not found' 报错时使用。
 
+- **setup-windows-mcp** — 在新 Windows 电脑上安装并注册 Windows-MCP（Windows 桌面自动化 MCP server：截屏、点击、UI 树、浏览器控制）。覆盖 codebuddy / claude / codex 三 CLI 的一次性配置，含国内网络加速（uv 安装镜像 + PyPI 镜像）与 register-all.sh 一键注册脚本。不需要 clone 源码，uvx 直接从 PyPI 拉包。
+
 - **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
 
 - **branch-management** — 通用 Git 分支管理操作技能。默认以 wangxin/wx 身份从 `develop` 创建 `feature/wx-YYYYMMDD-<task>`，帮你执行新建 feature、同步基线、提交并 push、MR 前检查、合并后清理分支；历史重写、远端删除、生产分支相关动作会先确认。
@@ -317,6 +319,7 @@ skills/
 │   ├── cn-brief-wx/  # 中文简报：把 agent 的英文步骤/工具调用/输出翻译成中文复述
 │   ├── research-wx/  # 中文版研究：后台 agent 调研一手来源，结论带出处存进仓库
 │   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
+│   ├── setup-windows-mcp/  # 新机器安装注册 Windows-MCP 桌面自动化（codebuddy/claude/codex 三件套）
 │   ├── setup-opencli/  # OpenCLI 浏览器桥接配置：CLI + Chrome 扩展 + doctor 验证
 │   └── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊
 ├── frontend/           # 前端开发类技能

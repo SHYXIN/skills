@@ -36,6 +36,7 @@
     "./skills/productivity/oss-contribute",
     "./skills/cnb/cnb-token",
     "./skills/productivity/rust-windows-setup",
+    "./skills/productivity/setup-windows-mcp",
     "./skills/devops/gitlab-runner-provision",
     "./skills/design/visualise",
     "./skills/design/visual-verdict",
