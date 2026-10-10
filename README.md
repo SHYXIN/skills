@@ -282,7 +282,7 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 
 ### CNB
 
-- **cnb-token** — 引导用户创建或粘贴 CNB 访问令牌（PAT）并持久化，使 cnb CLI 与 git push/pull 到 cnb.cool 免密可用；仅负责拿 token，建仓/推送交给 cnb-api、cnb-code-commit 等技能。
+- **cnb-token** — 引导用户创建或粘贴 CNB 访问令牌（PAT）并持久化，安装 cnb CLI 并配置 git 凭据，使 cnb 命令行与 git push/pull 到 cnb.cool 免密可用。首次配置 CNB 工具链、cnb 命令报 401/403、或 git 推拉 cnb.cool 要求认证时使用。
 
 ## 目录结构
 
