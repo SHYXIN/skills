@@ -49,6 +49,7 @@
     "./skills/company/dp-knowledge-compile",
     "./skills/company/dp-dth-key-setup",
     "./skills/pstack/tdd-pstack",
-    "./skills/pstack/teach-pstack"
+    "./skills/pstack/teach-pstack",
+    "./skills/productivity/setup-opencli"
   ]
 }

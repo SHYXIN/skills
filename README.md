@@ -155,6 +155,7 @@ cn-skills update weekly-report
 cn-skills update skill-curator
 cn-skills update agent-config-tidy
 cn-skills update worktree
+cn-skills update setup-opencli
 cn-skills update visualise
 cn-skills update visual-verdict
 cn-skills update tui-diagram
@@ -206,6 +207,7 @@ npx skills@latest update weekly-report
 npx skills@latest update skill-curator
 npx skills@latest update agent-config-tidy
 npx skills@latest update worktree
+npx skills@latest update setup-opencli
 npx skills@latest update oss-finder
 npx skills@latest update oss-triage
 npx skills@latest update oss-contribute
@@ -222,7 +224,7 @@ npx skills@latest update tdd-pstack teach-pstack
 npx skills@latest update backnotprop/pstack
 
 # 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram excalidraw-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree oss-finder oss-triage oss-contribute tdd-pstack teach-pstack
+npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram excalidraw-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree setup-opencli oss-finder oss-triage oss-contribute tdd-pstack teach-pstack
 ```
 
 ## npx skills 用法示例
@@ -359,6 +361,8 @@ npx skills init my-skill
 
 - **source-trace-wx** — 追踪 agent 回答的原始依据与来源。先列出对话里真实读过的来源，再对没有出处的 claim 去一手来源（官方文档/源码/规范/第一方 API）补查，写成注明出处、区分一手/二手信任级的 Markdown 文件。触发词如「查出处」「原始依据在哪」。model-invoked。
 
+- **setup-opencli** — 在一台新机器上配置 OpenCLI 浏览器桥接：让 agent 通过 Chrome 扩展操控用户日常 Chrome（带全部登录态）。覆盖前置检查、npm 安装 CLI、引导安装 Chrome 扩展、opencli doctor 验证、冒烟测试与常见排障（扩展 Reconnecting、daemon 未启动等）。手动调用（/setup-opencli）。
+
 ### DevOps
 
 - **gitlab-runner-provision** — GitLab Runner 新机器部署全流程引导：SSH 免登录 → 安装 Docker → 安装/注册 GitLab Runner → 最小 CI/CD 流水线跑通。半自动（scripts/ 做检测/生成/校验），通用化不绑定具体机器，验收标准是 push hello-world 流水线变绿。
@@ -433,6 +437,7 @@ skills/
 │   ├── cn-brief-wx/  # 中文简报：把 agent 的英文步骤/工具调用/输出翻译成中文复述
 │   ├── research-wx/  # 中文版研究：后台 agent 调研一手来源，结论带出处存进仓库
 │   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
+│   ├── setup-opencli/  # OpenCLI 浏览器桥接配置：CLI + Chrome 扩展 + doctor 验证
 │   └── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
