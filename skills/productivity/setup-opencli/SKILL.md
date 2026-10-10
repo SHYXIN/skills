@@ -13,7 +13,7 @@ description: 在一台新机器上配置 OpenCLI——让 AI agent 通过 Chrome
 |------|------|--------------|
 | `opencli` CLI | 命令入口，daemon 按需自启 | 是（npm） |
 | Chrome 扩展 | 跑在用户 Chrome 里，桥接页面操作 | 引导用户手动装 |
-| opencli 技能套件（5 个） | agent 的使用说明书 | 否，`npx/cn-skills add jackwener/opencli` 安装 |
+| opencli 技能套件（5 个） | agent 的使用说明书 | 否，`npx skills@latest add jackwener/opencli -y -g -a <agents>` 安装 |
 
 **opencli 技能套件**（成套设计、互相引用，建议全量安装）：
 
