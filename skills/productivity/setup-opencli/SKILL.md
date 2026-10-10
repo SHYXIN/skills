@@ -13,7 +13,17 @@ description: 在一台新机器上配置 OpenCLI——让 AI agent 通过 Chrome
 |------|------|--------------|
 | `opencli` CLI | 命令入口，daemon 按需自启 | 是（npm） |
 | Chrome 扩展 | 跑在用户 Chrome 里，桥接页面操作 | 引导用户手动装 |
-| opencli 技能套件（5 个） | agent 的使用说明书 | 否，由 install 脚本或 `npx/cn-skills add jackwener/opencli` 安装 |
+| opencli 技能套件（5 个） | agent 的使用说明书 | 否，`npx/cn-skills add jackwener/opencli` 安装 |
+
+**opencli 技能套件**（成套设计、互相引用，建议全量安装）：
+
+| 技能 | 定位 |
+|------|------|
+| `opencli-usage` | 入口地图：opencli 能做什么、怎么发现 adapter、该加载哪个技能 |
+| `opencli-browser` | 核心驾驶：navigate / click / type / fill / extract / network 等页面操作 |
+| `smart-search` | 搜索路由：把查询路由到最佳 opencli 数据源（100+ 站点 adapter） |
+| `opencli-autofix` | 站点改版导致命令失败时，自动诊断并修复 adapter |
+| `opencli-adapter-author` | 给新站点编写 adapter（recon → 解码 → verify 全流程） |
 
 上游项目：<https://github.com/jackwener/opencli>
 
