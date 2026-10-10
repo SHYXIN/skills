@@ -35,9 +35,9 @@ cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex
 cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
 
 # 4) 安装推荐搭配 mattpocock/skills（Gitee 镜像；放最后，使 tdd/teach 采用 matt 版，见下「同名技能」）
-# 5) 安装 opencli CLI + opencli-browser 技能（让 agent 操控日常 Chrome；CLI 已装则跳过 npm 那步）
+# 5) 安装 opencli CLI + 全部 opencli 技能（让 agent 操控日常 Chrome；CLI 已装则跳过 npm 那步）
 npm install -g @jackwener/opencli --registry=https://registry.npmmirror.com
-cn-skills add jackwener/opencli --skill opencli-browser --yes --global --agent codebuddy,claude-code,codex
+cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,codex
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
@@ -96,9 +96,9 @@ npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claud
 npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex hermes-agent
 npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
 
-# opencli：让 agent 操控日常 Chrome（CLI 已装则跳过 npm 那步）
+# opencli：让 agent 操控日常 Chrome（CLI 已装则跳过 npm 那步；技能装全量，成套互相引用）
 npm install -g @jackwener/opencli
-npx skills@latest add jackwener/opencli --skill opencli-browser -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex hermes-agent
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk

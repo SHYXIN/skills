@@ -30,11 +30,12 @@ echo "📦 安装 mattpocock/skills (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add mattpocock/skills -y -g -a $AGENTS
 
 # opencli：让 agent 操控用户日常 Chrome（带登录态）。CLI 是本体，技能是说明书，两者都装
-echo "📦 安装 opencli CLI + opencli-browser 技能 -> agents: $AGENTS"
+# 技能装全量（usage/browser/smart-search/autofix/adapter-author），它们成套互相引用
+echo "📦 安装 opencli CLI + 全部 opencli 技能 -> agents: $AGENTS"
 if ! command -v opencli >/dev/null 2>&1; then
   npm install -g @jackwener/opencli
 fi
-npx skills@latest add jackwener/opencli --skill opencli-browser -y -g -a $AGENTS
+npx skills@latest add jackwener/opencli -y -g -a $AGENTS
 echo "⚠️  opencli 还需 Chrome 扩展（无法静默安装）：https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk"
 echo "    装好扩展后运行 'opencli doctor' 验证；完整引导见 setup-opencli 技能"
 
