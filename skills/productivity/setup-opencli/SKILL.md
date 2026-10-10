@@ -13,7 +13,7 @@ description: 在一台新机器上配置 OpenCLI——让 AI agent 通过 Chrome
 |------|------|--------------|
 | `opencli` CLI | 命令入口，daemon 按需自启 | 是（npm） |
 | Chrome 扩展 | 跑在用户 Chrome 里，桥接页面操作 | 引导用户手动装 |
-| opencli 技能套件（5 个） | agent 的使用说明书 | 是（npx skills / install 脚本） |
+| opencli 技能套件（5 个） | agent 的使用说明书 | 否，由 install 脚本或 `npx/cn-skills add jackwener/opencli` 安装 |
 
 **opencli 技能套件**（成套设计、互相引用，建议全量安装）：
 
@@ -99,20 +99,6 @@ opencli browser smoke-test close
 ```
 
 `GREEN:` `open` 返回含 `"page": "<targetId>"` 的 JSON，`close` 输出 tab lease released。让用户确认 Chrome 里闪现过 example.com 页面。
-
----
-
-## Step 6 —— 安装 opencli 技能套件（agent 侧）
-
-本技能只管「配好环境」；让 agent **会干活**还需要上游 5 个技能（全量安装，它们成套互相引用）：
-
-```bash
-npx skills add jackwener/opencli -y -g -a codebuddy
-```
-
-多 agent 就重复传 `-a`（如 `-a codebuddy claude-code codex`），或直接跑本仓库的 install 脚本（已包含此步骤）。
-
-`GREEN:` 对应 agent 的技能目录下出现 `opencli-usage/`、`opencli-browser/`、`smart-search/`、`opencli-autofix/`、`opencli-adapter-author/` 五个目录。
 
 ---
 
