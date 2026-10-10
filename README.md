@@ -141,6 +141,16 @@ pstack 还随附 `poteto-agent` 与 `Comment Sicko` 两个子代理定义（在 
 cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
 ```
 
+### opencli
+
+[jackwener/opencli](https://github.com/jackwener/opencli) 让 agent 操控你的日常 Chrome（带全部登录态）。一键脚本已默认安装（CLI + 全部 opencli 技能）；如需单独安装：
+
+```bash
+npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex hermes-agent
+```
+
+> 注意：还需手动装 Chrome 扩展（无法静默安装）：<https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk>，装好后 `opencli doctor` 验证。完整引导见 setup-opencli 技能。
+
 ### 同名技能：tdd / teach
 
 推荐搭配之间只有两个技能重名，都发生在 pstack 与 mattpocock/skills 之间：
@@ -154,158 +164,9 @@ cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebudd
 
 若你更想要 pstack 版，把 `install.sh` / `install-cn.sh` 里的 pstack 块移到 matt 块**之后**即可（后装者胜）。
 
-## 更新
+## npx skills 用法
 
-国内用户（cn-skills）直接用：
-
-```bash
-cn-skills update socratic-tutor
-cn-skills update next-step
-cn-skills update cn-brief-wx
-cn-skills update research-wx
-cn-skills update cnb-token
-cn-skills update gitlab-runner-provision
-cn-skills update weekly-report
-cn-skills update skill-curator
-cn-skills update agent-config-tidy
-cn-skills update worktree
-cn-skills update setup-opencli
-cn-skills update visualise
-cn-skills update visual-verdict
-cn-skills update tui-diagram
-cn-skills update teach-wx
-cn-skills update mental-map
-cn-skills update learn-by-doing
-cn-skills update tdd-pstack
-cn-skills update teach-pstack
-cn-skills update https://gitee.com/theshyxin/pstack   # pstack 整包（按来源一行更新，不逐技能列名）
-cn-skills update            # 或一次性更新全部
-```
-
-国外用户（npx skills）运行以下命令更新：
-
-```bash
-# 更新指定技能
-npx skills@latest update socratic-tutor
-npx skills@latest update eli5-zh
-npx skills@latest update learn-by-minimal
-npx skills@latest update anysearch
-npx skills@latest update guided-book-reader
-npx skills@latest update interview-coach
-npx skills@latest update fastapi-starlette-admin
-npx skills@latest update miniprogram-iconfont
-npx skills@latest update ssh-key-setup
-npx skills@latest update branch-management
-npx skills@latest update grill-one grill-one-with-docs
-npx skills@latest update consensus-tech-research
-npx skills@latest update upward-networking
-npx skills@latest update dp-session-forensics
-npx skills@latest update dp-dev-bootstrap
-npx skills@latest update dp-deepworks-dev-start
-npx skills@latest update dp-knowledge-compile
-npx skills@latest update dp-dth-key-setup
-npx skills@latest update writing-for-agents-wx
-npx skills@latest update wait-what-wx
-npx skills@latest update where-am-i-wx
-npx skills@latest update wizard-wx
-npx skills@latest update ai-daily-brief
-npx skills@latest update doc-append-log
-npx skills@latest update next-step
-npx skills@latest update cn-brief-wx
-npx skills@latest update research-wx
-npx skills@latest update source-trace-wx
-npx skills@latest update cnb-token
-npx skills@latest update rust-windows-setup
-npx skills@latest update gitlab-runner-provision
-npx skills@latest update weekly-report
-npx skills@latest update skill-curator
-npx skills@latest update agent-config-tidy
-npx skills@latest update worktree
-npx skills@latest update setup-opencli
-npx skills@latest update oss-finder
-npx skills@latest update oss-triage
-npx skills@latest update oss-contribute
-npx skills@latest update visualise
-npx skills@latest update visual-verdict
-npx skills@latest update tui-diagram
-npx skills@latest update verify-manual-after-implementation
-npx skills@latest update teach-wx
-npx skills@latest update mental-map
-npx skills@latest update learn-by-doing
-npx skills@latest update tdd-pstack teach-pstack
-
-# 推荐搭配整包按来源更新（pstack 内部约 60 个技能，不逐个列名）
-npx skills@latest update backnotprop/pstack
-
-# 或者同时更新多个
-npx skills@latest update socratic-tutor eli5-zh learn-by-minimal mental-map learn-by-doing anysearch guided-book-reader interview-coach fastapi-starlette-admin miniprogram-iconfont ssh-key-setup branch-management grill-one grill-one-with-docs consensus-tech-research upward-networking dp-session-forensics dp-dev-bootstrap dp-deepworks-dev-start dp-knowledge-compile dp-dth-key-setup writing-for-agents-wx wait-what-wx where-am-i-wx wizard-wx ai-daily-brief doc-append-log next-step cn-brief-wx research-wx source-trace-wx cnb-token rust-windows-setup gitlab-runner-provision weekly-report skill-curator visualise visual-verdict tui-diagram excalidraw-diagram verify-manual-after-implementation teach-wx agent-config-tidy worktree setup-opencli oss-finder oss-triage oss-contribute tdd-pstack teach-pstack
-```
-
-## npx skills 用法示例
-
-> 完整命令参考（来源格式、私有仓库、选项表、安装范围/方式、环境变量、本地克隆后安装等）见 **[NPX-SKILLS.md](./NPX-SKILLS.md)**。
-
-以下示例结合本仓库 `SHYXIN/skills` 与推荐搭配 `mattpocock/skills`，覆盖 `npx skills` 的常用子命令。
-
-### 安装 add
-
-```bash
-npx skills add SHYXIN/skills                        # 安装全部技能
-npx skills add SHYXIN/skills --skill socratic-tutor # 只装某个技能
-npx skills add mattpocock/skills -g -a codebuddy -y # 全局 + 指定 agent + 跳过确认
-npx skills add https://github.com/SHYXIN/skills     # 也支持完整 URL
-```
-
-### 查看已安装 list
-
-```bash
-npx skills list
-npx skills ls -g                    # 只看全局安装的技能
-npx skills ls -a codebuddy -a claude-code  # 按 agent 过滤
-```
-
-### 更新 update
-
-```bash
-npx skills update                    # 更新全部
-npx skills update socratic-tutor     # 只更新指定技能
-npx skills update -g                 # 只更新全局范围
-npx skills update -y                 # 跳过范围确认
-```
-
-### 卸载 remove
-
-```bash
-npx skills remove socratic-tutor
-npx skills rm mattpocock/skills      # rm 是 remove 的别名
-npx skills remove --all              # 全部卸载（--skill '*' --agent '*' -y）
-```
-
-### 更多用法
-
-<details>
-<summary>use / find / init</summary>
-
-**use — 不安装即用（写入临时目录并打印提示）**
-
-```bash
-npx skills use SHYXIN/skills --skill socratic-tutor --agent codebuddy
-```
-
-**find — 搜索技能**
-
-```bash
-npx skills find typescript
-npx skills find react --owner mattpocock   # 跨某作者/组织下的所有仓库搜索
-```
-
-**init — 新建技能模板**
-
-```bash
-npx skills init my-skill
-```
-
-</details>
+完整命令参考（来源格式、私有仓库、选项表、安装范围/方式、环境变量、本地克隆后安装等）见 **[NPX-SKILLS.md](./NPX-SKILLS.md)**。
 
 ## 技能列表
 
