@@ -211,6 +211,7 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 - **setup-windows-mcp** — 在新 Windows 电脑上安装并注册 Windows-MCP（Windows 桌面自动化 MCP server：截屏、点击、UI 树、浏览器控制）。覆盖 codebuddy / claude / codex 三 CLI 的一次性配置，含国内网络加速（uv 安装镜像 + PyPI 镜像）与 register-all.sh 一键注册脚本。不需要 clone 源码，uvx 直接从 PyPI 拉包。
 
 - **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
+- **sync-workbuddy** — 把技能仓库的本地克隆同步（复制覆盖）到 WorkBuddy 的 `~/.workbuddy/skills/`。WorkBuddy 不在 `npx skills` 支持的 agent 列表里，故用脚本直接复制；只增改、永不删除目标目录中已有技能（第三方/商店安装的不受影响）。适用于改完 skill 后同步到本机 WorkBuddy、新电脑初始化 WorkBuddy 环境。
 
 - **branch-management** — 通用 Git 分支管理操作技能。默认以 wangxin/wx 身份从 `develop` 创建 `feature/wx-YYYYMMDD-<task>`，帮你执行新建 feature、同步基线、提交并 push、MR 前检查、合并后清理分支；历史重写、远端删除、生产分支相关动作会先确认。
 - **worktree** — 通用 Git worktree 隔离工作技能。从基线分支切 feature 分支到主仓库旁的 `.wt-<短任务名>` 目录做目录级隔离，覆盖创建 → 开发 → 合并后清理全生命周期；支持多 worktree 并行与归属盘点（按分支名前缀判断，只动自己的）。分支命名/提交规范沿用 branch-management；一切删除动作（含 worktree、本地/远端分支）执行前必须先确认。
@@ -305,6 +306,7 @@ skills/
 │   ├── verify-run/  # opencli 通用自动验证执行器（手册/仓库/URL 三档输入）
 │   ├── verify-replay/  # 验证全绿后固化 YAML 回放清单
 │   ├── ssh-key-setup/ # 新机器 SSH 密钥初始化 + 多端登记
+│   ├── sync-workbuddy/ # 技能仓库克隆 → WorkBuddy 技能目录复制同步（含脚本）
 │   ├── branch-management/ # 通用 Git 分支管理操作
 │   ├── worktree/  # Git worktree 隔离工作：.wt- 目录隔离、全生命周期、归属盘点
 │   ├── consensus-tech-research/ # 基于共识的技术选型调研
