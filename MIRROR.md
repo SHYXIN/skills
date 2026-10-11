@@ -49,6 +49,7 @@ cursor/plugins/pstack (Cursor 原始)          ← 真·上游
 > 每条技术断言的来源与信任等级见 `sources/cnb-mirror-setup.md`。下面仅列关键一手链接。
 
 - CNB CLI 文档：https://docs.cnb.cool/zh/plugin/public/cnbcool/cnb-cli.html
+- CNB 官方技能包（cnb-skill，含 `cnb git-credential` 凭据助手、CNB 平台操作技能，`npx skills add https://cnb.cool/cnb/skills/cnb-skill.git` 安装）：https://cnb.cool/cnb/skills/cnb-skill
 - CNB 流水线语法（grammar）：https://docs.cnb.cool/zh/build/grammar.html
 - CNB 环境变量（env）：https://docs.cnb.cool/zh/build/env.html
 - CNB OpenAPI 规范（swagger.json）：https://api.cnb.cool/swagger.json
