@@ -16,7 +16,7 @@ disable-model-invocation: true
 
 大多数工作走的路线。你有一个想法，想把它做出来。
 
-1. **入口：打磨想法**。这是本图与 ask-matt 分叉的地方，也是路由的核心裁决区。按判据裁决，一轮问一条（遵循 grill-one 风格）：
+1. **入口：打磨想法**。这是路由的核心裁决区。按判据裁决，一轮问一条（遵循 grill-one 风格）：
    - **一个会话装得下吗？**——全新项目或巨型功能，从这到目的地还看不见路 → 别进 grill 系，走 matt 的 **`/wayfinder`**（见下方支线）。
    - **要沉淀吗？**——要把术语/决策落盘（ADR、术语表）→ with-docs 系；不要，临时打磨 → `/grill-one`。
    - **跟谁家走？**——这次工作将继续走 matt 的 spec/tickets 主线，且希望他的下游技能读到他的文档格式 → matt 的 `/grill-with-docs`；自己的小项目或独立打磨 → 本仓库的 grill-one 系。
@@ -35,7 +35,7 @@ disable-model-invocation: true
 
 与 matt 版相同：入口打磨与 spec/tickets 保持在一个不间断的上下文窗口里（`/to-tickets` 之前不要 compact 或 clear），每个 `/implement` 从票据重新开始。上限同样是 **smart zone**（~150k tokens）。
 
-## 验证层（本仓库自有，matt 版没有）
+## 验证层
 
 实现完成后，闭环前多一步 matt 没有的验证：
 
