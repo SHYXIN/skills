@@ -43,4 +43,9 @@ cn-skills add jackwener/opencli --yes --global --agent "$AGENTS"
 echo "⚠️  opencli 还需 Chrome 扩展（无法静默安装）：https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk"
 echo "    装好扩展后运行 'opencli doctor' 验证；完整引导见 setup-opencli 技能"
 
+# asd-ste100：ASD-STE100 受控英语规则，改写给 agent 消费的英文文本（工具描述/错误消息/提示词），防误读
+# 无 Gitee 镜像，直连 GitHub（国内可能慢）
+echo "📦 安装 asd-ste100-skill (推荐搭配，GitHub 直连) -> $AGENTS"
+cn-skills add danyuchn/asd-ste100-skill --yes --global --agent "$AGENTS"
+
 echo "✅ 完成。运行 'cn-skills list' 查看已安装技能。"

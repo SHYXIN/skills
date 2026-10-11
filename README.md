@@ -42,6 +42,9 @@ cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,cod
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
 # 装好后 opencli doctor 验证，完整引导见 setup-opencli 技能
+
+# 6) asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读（无 Gitee 镜像，直连 GitHub）
+cn-skills add danyuchn/asd-ste100-skill --yes --global --agent codebuddy,claude-code,codex
 ```
 
 **更新（国内）**
@@ -100,6 +103,9 @@ npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex her
 npm install -g @jackwener/opencli
 npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex hermes-agent
 
+# asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读
+npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code codex hermes-agent
+
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
 # 装好后 opencli doctor 验证，完整引导见 setup-opencli 技能
@@ -150,6 +156,22 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 ```
 
 > 注意：还需手动装 Chrome 扩展（无法静默安装）：<https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk>，装好后 `opencli doctor` 验证。完整引导见 setup-opencli 技能。
+
+### asd-ste100-skill
+
+[danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill) 把航空航天受控英语标准 ASD-STE100 改造成 Claude Code 技能：改写给 agent 消费的英文文本（工具描述、错误消息、系统提示词、跨 agent 指令），消除歧义防止下游误读。与 [writing-for-agents-wx](#技能列表)（中文写作规范）是英文侧的天然搭档。一键脚本已默认安装；如需单独安装：
+
+```bash
+npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code codex hermes-agent
+```
+
+### ppt-master
+
+[hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) 从任意文档生成可编辑的原生 PPTX：幻灯片生成、页面视觉重构、品牌/风格/版式工作区、原生模板填充、成品增强，支持讲解词与动画。**不随一键脚本安装**——子目录 64MB 且带 Python 依赖（`requirements.txt`），属"要用时再装"的重型工具，需要 PPT 能力时单独安装：
+
+```bash
+npx skills@latest add hugohe3/ppt-master -y -g -a codebuddy claude-code codex hermes-agent
+```
 
 ### 同名技能：tdd / teach
 
