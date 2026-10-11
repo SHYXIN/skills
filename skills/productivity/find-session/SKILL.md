@@ -10,11 +10,7 @@ agent-sessions 服务（http://127.0.0.1:8390）跨五源检索，并给出可�
 
 ## 服务与接口
 
-服务应常驻（登录自启）。若 curl 失败，先拉起：
-
-```bash
-"C:/code_proj/github-proj/agent-sessions/scripts/svc-start.cmd"
-```
+服务应常驻（登录自启）。若 curl 失败：本机不同电脑上 agent-sessions 仓库位置可能不同，不要猜测路径——询问用户仓库在本机的位置，然后执行其中的 `scripts/svc-start.cmd`；或提示用户手动启动服务。
 
 三个只读接口（均 GET，返回 JSON）：
 

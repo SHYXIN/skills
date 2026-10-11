@@ -55,6 +55,7 @@
     "./skills/productivity/setup-opencli",
     "./skills/productivity/verify-run",
     "./skills/productivity/verify-replay",
-    "./skills/productivity/find-session"
+    "./skills/productivity/find-session",
+    "./skills/productivity/retro-wx"
   ]
 }
