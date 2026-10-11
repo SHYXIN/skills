@@ -54,6 +54,7 @@
     "./skills/pstack/teach-pstack",
     "./skills/productivity/setup-opencli",
     "./skills/productivity/verify-run",
-    "./skills/productivity/verify-replay"
+    "./skills/productivity/verify-replay",
+    "./skills/productivity/find-session"
   ]
 }

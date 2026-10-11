@@ -206,6 +206,7 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 
 - **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，避免一次抛出多个问题。适合用户明确要求“一次只问一个问题”或希望更慢、更聚焦的设计访谈。
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling 把成形的术语/决策随手写进术语表（CONTEXT.md）与 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
+- **find-session** — 跨 agent CLI 检索历史会话并给出 resume 命令。通过本机常驻的 agent-sessions 服务（127.0.0.1:8390）跨 codebuddy/claude/codex/pi/copilot 五源检索：内容线索走全文搜索、时间线索走按月分桶浏览，命中后可预览确认再给可直接执行的 resume 命令（孤儿会话注明不可恢复）。当用户说「找一下之前那条对话」「忘了在哪个 agent 里聊的」时触发。
 - **rust-windows-setup** — Windows 上安装 Rust 工具链（含需要 C 编译器的项目，如 rusqlite）。覆盖 rustup 国内镜像加速、Missing manifest 修复、MinGW/MSVC 选择、dlltool/ld 的 PATH 坑。在 Windows 配 Rust 环境或遇到 'Missing manifest' / 'dlltool not found' 报错时使用。
 
 - **setup-windows-mcp** — 在新 Windows 电脑上安装并注册 Windows-MCP（Windows 桌面自动化 MCP server：截屏、点击、UI 树、浏览器控制）。覆盖 codebuddy / claude / codex 三 CLI 的一次性配置，含国内网络加速（uv 安装镜像 + PyPI 镜像）与 register-all.sh 一键注册脚本。不需要 clone 源码，uvx 直接从 PyPI 拉包。
@@ -302,6 +303,7 @@ skills/
 │   ├── interview-coach/  # 面试备战教练
 │   ├── grill-one/  # 单问版 grilling
 │   ├── grill-one-with-docs/  # 单问版 grill-with-docs（访谈+ADR/术语表沉淀）
+│   ├── find-session/  # 跨 agent 会话检索 + resume 命令（agent-sessions 常驻后端）
 │   ├── verify-manual-after-implementation/  # 实现后手动验收手册生成（含结构化操作约定）
 │   ├── verify-run/  # opencli 通用自动验证执行器（手册/仓库/URL 三档输入）
 │   ├── verify-replay/  # 验证全绿后固化 YAML 回放清单
