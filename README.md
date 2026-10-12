@@ -258,6 +258,7 @@ npx skills@latest add hugohe3/ppt-master -y -g -a codebuddy claude-code codex he
 
 - **doc-append-log** — 只追加、不改写的文档/日志历史机制。每次变更新建 `YYYY-MM-DD_主题.md`，并用 `INDEX.md` 时间线索引（含"当前事实/当前参考/历史背景"状态）串联，供 CodeBuddy / Claude Code / Codex 等智能体阅读完整历史；目录无关（自动定位 docs/log/logs/ 等，也接受显式路径），附带 `init_index.sh` / `append_entry.sh` / `locate_docs.sh` 三个幂等脚本。model-invoked。
 - **next-step** — 规划"下一步做什么"：用户做完一段事或卡住时，列出 3-5 个带价值/代价/何时选/可照做动作的下一步并标出性价比最高者。触发：用户说"下一步""接下来""还能做什么""给点建议""不知道该干嘛""帮我理一下"，或一段回答结束、用户流露犹豫。适用代码/学习/生活/通用。model-invoked。
+- **to-closed-loop** — 广义闭环驱动器，不挑场景。共创验收标准（用户不知道怎么闭环时按交付物类型推荐 2-4 条可判定标准）→ 分诊验证后端（verify-run / dp-eval-run / 轻量自检带证据）→ 不绿回修 → 全绿收口；无法 100% 闭环时进逼近模式：证据链 + 剩余风险清单（原因/影响/补位三要素），用户拍板收口。触发：用户说"闭环""怎么算做完""验证一下""这事算完了吗"。
 - **cn-brief-wx** — 中文简报：agent 刚才的英文步骤/工具调用/输出看不懂时，用中文复述"做了什么、为什么、现在到哪"，不替你改方向。model-invoked。
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
 - **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
@@ -351,6 +352,7 @@ skills/
 │   ├── upward-networking/ # 向上社交和高价值关系经营
 │   ├── doc-append-log/  # 只追加文档/日志历史机制（INDEX.md + 脚本，目录无关）
 │   ├── next-step/  # 下一步规划：复盘现状 + 3-5 个带价值/代价/何时选的下一步，标出性价比最高
+│   ├── to-closed-loop/  # 广义闭环驱动器：验收标准共创 + 分诊验证 + 逼近模式收口
 │   ├── cn-brief-wx/  # 中文简报：把 agent 的英文步骤/工具调用/输出翻译成中文复述
 │   ├── research-wx/  # 中文版研究：后台 agent 调研一手来源，结论带出处存进仓库
 │   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
