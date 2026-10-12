@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Single-shot task to an Agent Teams cloud agent. Self-contained.
 
-Reads AGENT_TEAMS_* settings from --env-file (or OS env), logs in via IAM,
-resolves workspace/project/agent, creates a chat session, sends ONE message
-as-is, polls (SSE first, snapshot fallback) to completion, and collects the
-latest assistant reply.
+Reads AGENT_TEAMS_* settings from --env-file (or OS env), syncs the IAM token
+from the running DeepWorks desktop app (via its DevTools debug port) if
+available, logs in via IAM, resolves workspace/project/agent, creates a chat
+session, sends ONE message as-is, waits (SSE first, snapshot fallback), and
+collects the latest assistant reply.
 
 Standard library only -- no agent-eval import, no third-party deps, runs with
 any system Python from any working directory.
@@ -13,16 +14,21 @@ Usage:
   python ask_teams_agent.py                     # no --message / --agent-name: list agents, exit
   python ask_teams_agent.py \
       --message "你好，请用一句话介绍你自己" \
-      [--env-file "C:/path/to/agent-eval/.env"] --agent-name "设备故障诊断专家" \
+      [--env test|prod] [--env-file "C:/path/to/.env"] --agent-name "文档处理专家" \
       [--note "背景"] [--timeout 1200] [--out-dir <dir>] [--no-sync-token] [--dry-run]
+
+Token sync: for --env test it reads the DeepWorks Test desktop debug port,
+for --env prod the official DeepWorks desktop port. The matching desktop app
+must be running and logged in; otherwise the existing .env token is used.
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import socket
-import subprocess
+import struct
 import sys
 import time
 import urllib.error
@@ -38,6 +44,13 @@ ENV_BASE_URLS = {
     "test": "https://test.deepworks.cn/deepexi-agent-teams-backend",
     "prod": "https://agentteam.deepworks.cn/deepexi-agent-teams-backend",
 }
+# DevTools debug ports of the desktop installs, and the install-path marker
+# used to tell them apart (verified 2026-10-12: test=9223, prod=9228).
+DESKTOP_DEBUG_PORTS = {
+    "test": (9223, "deepworks%20test"),   # .../Programs/DeepWorks%20Test/resources/app-dist
+    "prod": (9222, "/deepworks/"),        # .../Programs/deepworks/resources/app-dist
+}
+DEBUG_PORT_CANDIDATES = (9222, 9223, 9228)
 
 
 def log(step: str, detail: str = "") -> None:
@@ -61,6 +74,180 @@ def load_env_file(path: Path) -> dict[str, str]:
 
 def text(value: object) -> str:
     return value if isinstance(value, str) else ""
+
+
+# ---------------------------------------------------------------------------
+# IAM token sync from the running DeepWorks desktop app (DevTools protocol).
+# Ported from agent-eval scripts/sync_deepworks_iam_token.py, trimmed to the
+# cookie path (deepexi_auth), with per-env debug-port discovery.
+# ---------------------------------------------------------------------------
+
+def _http_json(url: str, timeout: float = 3.0) -> object:
+    with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310
+        return json.loads(response.read().decode("utf-8"))
+
+
+def _ws_handshake_key() -> str:
+    return base64.b64encode(os.urandom(16)).decode("ascii")
+
+
+def _read_exact(sock: socket.socket, size: int) -> bytes:
+    chunks: list[bytes] = []
+    remaining = size
+    while remaining > 0:
+        chunk = sock.recv(remaining)
+        if not chunk:
+            raise RuntimeError("WebSocket closed unexpectedly")
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    return b"".join(chunks)
+
+
+class DevToolsWebSocket:
+    """Minimal WebSocket client, just enough for DevTools JSON messages."""
+
+    def __init__(self, ws_url: str) -> None:
+        parsed = urllib.parse.urlparse(ws_url)
+        if parsed.scheme != "ws":
+            raise RuntimeError(f"Only ws:// DevTools URLs are supported: {ws_url}")
+        host = parsed.hostname or "127.0.0.1"
+        port = parsed.port or 80
+        self.path = parsed.path + (f"?{parsed.query}" if parsed.query else "")
+        self.sock = socket.create_connection((host, port), timeout=5)
+        self.sock.settimeout(30)
+        key = _ws_handshake_key()
+        request = (
+            f"GET {self.path} HTTP/1.1\r\n"
+            f"Host: {host}:{port}\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+            f"Sec-WebSocket-Key: {key}\r\n"
+            "Sec-WebSocket-Version: 13\r\n"
+            "\r\n"
+        )
+        self.sock.sendall(request.encode("ascii"))
+        response = b""
+        while b"\r\n\r\n" not in response:
+            response += self.sock.recv(4096)
+        if b" 101 " not in response.split(b"\r\n", 1)[0]:
+            raise RuntimeError(f"DevTools WebSocket handshake failed: {response[:200]!r}")
+
+    def send_json(self, payload: dict) -> None:
+        raw = json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        if len(raw) >= 126:
+            header = bytearray([0x81, 0x80 | 126])
+            header.extend(struct.pack("!H", len(raw)))
+        else:
+            header = bytearray([0x81, 0x80 | len(raw)])
+        mask = os.urandom(4)
+        header.extend(mask)
+        masked = bytes(byte ^ mask[index % 4] for index, byte in enumerate(raw))
+        self.sock.sendall(bytes(header) + masked)
+
+    def recv_json(self) -> dict:
+        first, second = _read_exact(self.sock, 2)
+        opcode = first & 0x0F
+        if opcode == 0x8:
+            raise RuntimeError("DevTools WebSocket closed")
+        length = second & 0x7F
+        if length == 126:
+            length = struct.unpack("!H", _read_exact(self.sock, 2))[0]
+        elif length == 127:
+            length = struct.unpack("!Q", _read_exact(self.sock, 8))[0]
+        if second & 0x80:
+            mask = _read_exact(self.sock, 4)
+            raw = bytes(byte ^ mask[index % 4] for index, byte in enumerate(_read_exact(self.sock, length)))
+        else:
+            raw = _read_exact(self.sock, length)
+        return json.loads(raw.decode("utf-8"))
+
+    def close(self) -> None:
+        self.sock.close()
+
+
+def find_desktop_debug_port(env_name: str) -> int | None:
+    """Return the debug port of the desktop install for this env, or None."""
+    preferred, marker = DESKTOP_DEBUG_PORTS.get(env_name, (0, ""))
+    ports = [preferred] + [p for p in DEBUG_PORT_CANDIDATES if p != preferred]
+    for port in ports:
+        try:
+            targets = _http_json(f"http://127.0.0.1:{port}/json/list")
+        except OSError:
+            continue
+        for target in targets if isinstance(targets, list) else []:
+            if not isinstance(target, dict):
+                continue
+            url = text(target.get("url")).lower()
+            title = text(target.get("title"))
+            if title.startswith("DeepWorks") and "deepworks" in url and marker in url:
+                return port
+    return None
+
+
+def read_iam_cookie(debug_url: str) -> str:
+    page = None
+    for target in _http_json(f"{debug_url.rstrip('/')}/json/list"):
+        url = text(target.get("url")).lower()
+        if text(target.get("title")).startswith("DeepWorks") and "deepworks" in url:
+            page = target
+            break
+    if not page:
+        raise RuntimeError("DeepWorks page target not found on debug port")
+    ws = DevToolsWebSocket(page["webSocketDebuggerUrl"])
+    try:
+        # Primary: httpOnly IAM cookie 'deepexi_auth' (web/desktop renderer).
+        ws.send_json({"id": 1, "method": "Network.enable", "params": {}})
+        ws.recv_json()
+        ws.send_json({"id": 2, "method": "Network.getCookies", "params": {}})
+        message = ws.recv_json()
+        cookies = (message.get("result", {}) or {}).get("cookies", []) or []
+        for cookie in cookies:
+            if cookie.get("name") == "deepexi_auth" and cookie.get("value"):
+                return str(cookie["value"])
+        # Fallback: desktop localStorage session (verified present on both
+        # test and prod desktops; cookie jar can be empty on file:// pages).
+        ws.send_json({
+            "id": 3,
+            "method": "Runtime.evaluate",
+            "params": {
+                "expression": (
+                    "JSON.stringify(JSON.parse("
+                    "localStorage.getItem('deepworks.iamAuth.session.v1') || '{}'))"
+                ),
+                "returnByValue": True,
+            },
+        })
+        while True:
+            message = ws.recv_json()
+            if message.get("id") != 3:
+                continue
+            value = message.get("result", {}).get("result", {}).get("value") or "{}"
+            session = json.loads(value)
+            token = text(session.get("accessToken")) or text(session.get("token"))
+            if not token:
+                raise RuntimeError("desktop not logged in (no deepexi_auth cookie, no iamAuth session)")
+            return token
+    finally:
+        ws.close()
+
+
+def sync_iam_token(env: dict[str, str], env_name: str) -> None:
+    """Refresh AGENT_TEAMS_TOKEN[_PROD] in-place from the matching desktop."""
+    key = "AGENT_TEAMS_TOKEN_PROD" if env_name == "prod" else "AGENT_TEAMS_TOKEN"
+    port = find_desktop_debug_port(env_name)
+    if not port:
+        log("token sync skipped", f"no {env_name} desktop debug port found, keep .env value")
+        return
+    try:
+        token = read_iam_cookie(f"http://127.0.0.1:{port}")
+    except Exception as exc:  # noqa: BLE001
+        log("token sync failed, keep .env value", f"port={port} {str(exc)[:100]}")
+        return
+    if token and token != env.get(key, "").strip():
+        env[key] = token
+        log("token synced from desktop", f"env={env_name} port={port} chars={len(token)}")
+    else:
+        log("token unchanged", f"env={env_name} port={port}")
 
 
 def items(payload: object) -> list:
@@ -289,14 +476,20 @@ def main() -> int:
     env_path = Path(args.env_file) if args.env_file else Path("C:/code_proj/gitlab-proj/agent-eval/.env")
     env = dict(os.environ)
     env.update(load_env_file(env_path))
-    token_key = "AGENT_TEAMS_TOKEN_PROD" if args.env == "prod" else "AGENT_TEAMS_TOKEN"
-    if token_key not in env or not env[token_key].strip():
-        print(f"FAIL: {token_key} missing for --env {args.env} (env file: {env_path})", file=sys.stderr)
-        return 2
     agent_name = args.agent_name.strip()
 
     note = args.note.strip()
     message = f"{note}\n{args.message}" if note else args.message
+
+    if not args.no_sync_token:
+        sync_iam_token(env, args.env)
+
+    token_key = "AGENT_TEAMS_TOKEN_PROD" if args.env == "prod" else "AGENT_TEAMS_TOKEN"
+    if token_key not in env or not env[token_key].strip():
+        hint = (f"open the {args.env} DeepWorks desktop (logged in) so the token can be synced"
+                if not args.no_sync_token else f"pass {token_key} via env file")
+        print(f"FAIL: {token_key} missing for --env {args.env} (env file: {env_path}); {hint}", file=sys.stderr)
+        return 2
 
     client = TeamsClient(env, env_name=args.env)
     log(f"environment: {args.env} ({client.base_url()})")
@@ -312,17 +505,6 @@ def main() -> int:
         print("===== MESSAGE (dry-run, as-is) =====\n")
         print(message)
         return 0
-
-    if not args.no_sync_token:
-        try:
-            import urllib.request as _u
-            _u.urlopen("http://127.0.0.1:9223", timeout=2)
-            sync_script = env_path.parent / "scripts" / "sync_deepworks_iam_token.py"
-            if sync_script.is_file():
-                log("refreshing IAM token from desktop app")
-                subprocess.run([sys.executable, str(sync_script)], check=False, capture_output=True)
-        except OSError:
-            log("desktop debug port unreachable, keep existing token")
 
     t0 = time.perf_counter()
     log("login via IAM")

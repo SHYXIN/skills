@@ -1,6 +1,6 @@
 ---
 name: dp-ask-teams
-description: 向 Agent Teams 云端 agent 发起一个任务并等到完成拿结果，不限于特定领域专家。当用户说「发起云端任务」「让云端专家做这个」「调 Agent Teams 跑这个」「云端跑一下」，或要直接调用云端 agent-teams 能力时触发。不带 --agent-name 时列出全部可用专家。前置：.env 有 AGENT_TEAMS_TOKEN。轮询过程日志全程打印，结果与日志落盘可回看。
+description: 向 Agent Teams 云端 agent 发起一个任务并等到完成拿结果，不限于特定领域专家。当用户说「发起云端任务」「让云端专家做这个」「调 Agent Teams 跑这个」「云端跑一下」，或要直接调用云端 agent-teams 能力时触发。不带 --agent-name 时列出全部可用专家。token 自动从已登录桌面端获取，零手填。轮询过程日志全程打印，结果与日志落盘可回看。
 ---
 
 # 调用 Agent Teams 云端 agent（单发任务）
@@ -74,20 +74,27 @@ python <skill_dir>/scripts/ask_teams_agent.py \
 
 ## 首次准备（每台机器一次）
 
-```bash
-cp .env.example .env    # 填 AGENT_TEAMS_TOKEN；真实 token 不提交仓库
-```
+**通常零配置**：只要对应环境的 DeepWorks 桌面端开着且已登录，脚本会自动通过桌面端
+调试端口（test=9223，prod=9228）拿 IAM token，无需手填。桌面端没开时回退用 .env 里
+已有的 token。
 
-默认读 `C:/code_proj/gitlab-proj/agent-eval/.env`，换机器时用 `--env-file` 指定路径即可。
-两个环境的 token 不通用：`AGENT_TEAMS_TOKEN`（test）与 `AGENT_TEAMS_TOKEN_PROD`（prod）都放同一个 .env，用哪个环境就填哪个。
+.env（模板见 `.env.example`，默认读 `C:/code_proj/gitlab-proj/agent-eval/.env`，
+可用 `--env-file` 换路径）两个环境的 token 各一行，均可留空由自动同步填充：
+
+```
+AGENT_TEAMS_TOKEN=       # test
+AGENT_TEAMS_TOKEN_PROD=  # prod
+```
 
 ## 前置（脚本会检查，缺了报错即停）
 
-对应环境的 token 非空：`--env test` 查 `AGENT_TEAMS_TOKEN`，`--env prod` 查 `AGENT_TEAMS_TOKEN_PROD`。
+对应环境 token 可用：优先自动同步（桌面端开着+已登录），否则 .env 里对应键非空
+（`--env test` 查 `AGENT_TEAMS_TOKEN`，`--env prod` 查 `AGENT_TEAMS_TOKEN_PROD`）。
 
 ## 排查
 
-- 「AGENT_TEAMS_TOKEN_PROD missing」→ .env 里还没填正式环境 token，填上或继续用 test
+- 「TOKEN missing」且没开桌面端 → 开对应环境桌面端（已登录）重跑，或手填 .env
+- 「token sync failed ... not logged in」→ 桌面端开着但未登录，先登录
 - 「agent not found by name 'xx'」→ 报错里列出全部名字，抄一个重跑；或先不带参数跑一遍看名单
 - 超时 → 云端 runtime 首跑可能极慢（实测冷启动 10–21 分钟才出回复，任务在云端不会丢，UI 里最终会出结果）；复杂任务 `--timeout` 给足（如 1800），中断重跑亦可
 - 长时间 "streaming"/running 无进展 → 多半是 runtime 冷启动慢，耐心等或去 DeepWorks UI 看该 session 是否已出回复
