@@ -298,8 +298,8 @@ npx skills@latest add hugohe3/ppt-master -y -g -a codebuddy claude-code codex he
 - **dp-dev-bootstrap** — monorepo dev 环境一键体检（preflight）+ 确定性修复。检测依赖缺失、types 未构建、sidecar 缺失、native 模块 ABI 不匹配、Build Tools 未装、镜像未配等启动前置问题；轻量项 `--fix` 自动修，重量级（数 GB 安装/提权）只提示命令。声明式 profile 驱动，内置 deepworks，新仓库加 JSON 即支持；换新电脑跑一次即可拉齐环境。
 - **dp-knowledge-compile** — 把 xmind 诊断树/知识树一键编译成 deepworks 知识中心可加载的本地知识库。自动生成项目骨架、拉取线上 foil schema（或用本地基准）、编译实体与关系、三层校验（spec Zod / 实例 / list-outputs）全绿才交付。业务无关，换领域只改 mappings.yaml。手动调用（/dp-knowledge-compile）。
 - **dp-dth-key-setup** — 把 DeepWorks 桌面端企业账号的积分计费 DTH/TokenHub key 接入 pi coding agent。从 Electron localStorage (leveldb) 提取 modelPlatformApiKey（纯 Node 解析，含 snappy），写入 ~/.pi/agent 三件套并端到端验证；key 轮换后重跑即可。test/prod 网关按安装版本自动判定，预留 opencode 等其他 agent 扩展位。
-- **dp-ask-deepworks** — 向本机 DeepWorks 工作区 agent 单发一个问题并拿回答复（非测评，无 dataset/judge）。脚本自包含（纯标准库，任意目录可跑）：读桌面 token → localhost API → opencode session，消息原样发送，进度日志全程打印，回答与步骤日志落盘可回看。`--env prod|test` 选正式/测试桌面端；`--list-sessions [N]` 盘点工作区会话，`--delete-session last|ID` / `--delete-ask-sessions` 清理历史会话（按环境过滤、已删自动跳过）。前置：对应环境桌面端已打开目标工作区。
-- **dp-ask-teams** — 向 Agent Teams 云端 agent 单发一个任务并等到完成拿结果（非测评，不限领域）。脚本自包含（纯标准库，任意目录可跑）：IAM token 自动从已登录桌面端获取（零手填）→ 跨 project 解析专家 → chat session → SSE 流式等待（回退轮询），进度全程可见，结果与日志落盘。不带参数先列出全部可用专家。`--env test|prod` 切测试/正式云端；冷启动窗口到期自动续等；`--list-sessions [N]` 盘点云端会话，`--delete-session last|ID` / `--delete-ask-sessions` 清理云端会话（按环境过滤、已删自动跳过）。注意：云端 runtime 首跑冷启动可能 10–21 分钟。
+- **dp-ask-deepworks** — 向本机 DeepWorks 工作区 agent 单发一个问题并拿回答复（非测评，无 dataset/judge）。脚本自包含（纯标准库，任意目录可跑）：读桌面 token → localhost API → opencode session，消息原样发送，进度日志全程打印，回答与步骤日志落盘可回看。`--env prod|test` 选正式/测试桌面端。会话管理：`--list-sessions [N]` 盘点 → `--delete-session last|ID` 单删 → `--delete-ask-sessions` 批删（按环境过滤、已删自动跳过；详见 skill 内 SKILL.md）。前置：对应环境桌面端已打开目标工作区。
+- **dp-ask-teams** — 向 Agent Teams 云端 agent 单发一个任务并等到完成拿结果（非测评，不限领域）。脚本自包含（纯标准库，任意目录可跑）：IAM token 自动从已登录桌面端获取（零手填）→ 跨 project 解析专家 → chat session → SSE 流式等待（回退轮询），进度全程可见，结果与日志落盘。不带参数先列出全部可用专家。`--env test|prod` 切测试/正式云端；冷启动窗口到期自动续等。会话管理：`--list-sessions [N]` 盘点 → `--delete-session last|ID` 单删 → `--delete-ask-sessions` 批删（按环境过滤、已删自动跳过；详见 skill 内 SKILL.md）。注意：云端 runtime 首跑冷启动可能 10–21 分钟。
 
 ### 设计
 
@@ -374,8 +374,8 @@ skills/
 │   ├── dp-deepworks-dev-start/  # DeepWorks 本地桌面开发启动
 │   ├── dp-knowledge-compile/  # xmind 一键编译 deepworks 本地知识库（三层校验）
 │   ├── dp-dth-key-setup/  # DeepWorks 积分 DTH key 接入 pi（leveldb 提取+配置写入）
-│   ├── dp-ask-deepworks/  # 单发问题到本机 DeepWorks 工作区拿回复（含日志落盘）
-│   ├── dp-ask-teams/  # 单发任务到 Agent Teams 云端长程 agent 拿结果
+│   ├── dp-ask-deepworks/  # 单发问题到本机 DeepWorks 工作区拿回复（含会话盘点/删除、日志落盘）
+│   ├── dp-ask-teams/  # 单发任务到 Agent Teams 云端 agent 拿结果（含会话盘点/删除、冷启动续等）
 ├── devops/            # 运维 / CI-CD 类技能
 │   └── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 ├── personal/          # 个人效率类技能
