@@ -40,7 +40,7 @@ python <skill_dir>/scripts/ask_local_deepworks.py \
 - `--message` 发给 agent 的问题（原样发送）；删除模式下可省
 - `--env` 可选：prod=正式桌面端（默认）、test=测试桌面端；对应 AppData 目录 `com.deepexi.deepworks` / `com.deepexi.deepworks.test`，目标桌面端必须已打开
 - `--working-dir` 可选：目标工作区目录；只开了一个工作区时自动选中，多个时必填
-- `--model` 可选：本次调用用的模型（provider 前缀可省，默认 dth）；不传则用工作区默认模型
+- `--model` 可选：本次调用用的模型（provider 前缀可省，默认 dth）；**默认 `DeepSeek-V4.1-Flash`**——工作区默认模型 glm-5.3-flashx 批量调用时容易「服务繁忙」，脚本不再省略模型参数
 - `--working-dir-note` 可选：附加背景说明，会和问题一起给 agent
 - `--dry-run`：只打印要发的消息不真调，先给用户确认
 
@@ -73,7 +73,7 @@ python <skill_dir>/scripts/ask_local_deepworks.py --delete-ask-sessions [--env p
 
 ## 排查
 
-- 「服务繁忙」/「请求未完成」→ 多半是工作区默认模型所在供应商上游故障，`--model` 换一个（如 `dth/DeepSeek-V4.1-Flash`）重跑
+- 「服务繁忙」/「请求未完成」→ 脚本已默认 `DeepSeek-V4.1-Flash` 规避工作区默认模型的繁忙问题；仍繁忙时 `--model` 换其他模型重跑
 - 「workspace not open」→ 对应环境的桌面端没开或目录不对，报错里会列出该环境已开工作区；确认要连的环境与 `--env` 一致
 - 超时 → 长问题 `--timeout` 加大
 - 回答为空/卡住 → 看 `.log.json` 的 `messages_tail` 与本机 opencode 日志

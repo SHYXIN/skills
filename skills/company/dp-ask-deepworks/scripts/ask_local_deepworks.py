@@ -184,8 +184,10 @@ def main() -> int:
     ap.add_argument("--working-dir", default=None,
                     help="workspace dir open in DeepWorks desktop (auto-picked if only one is open)")
     ap.add_argument("--agent", default="deepworks", help="agent name inside the workspace (default: deepworks)")
-    ap.add_argument("--model", default=None,
-                    help="model for this call, e.g. 'dth/DeepSeek-V4.1-Flash' (provider prefix optional, default dth)")
+    ap.add_argument("--model", default="DeepSeek-V4.1-Flash",
+                    help="model for this call (provider prefix optional, default dth; "
+                         "default model DeepSeek-V4.1-Flash because the workspace-default "
+                         "glm-5.3-flashx hits '服务繁忙' under batch load)")
     ap.add_argument("--working-dir-note", default="", help="optional context note prepended to the message")
     ap.add_argument("--env", default="prod", choices=sorted(ENV_DIRS),
                     help="which DeepWorks desktop install to talk to (default: prod)")
@@ -359,7 +361,7 @@ def main() -> int:
     answer_path = out_dir / f"{stamp}.answer.md"
     log_path = record_path
     answer_path.write_text(
-        f"# ask-local {stamp}\n\n- env: {args.env}\n- workspace: {wd}\n- model: {args.model or '(workspace default)'}\n"
+        f"# ask-local {stamp}\n\n- env: {args.env}\n- workspace: {wd}\n- model: {args.model}\n"
         f"- latency: {latency:.1f}s\n\n## 提问\n\n{args.message}\n\n## 回答\n\n{answer}\n",
         encoding="utf-8",
     )
