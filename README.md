@@ -186,6 +186,15 @@ npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code 
 
 > 注意：转换 PDF/EPUB/DOCX 等格式时按需安装 Python 依赖（`pip install "book-to-skill[pdf]"` 等，纯 Markdown 免依赖）；对 Python 3.9+。
 
+### rea（Reverse Engineer Anything）
+
+[morluto/rea](https://github.com/morluto/rea) 一个 MCP 覆盖全栈逆向：原生二进制（配合 Hopper/Ghidra/IDA）、Electron/JavaScript、.NET 程序集、网站行为——看中某个应用的特性，让 agent 拆解它怎么实现、出示证据、指导复刻。分析全程本地运行。一键脚本只装**技能本体**（`reverse-engineer-anything`，纯说明书，轻量无依赖）；**MCP server 本体**（`npx rea-agents setup`，仓库 50MB）与原生分析引擎属"要用时再装"的重型件，需要逆向能力时单独安装：
+
+```bash
+npx skills@latest add morluto/rea -y -g -a codebuddy claude-code codex hermes-agent   # 技能（一键脚本已含）
+npx rea-agents setup                                                                  # MCP server（要用时再装）
+```
+
 ### 同名技能：tdd / teach
 
 推荐搭配之间只有两个技能重名，都发生在 pstack 与 mattpocock/skills 之间：

@@ -47,4 +47,9 @@ npx skills@latest add danyuchn/asd-ste100-skill -y -g -a $AGENTS
 echo "📦 安装 book-to-skill (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add virgiliojr94/book-to-skill -y -g -a $AGENTS
 
+# rea（Reverse Engineer Anything）：全栈逆向 MCP 的技能说明书，轻量无依赖
+# MCP server 本体（npx rea-agents setup，50MB + 逆向引擎）属"要用时再装"的重型件
+echo "📦 安装 rea (推荐搭配) -> agents: $AGENTS"
+npx skills@latest add morluto/rea -y -g -a $AGENTS
+
 echo "✅ 完成。运行 'npx skills list' 查看已安装技能。"

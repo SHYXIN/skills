@@ -53,4 +53,9 @@ cn-skills add danyuchn/asd-ste100-skill --yes --global --agent "$AGENTS"
 echo "📦 安装 book-to-skill (推荐搭配，GitHub 直连) -> $AGENTS"
 cn-skills add virgiliojr94/book-to-skill --yes --global --agent "$AGENTS"
 
+# rea（Reverse Engineer Anything）：全栈逆向 MCP 的技能说明书，轻量无依赖
+# 无 Gitee 镜像，直连 GitHub；MCP server 本体（npx rea-agents setup）要用时再装
+echo "📦 安装 rea (推荐搭配，GitHub 直连) -> $AGENTS"
+cn-skills add morluto/rea --yes --global --agent "$AGENTS"
+
 echo "✅ 完成。运行 'cn-skills list' 查看已安装技能。"
