@@ -58,7 +58,7 @@
     "./skills/productivity/find-session",
     "./skills/productivity/retro-wx",
     "./skills/productivity/ask-wx",
-    "./skills/company/dp-agent-eval-local",
-    "./skills/company/dp-agent-eval-teams"
+    "./skills/company/dp-ask-deepworks",
+    "./skills/company/dp-ask-teams"
   ]
 }

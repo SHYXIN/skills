@@ -1,5 +1,5 @@
 ---
-name: dp-agent-eval-local
+name: dp-ask-deepworks
 description: 向本机 DeepWorks 工作区 agent 提一个问题并拿回答复（专家能力由工作区决定，不限于诊断）。当用户说「问一下 DeepWorks 专家」「让本地 agent 看看这个问题」「调本地工作区 agent」，或要在对话里直接调用本地 DeepWorks 工作区能力时触发。前置：DeepWorks 桌面端已打开目标工作区。过程日志全程打印，回答与日志落盘可回看。
 ---
 
