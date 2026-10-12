@@ -34,9 +34,13 @@ def main() -> int:
     ap.add_argument("--repo", required=True, help="agent-eval repo path")
     ap.add_argument("--target", default="agent_demo1_deepworks", help="target name (deepworks-api family)")
     ap.add_argument("--message", required=True, help="the prompt to send (current_node)")
+    ap.add_argument("--working-dir", default=None,
+                    help="override target workspace dir (must be open in DeepWorks desktop)")
     ap.add_argument("--working-dir-note", default="", help="optional scene note prepended as history context")
     ap.add_argument("--out-dir", default=None, help="where to write answer+log (default: <repo>/outputs/single-shot)")
     ap.add_argument("--timeout", type=int, default=None, help="override timeout_seconds from target yaml")
+    ap.add_argument("--model", default=None,
+                    help="model for this call, e.g. 'dth/DeepSeek-V4.1-Flash' (provider prefix optional, default dth)")
     ap.add_argument("--dry-run", action="store_true", help="build prompt, do not call DeepWorks")
     args = ap.parse_args()
 
@@ -53,15 +57,38 @@ def main() -> int:
     t0 = time.perf_counter()
     log("load config", f"repo={repo.name} target={args.target}")
     cfg = load_resolved_config(repo, "smoke", args.target)
+    if args.working_dir:
+        cfg.target.working_dir = args.working_dir
     if args.timeout is not None:
         cfg.target.timeout_seconds = args.timeout
     runner = build_runner(cfg)
+
+    # Patch model selection into the prompt body. Verified via opencode server
+    # log (2026-10-12): prompt_async's "model" field must be an OBJECT
+    #   {"providerID": "dth", "modelID": "DeepSeek-V4.1-Flash"}
+    # a plain string is rejected by payload schema ("Expected object | null")
+    # and the prompt is silently dropped. Also: NEVER patch /session (HTTP 400).
+    if args.model:
+        orig_request_json = runner._request_json  # noqa: SLF001 - deliberate patch point
+        provider, _, model_id = args.model.partition("/")
+        if not model_id:
+            provider, model_id = "dth", args.model
+
+        def _request_json_with_model(url, method="GET", headers=None, body=None, **kw):
+            if body is not None and method == "POST" and "/prompt_async" in url:
+                body = {**body, "model": {"providerID": provider, "modelID": model_id}}
+            return orig_request_json(url, method=method, headers=headers, body=body, **kw)
+
+        runner._request_json = _request_json_with_model  # noqa: SLF001
 
     note = args.working_dir_note.strip()
     user_message = f"{note}\n{args.message}" if note else args.message
     case = DiagnosisCase(
         case_id=f"single-{datetime.now().strftime('%Y%m%d-%H%M%S')}",
-        input=DiagnosisCaseInput(user_message=user_message),
+        input=DiagnosisCaseInput(
+            user_message=user_message,
+            runtime_snapshot={"current_node": args.message},
+        ),
         expected=DiagnosisCaseExpected(),
         tags=["single-shot"],
     )
@@ -94,6 +121,8 @@ def main() -> int:
     log_payload = {
         "case_id": case.case_id, "target": args.target, "exit_code": result.exit_code,
         "latency_seconds": round(latency, 1), "session_id": result.session_id,
+        "parse_error": getattr(result, "parse_error", None),
+        "raw_stderr_tail": (getattr(result, "raw_stderr", "") or "")[-4000:],
         "steps": LOG_STEPS,
         "raw_stdout_tail": result.raw_stdout[-4000:],
     }
