@@ -43,4 +43,8 @@ echo "    装好扩展后运行 'opencli doctor' 验证；完整引导见 setup-
 echo "📦 安装 asd-ste100-skill (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add danyuchn/asd-ste100-skill -y -g -a $AGENTS
 
+# book-to-skill：把书/文档蒸馏成结构化技能，章节按需加载省 token（PDF 等格式转换时按需补 Python 依赖）
+echo "📦 安装 book-to-skill (推荐搭配) -> agents: $AGENTS"
+npx skills@latest add virgiliojr94/book-to-skill -y -g -a $AGENTS
+
 echo "✅ 完成。运行 'npx skills list' 查看已安装技能。"

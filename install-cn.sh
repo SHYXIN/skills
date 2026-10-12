@@ -48,4 +48,9 @@ echo "    装好扩展后运行 'opencli doctor' 验证；完整引导见 setup-
 echo "📦 安装 asd-ste100-skill (推荐搭配，GitHub 直连) -> $AGENTS"
 cn-skills add danyuchn/asd-ste100-skill --yes --global --agent "$AGENTS"
 
+# book-to-skill：把书/文档蒸馏成结构化技能，章节按需加载省 token
+# 无 Gitee 镜像，直连 GitHub（国内可能慢）；PDF 等格式转换时按需补 Python 依赖
+echo "📦 安装 book-to-skill (推荐搭配，GitHub 直连) -> $AGENTS"
+cn-skills add virgiliojr94/book-to-skill --yes --global --agent "$AGENTS"
+
 echo "✅ 完成。运行 'cn-skills list' 查看已安装技能。"

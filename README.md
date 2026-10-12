@@ -106,6 +106,9 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 # asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读
 npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code codex hermes-agent
 
+# book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
+npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code codex hermes-agent
+
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
 # 装好后 opencli doctor 验证，完整引导见 setup-opencli 技能
@@ -172,6 +175,16 @@ npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code c
 ```bash
 npx skills@latest add hugohe3/ppt-master -y -g -a codebuddy claude-code codex hermes-agent
 ```
+
+### book-to-skill
+
+[virgiliojr94/book-to-skill](https://github.com/virgiliojr94/book-to-skill) 把技术书、文档夹或一组资料蒸馏成**结构化技能**（不是摘要）：框架、决策规则、反模式、术语表、速查表，章节文件按需加载，回答基于原文不幻觉——官方实测比整本塞上下文省 24–51 倍 token。输入不限书籍：内部文档、品牌手册、论文集、RFC 都行。一键脚本已默认安装；如需单独安装：
+
+```bash
+npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code codex hermes-agent
+```
+
+> 注意：转换 PDF/EPUB/DOCX 等格式时按需安装 Python 依赖（`pip install "book-to-skill[pdf]"` 等，纯 Markdown 免依赖）；对 Python 3.9+。
 
 ### 同名技能：tdd / teach
 
