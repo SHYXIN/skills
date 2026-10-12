@@ -72,11 +72,14 @@ python <skill_dir>/scripts/ask_teams_agent.py \
 - `--dry-run`：只打印要发的消息不真调，先给用户确认
 - `--no-sync-token`：跳过从桌面端刷新 IAM token（桌面端没开时自动跳过）
 
-## 删除会话（清理云端历史）
+## 盘点 / 删除会话（清理云端历史）
 
-每次运行（含超时/失败）都会在 out-dir 记录 session_id，之后可清理云端会话：
+每次运行（含超时/失败）都会在 out-dir 记录 session_id，之后可盘点与清理云端会话：
 
 ```bash
+# 列出工作区最近的云端会话（id | 时间 | 标题），默认 20 条，删除前先盘点
+python <skill_dir>/scripts/ask_teams_agent.py --list-sessions [N] [--env test]
+
 # 删除最近一次运行建的会话（按 --env 匹配，已删的自动跳过）
 python <skill_dir>/scripts/ask_teams_agent.py --delete-session last [--env test]
 

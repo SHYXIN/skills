@@ -196,11 +196,42 @@ def main() -> int:
                     help="delete one session by id, or 'last' for the one created by the most recent run (from out-dir logs), then exit")
     ap.add_argument("--delete-ask-sessions", action="store_true",
                     help="delete ALL sessions recorded in out-dir logs (every run of this script), then exit")
+    ap.add_argument("--list-sessions", nargs="?", const="20", default="", metavar="N",
+                    help="list the N most recent sessions in the workspace (default 20), then exit")
     args = ap.parse_args()
 
     wd = Path(args.working_dir).resolve() if args.working_dir else None
     note = args.working_dir_note.strip()
     message = f"{note}\n{args.message}" if note else args.message
+
+    # ----- list mode (same prerequisites as delete: desktop up + working dir) -----
+    if args.list_sessions:
+        try:
+            limit = int(args.list_sessions)
+        except ValueError:
+            print(f"FAIL: --list-sessions expects a number, got {args.list_sessions!r}", file=sys.stderr)
+            return 2
+        if wd is None:
+            print("FAIL: --working-dir is required for --list-sessions", file=sys.stderr)
+            return 2
+        log(f"environment: {args.env} ({ENV_DIRS[args.env]})")
+        host = read_host_info(wd, args.env)
+        workspace_id = resolve_workspace_id(host, wd)
+        base = f"{host['base_url']}/workspace/{urllib.parse.quote(workspace_id)}/sessions"
+        rows = request_json(base, headers=host["headers"])
+        rows = rows.get("items", []) if isinstance(rows, dict) else rows
+        print(f"== sessions in {wd} (env={args.env}, showing up to {limit}) ==")
+        shown = 0
+        for r in rows:
+            if shown >= limit:
+                break
+            sid = str(r.get("id") or "")
+            title = str(r.get("title") or r.get("name") or "(untitled)")
+            print(f"{sid} | {title}")
+            shown += 1
+        if not shown:
+            print("(no sessions)")
+        return 0
 
     # ----- delete modes (need desktop up + working dir, but no prompting) -----
     if args.delete_session or args.delete_ask_sessions:

@@ -44,11 +44,15 @@ python <skill_dir>/scripts/ask_local_deepworks.py \
 - `--working-dir-note` 可选：附加背景说明，会和问题一起给 agent
 - `--dry-run`：只打印要发的消息不真调，先给用户确认
 
-## 删除会话（清理历史）
+## 盘点 / 删除会话（清理历史）
 
-每次运行（含超时/失败）都会在 out-dir 记录 session_id，之后可清理：
+每次运行（含超时/失败）都会在 out-dir 记录 session_id，之后可盘点与清理：
 
 ```bash
+# 列出工作区里最近的会话（id | 标题），默认 20 条，删除前先盘点
+python <skill_dir>/scripts/ask_local_deepworks.py --list-sessions [N] \
+  --env prod --working-dir "C:/path/to/工作区"
+
 # 删除最近一次运行建的会话（按 --env 匹配，已删的自动跳过）
 python <skill_dir>/scripts/ask_local_deepworks.py --delete-session last \
   [--env prod] [--working-dir "C:/path/to/工作区"]

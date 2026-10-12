@@ -515,6 +515,8 @@ def main() -> int:
                     help="delete one chat session by id, or 'last' for the one created by the most recent run (from out-dir logs), then exit")
     ap.add_argument("--delete-ask-sessions", action="store_true",
                     help="delete ALL chat sessions titled 'ask-teams *' created by this script, then exit")
+    ap.add_argument("--list-sessions", nargs="?", const="20", default="", metavar="N",
+                    help="list the N most recent chat sessions in the workspace (default 20), then exit")
     args = ap.parse_args()
 
     env_path = Path(args.env_file) if args.env_file else Path("C:/code_proj/gitlab-proj/agent-eval/.env")
@@ -537,6 +539,29 @@ def main() -> int:
 
     client = TeamsClient(env, env_name=args.env)
     log(f"environment: {args.env} ({client.base_url()})")
+
+    # ----- list-sessions mode (no message sending) -----
+    if args.list_sessions:
+        try:
+            limit = int(args.list_sessions)
+        except ValueError:
+            print(f"FAIL: --list-sessions expects a number, got {args.list_sessions!r}", file=sys.stderr)
+            return 2
+        workspace_slug = resolve_workspace(client, env)
+        rows = items(client.request("/api/chat/sessions", workspace_slug=workspace_slug))
+        print(f"== chat sessions (env={args.env}, workspace={workspace_slug}, showing up to {limit}) ==")
+        shown = 0
+        for r in rows:
+            if shown >= limit:
+                break
+            sid = str(r.get("id") or "")
+            title = str(r.get("title") or "(untitled)")
+            created = str(r.get("created_at") or r.get("createdAt") or "")[:19]
+            print(f"{sid} | {created} | {title}")
+            shown += 1
+        if not shown:
+            print("(no sessions)")
+        return 0
 
     # ----- delete modes (no message sending) -----
     if args.delete_session or args.delete_ask_sessions:
