@@ -1,6 +1,6 @@
 ---
 name: dp-agent-eval-local
-description: 向本机 DeepWorks 工作区 agent 提一个问题并拿回答复（设备故障诊断专家等）。当用户说「问一下 DeepWorks 专家」「让本地 agent 看看这个问题」「调 agentDemo1 诊断」，或要在对话里直接调用本地 DeepWorks 工作区能力时触发。前置：DeepWorks 桌面端已打开目标工作区；agent-eval 仓库路径必填。过程日志全程打印，回答与日志落盘可回看。
+description: 向本机 DeepWorks 工作区 agent 提一个问题并拿回答复（专家能力由工作区决定，不限于诊断）。当用户说「问一下 DeepWorks 专家」「让本地 agent 看看这个问题」「调本地工作区 agent」，或要在对话里直接调用本地 DeepWorks 工作区能力时触发。前置：DeepWorks 桌面端已打开目标工作区；agent-eval 仓库路径必填。过程日志全程打印，回答与日志落盘可回看。
 ---
 
 # 调用本地 DeepWorks 工作区（单发问答）
@@ -31,13 +31,13 @@ description: 向本机 DeepWorks 工作区 agent 提一个问题并拿回答复�
 ```bash
 uv run python <skill_dir>/scripts/ask_local_deepworks.py \
   --repo <agent-eval 仓库路径> \
-  --message "燃气报警了怎么排查" \
-  [--working-dir-note "现场情况说明"] \
+  --message "帮我把这个目录里的报表整理成一页总结" \
+  [--working-dir-note "补充背景，会和问题一起给 agent"] \
   [--timeout 900] [--out-dir <目录>] [--dry-run]
 ```
 
 - `--repo` 必填；`--message` 必填（就是问 agent 的问题）
-- `--working-dir-note` 可选：现场背景，会和问题一起给 agent
+- `--working-dir-note` 可选：附加背景说明，会和问题一起给 agent
 - `--dry-run`：只渲染 prompt 不真调，用来先给用户确认要发什么
 - 默认 target `agent_demo1_deepworks`；换被测工作区改 target 或其 yaml 的 `working_dir`
 
@@ -50,7 +50,7 @@ uv run python <skill_dir>/scripts/ask_local_deepworks.py \
 
 - 「desktop API unreachable」→ 桌面端没开或工作区不对
 - 超时 → 默认 900s，长问题可 `--timeout` 加大
-- 回答为空 → 看 `.log.json` 的 `raw_stdout_tail` 定位
+- 回答为空 → 看 `.log.json` 的 `parse_error` / `raw_stderr_tail` 定位（失败细节在 stderr，不在 stdout）
 
 ## 附：批量测评
 

@@ -7,8 +7,8 @@ to stdout, and writes a full log next to the answer.
 Usage:
   uv run python <skill_dir>/scripts/ask_local_deepworks.py \
       --repo <agent-eval path> --target agent_demo1_deepworks \
-      --message "燃气报警了怎么排查" \
-      [--working-dir-note "现场情况说明"] [--out-dir <dir>] [--dry-run]
+      --message "帮我把这个目录里的报表整理成一页总结" \
+      [--working-dir-note "optional context note"] [--out-dir <dir>] [--dry-run]
 """
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ def main() -> int:
     ap.add_argument("--message", required=True, help="the prompt to send (current_node)")
     ap.add_argument("--working-dir", default=None,
                     help="override target workspace dir (must be open in DeepWorks desktop)")
-    ap.add_argument("--working-dir-note", default="", help="optional scene note prepended as history context")
+    ap.add_argument("--working-dir-note", default="", help="optional context note prepended as history context")
     ap.add_argument("--out-dir", default=None, help="where to write answer+log (default: <repo>/outputs/single-shot)")
     ap.add_argument("--timeout", type=int, default=None, help="override timeout_seconds from target yaml")
     ap.add_argument("--model", default=None,
