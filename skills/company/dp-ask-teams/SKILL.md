@@ -58,12 +58,14 @@ python <skill_dir>/scripts/ask_teams_agent.py --list         # 同上
 python <skill_dir>/scripts/ask_teams_agent.py \
   --agent-name "文档处理专家" \
   --message "把这个 Word 报告提炼成一页要点" \
+  [--env test|prod] \
   [--env-file "C:/path/to/.env"] \
   [--note "背景"] \
   [--timeout 1200] [--out-dir <目录>] [--no-sync-token] [--dry-run]
 ```
 
 - 不带 `--agent-name` 或 `--message`（或用 `--list`）→ 只列出专家名单后退出，不发送
+- `--env` 可选：test（默认，test.deepworks.cn）/ prod（agentteam.deepworks.cn）；运行日志首行打印所连环境
 - `--agent-name` 按名字精确匹配，会在**所有 project** 里搜（专家分布在不同 project）
 - `--message` 必填（就是发给云端 agent 的任务描述，原样发送）
 - `--timeout` 默认 1200s；云端 runtime 首跑冷启动可能 10–21 分钟，给足余量
@@ -77,14 +79,15 @@ cp .env.example .env    # 填 AGENT_TEAMS_TOKEN；真实 token 不提交仓库
 ```
 
 默认读 `C:/code_proj/gitlab-proj/agent-eval/.env`，换机器时用 `--env-file` 指定路径即可。
+两个环境的 token 不通用：`AGENT_TEAMS_TOKEN`（test）与 `AGENT_TEAMS_TOKEN_PROD`（prod）都放同一个 .env，用哪个环境就填哪个。
 
 ## 前置（脚本会检查，缺了报错即停）
 
-`.env` 存在且含非空 `AGENT_TEAMS_TOKEN`。
+对应环境的 token 非空：`--env test` 查 `AGENT_TEAMS_TOKEN`，`--env prod` 查 `AGENT_TEAMS_TOKEN_PROD`。
 
 ## 排查
 
-- 「AGENT_TEAMS_TOKEN missing」→ 登录 DeepWorks 桌面端后重跑（自动同步），或手填 `.env`
+- 「AGENT_TEAMS_TOKEN_PROD missing」→ .env 里还没填正式环境 token，填上或继续用 test
 - 「agent not found by name 'xx'」→ 报错里列出全部名字，抄一个重跑；或先不带参数跑一遍看名单
 - 超时 → 云端 runtime 首跑可能极慢（实测冷启动 10–21 分钟才出回复，任务在云端不会丢，UI 里最终会出结果）；复杂任务 `--timeout` 给足（如 1800），中断重跑亦可
 - 长时间 "streaming"/running 无进展 → 多半是 runtime 冷启动慢，耐心等或去 DeepWorks UI 看该 session 是否已出回复

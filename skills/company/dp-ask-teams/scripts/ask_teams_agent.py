@@ -33,6 +33,11 @@ from pathlib import Path
 
 LOG_STEPS: list[dict] = []
 TERMINAL_EVENTS = {"task:completed", "task:failed", "task:cancelled", "chat_squad_run:completed", "chat_squad_run:failed"}
+# Known cloud endpoints per environment. test is the default (matches .env).
+ENV_BASE_URLS = {
+    "test": "https://test.deepworks.cn/deepexi-agent-teams-backend",
+    "prod": "https://agentteam.deepworks.cn/deepexi-agent-teams-backend",
+}
 
 
 def log(step: str, detail: str = "") -> None:
@@ -71,8 +76,9 @@ def items(payload: object) -> list:
 
 
 class TeamsClient:
-    def __init__(self, env: dict[str, str]):
+    def __init__(self, env: dict[str, str], env_name: str = "test"):
         self.env = env
+        self.env_name = env_name
         self._cached: tuple[str, str] | None = None
 
     def _env(self, key: str, default: str = "") -> str:
@@ -80,15 +86,18 @@ class TeamsClient:
         return value.strip() if isinstance(value, str) else ""
 
     def base_url(self) -> str:
-        base = self._env("AGENT_TEAMS_BASE_URL")
+        # prod reads the _PROD vars first so one .env can hold both environments.
+        key = "AGENT_TEAMS_BASE_URL_PROD" if self.env_name == "prod" else "AGENT_TEAMS_BASE_URL"
+        base = self._env(key) or ENV_BASE_URLS.get(self.env_name, "")
         if not base:
-            raise RuntimeError("AGENT_TEAMS_BASE_URL is required")
+            raise RuntimeError(f"AGENT_TEAMS base URL for env '{self.env_name}' is required ({key})")
         return base.rstrip("/")
 
     def bearer(self) -> str:
-        token = self._env("AGENT_TEAMS_TOKEN")
+        key = "AGENT_TEAMS_TOKEN_PROD" if self.env_name == "prod" else "AGENT_TEAMS_TOKEN"
+        token = self._env(key)
         if not token:
-            raise RuntimeError("AGENT_TEAMS_TOKEN is required")
+            raise RuntimeError(f"{key} is required for env '{self.env_name}'")
         if self._env("AGENT_TEAMS_AUTH_MODE", "iam").lower() == "pat":
             return token
         if self._cached and self._cached[0] == token:
@@ -268,6 +277,8 @@ def main() -> int:
     ap.add_argument("--agent-name", default="",
                     help="agent name; omit (or use --list) to list available agents and exit")
     ap.add_argument("--list", action="store_true", help="list all agents across projects, then exit")
+    ap.add_argument("--env", default="test", choices=sorted(ENV_BASE_URLS),
+                    help="which cloud environment to hit (default: test; prod needs AGENT_TEAMS_TOKEN_PROD in .env)")
     ap.add_argument("--note", default="", help="optional context note prepended to the message")
     ap.add_argument("--out-dir", default="C:/code_proj/tmp/dp-agent-eval-logs", help="where to write answer+log")
     ap.add_argument("--timeout", type=int, default=1200, help="seconds to wait for completion")
@@ -278,15 +289,17 @@ def main() -> int:
     env_path = Path(args.env_file) if args.env_file else Path("C:/code_proj/gitlab-proj/agent-eval/.env")
     env = dict(os.environ)
     env.update(load_env_file(env_path))
-    if "AGENT_TEAMS_TOKEN" not in env or not env["AGENT_TEAMS_TOKEN"].strip():
-        print(f"FAIL: AGENT_TEAMS_TOKEN missing (env file: {env_path})", file=sys.stderr)
+    token_key = "AGENT_TEAMS_TOKEN_PROD" if args.env == "prod" else "AGENT_TEAMS_TOKEN"
+    if token_key not in env or not env[token_key].strip():
+        print(f"FAIL: {token_key} missing for --env {args.env} (env file: {env_path})", file=sys.stderr)
         return 2
     agent_name = args.agent_name.strip()
 
     note = args.note.strip()
     message = f"{note}\n{args.message}" if note else args.message
 
-    client = TeamsClient(env)
+    client = TeamsClient(env, env_name=args.env)
+    log(f"environment: {args.env} ({client.base_url()})")
     if args.list or not message or not agent_name:
         if message and not agent_name:
             print("No --agent-name given; listing available agents instead of sending.\n")
@@ -314,7 +327,7 @@ def main() -> int:
     t0 = time.perf_counter()
     log("login via IAM")
     target = resolve_target(client, env, agent_name)
-    log("target resolved", f"workspace={target['workspace_slug']} agent_id={target['agent_id'][:12]}...")
+    log("target resolved", f"env={args.env} workspace={target['workspace_slug']} agent_id={target['agent_id'][:12]}...")
 
     session = client.request("/api/chat/sessions", method="POST", workspace_slug=target["workspace_slug"],
                              body={"project_id": target["project_id"], "target_type": "agent",
@@ -380,11 +393,12 @@ def main() -> int:
     answer_path = out_dir / f"teams-{stamp}.answer.md"
     log_path = out_dir / f"teams-{stamp}.log.json"
     answer_path.write_text(
-        f"# ask-teams {stamp}\n\n- agent: {agent_name}\n- status: {status}\n- latency: {latency:.1f}s\n\n"
+        f"# ask-teams {stamp}\n\n- env: {args.env}\n- agent: {agent_name}\n- status: {status}\n- latency: {latency:.1f}s\n\n"
         f"## 任务\n\n{args.message}\n\n## 结果\n\n{answer}\n",
         encoding="utf-8",
     )
     log_path.write_text(json.dumps({
+        "env": args.env, "base_url": client.base_url(),
         "session_id": session_id, "task_id": task_id, "run_id": run_id, "status": status,
         "agent_name": agent_name, "latency_seconds": round(latency, 1), "steps": LOG_STEPS,
     }, ensure_ascii=False, indent=1), encoding="utf-8")

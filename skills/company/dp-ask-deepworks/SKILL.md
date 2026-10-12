@@ -30,6 +30,7 @@ description: 向本机 DeepWorks 工作区 agent 提一个问题并拿回答复�
 ```bash
 python <skill_dir>/scripts/ask_local_deepworks.py \
   --message "帮我把这个目录里的报表整理成一页总结" \
+  [--env prod|test] \
   [--working-dir "C:/path/to/工作区"] \
   [--model "dth/DeepSeek-V4.1-Flash"] \
   [--working-dir-note "补充背景，会和问题一起给 agent"] \
@@ -37,6 +38,7 @@ python <skill_dir>/scripts/ask_local_deepworks.py \
 ```
 
 - `--message` 必填（就是问 agent 的问题，原样发送）
+- `--env` 可选：prod=正式桌面端（默认）、test=测试桌面端；对应 AppData 目录 `com.deepexi.deepworks` / `com.deepexi.deepworks.test`，目标桌面端必须已打开
 - `--working-dir` 可选：目标工作区目录；只开了一个工作区时自动选中，多个时必填
 - `--model` 可选：本次调用用的模型（provider 前缀可省，默认 dth）；不传则用工作区默认模型
 - `--working-dir-note` 可选：附加背景说明，会和问题一起给 agent
@@ -44,12 +46,12 @@ python <skill_dir>/scripts/ask_local_deepworks.py \
 
 ## 前置（脚本会检查，缺了报错即停）
 
-DeepWorks 桌面端已打开目标工作区（读不到端口/令牌文件会明确提示并列出已开工作区）。
+对应环境的 DeepWorks 桌面端已打开目标工作区（读不到端口/令牌文件或工作区未开会明确提示并列出该环境已开工作区）。
 
 ## 排查
 
 - 「服务繁忙」/「请求未完成」→ 多半是工作区默认模型所在供应商上游故障，`--model` 换一个（如 `dth/DeepSeek-V4.1-Flash`）重跑
-- 「workspace not open」→ 桌面端没开或目录不对，报错里会列出已开工作区
+- 「workspace not open」→ 对应环境的桌面端没开或目录不对，报错里会列出该环境已开工作区；确认要连的环境与 `--env` 一致
 - 超时 → 长问题 `--timeout` 加大
 - 回答为空/卡住 → 看 `.log.json` 的 `messages_tail` 与本机 opencode 日志
   （`%APPDATA%/com.deepexi.deepworks/deepworks-engine-data/xdg/data/opencode/log/opencode.log`）

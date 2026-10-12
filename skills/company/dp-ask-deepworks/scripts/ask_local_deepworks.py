@@ -12,9 +12,12 @@ any system Python from any working directory.
 Usage:
   python ask_local_deepworks.py \
       --message "你好，请用一句话介绍你自己" \
-      [--working-dir "C:/path/to/workspace"] [--agent deepworks] \
+      [--env prod|test] [--working-dir "C:/path/to/workspace"] [--agent deepworks] \
       [--model "dth/DeepSeek-V4.1-Flash"] [--working-dir-note "背景"] \
       [--timeout 900] [--out-dir <dir>] [--dry-run]
+
+--env picks the desktop install: prod = com.deepexi.deepworks (default),
+test = com.deepexi.deepworks.test. The target desktop must be running.
 """
 from __future__ import annotations
 
@@ -30,6 +33,18 @@ from datetime import datetime
 from pathlib import Path
 
 LOG_STEPS: list[dict] = []
+# AppData dir name per environment: prod = official desktop, test = test desktop.
+ENV_DIRS = {
+    "prod": "com.deepexi.deepworks",
+    "test": "com.deepexi.deepworks.test",
+}
+
+
+def appdata_root(env_name: str) -> Path:
+    dirname = ENV_DIRS.get(env_name)
+    if not dirname:
+        raise RuntimeError(f"unknown --env '{env_name}' (expected: {', '.join(ENV_DIRS)})")
+    return Path(os.environ.get("APPDATA", "")) / dirname
 
 
 def log(step: str, detail: str = "") -> None:
@@ -42,8 +57,8 @@ def norm_key(path: Path) -> str:
     return str(path.resolve()).replace("\\", "/").lower()
 
 
-def read_host_info(working_dir: Path) -> dict:
-    root = Path(os.environ.get("APPDATA", "")) / "com.deepexi.deepworks"
+def read_host_info(working_dir: Path, env_name: str) -> dict:
+    root = appdata_root(env_name)
     ports = json.loads((root / "deepworks-port-state.json").read_text(encoding="utf-8"))
     tokens = json.loads((root / "deepworks-server-tokens.json").read_text(encoding="utf-8"))
     key = norm_key(working_dir)
@@ -51,7 +66,7 @@ def read_host_info(working_dir: Path) -> dict:
     info = tokens.get("workspaces", {}).get(key)
     if not port or not info:
         avail = ", ".join(sorted(ports.get("workspacePorts", {}))) or "(none)"
-        raise RuntimeError(f"workspace not open in DeepWorks desktop: {working_dir}\nopen workspaces: {avail}")
+        raise RuntimeError(f"workspace not open in DeepWorks desktop ({env_name}): {working_dir}\nopen workspaces: {avail}")
     headers = {
         "Authorization": f"Bearer {info.get('clientToken', '')}",
         "X-DeepWorks-Host-Token": info.get("hostToken", ""),
@@ -105,6 +120,8 @@ def main() -> int:
     ap.add_argument("--model", default=None,
                     help="model for this call, e.g. 'dth/DeepSeek-V4.1-Flash' (provider prefix optional, default dth)")
     ap.add_argument("--working-dir-note", default="", help="optional context note prepended to the message")
+    ap.add_argument("--env", default="prod", choices=sorted(ENV_DIRS),
+                    help="which DeepWorks desktop install to talk to (default: prod)")
     ap.add_argument("--out-dir", default="C:/code_proj/tmp/dp-agent-eval-logs", help="where to write answer+log")
     ap.add_argument("--timeout", type=int, default=900, help="seconds to wait for the final answer")
     ap.add_argument("--dry-run", action="store_true", help="print the message that would be sent, then exit")
@@ -120,7 +137,7 @@ def main() -> int:
         return 0
 
     if wd is None:
-        root = Path(os.environ.get("APPDATA", "")) / "com.deepexi.deepworks"
+        root = appdata_root(args.env)
         opened = list(json.loads(
             (root / "deepworks-port-state.json").read_text(encoding="utf-8")
         ).get("workspacePorts", {}))
@@ -128,13 +145,14 @@ def main() -> int:
             wd = Path(opened[0])
             log("workspace auto-picked", str(wd))
         else:
-            print("FAIL: multiple/no workspaces open, pass --working-dir. Open: " + ", ".join(opened),
-                  file=sys.stderr)
+            print(f"FAIL: multiple/no workspaces open in {args.env} desktop, pass --working-dir. Open: "
+                  + ", ".join(opened), file=sys.stderr)
             return 2
 
     t0 = time.perf_counter()
+    log(f"environment: {args.env} ({ENV_DIRS[args.env]})")
     log("read desktop port/token files")
-    host = read_host_info(wd)
+    host = read_host_info(wd, args.env)
     log("resolve workspace", f"{wd}")
     workspace_id = resolve_workspace_id(host, wd)
     base = f"{host['base_url']}/workspace/{urllib.parse.quote(workspace_id)}/opencode"
@@ -186,12 +204,12 @@ def main() -> int:
     answer_path = out_dir / f"{stamp}.answer.md"
     log_path = out_dir / f"{stamp}.log.json"
     answer_path.write_text(
-        f"# ask-local {stamp}\n\n- workspace: {wd}\n- model: {args.model or '(workspace default)'}\n"
+        f"# ask-local {stamp}\n\n- env: {args.env}\n- workspace: {wd}\n- model: {args.model or '(workspace default)'}\n"
         f"- latency: {latency:.1f}s\n\n## 提问\n\n{args.message}\n\n## 回答\n\n{answer}\n",
         encoding="utf-8",
     )
     log_path.write_text(json.dumps({
-        "session_id": session_id, "workspace_id": workspace_id, "working_dir": str(wd),
+        "env": args.env, "session_id": session_id, "workspace_id": workspace_id, "working_dir": str(wd),
         "latency_seconds": round(latency, 1), "steps": LOG_STEPS,
         "messages_tail": json.dumps(messages, ensure_ascii=False)[-4000:],
     }, ensure_ascii=False, indent=1), encoding="utf-8")
