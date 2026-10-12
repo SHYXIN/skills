@@ -134,7 +134,33 @@ git commit -m "..."
 
 `GREEN:` `git log -1 --oneline` 输出新 commit，`git status --short` 干净（除 commit 外无新增改动）。
 
-**不要推送（push）。** push 是用户决定何时"上市"的动作。告诉用户"本地 commit 完成，检查无误后 `git push` 发布"。
+**不要推送（push）。** push 是用户决定何时"上市"的动作。
+
+---
+
+## Step 5 — 本地体验（push 前的试用环）
+
+commit 完成后，**先本地安装试用，满意再 push**。`npx skills add` 支持本地路径（详见仓库根
+`NPX-SKILLS.md` 的「本地克隆后安装」），不需要先推远端。
+
+按本次 curate 涉及的技能，给用户输出定制好的命令（用户自己执行，curator 不代跑）：
+
+```bash
+# 仓库根 = 含 skills/ 目录的那层（本仓库即仓库根目录）
+# 新增/修改 N 个技能时，--skill 逐个列出
+npx skills@latest add <仓库根路径> --skill <skill-a> --skill <skill-b> -y -g -a codebuddy claude-code codex
+```
+
+要点：
+
+- **本地路径装的是快照副本**（落到 `~/.agents/skills/` 再软链给各 agent），之后再改仓库文件
+  **不会自动反映**——每轮迭代后都要重跑一次上面的 add 命令刷新
+- 只装改动的技能（`--skill`），别全量 59 个重装一遍
+- 用户体验说"没问题" → 提示 `git push`（push 永远用户手动触发）
+- 用户说有问题 → 回到对应技能修，重新走 Step 3/4/5
+
+`GREEN:` 用户拿到了可直接复制执行的本地安装命令，且命令里的 `--skill` 列表与本次 curate
+的改动集一致。
 
 ---
 
