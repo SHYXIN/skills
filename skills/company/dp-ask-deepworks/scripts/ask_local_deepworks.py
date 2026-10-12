@@ -16,6 +16,9 @@ Usage:
       [--model "dth/DeepSeek-V4.1-Flash"] [--working-dir-note "背景"] \
       [--timeout 900] [--out-dir <dir>] [--dry-run]
 
+  python ask_local_deepworks.py --delete-session <id|last> [--working-dir ...] [--env ...]
+  python ask_local_deepworks.py --delete-ask-sessions [--working-dir ...] [--env ...]
+
 --env picks the desktop install: prod = com.deepexi.deepworks (default),
 test = com.deepexi.deepworks.test. The target desktop must be running.
 """
@@ -111,9 +114,73 @@ def final_assistant_text(messages: list) -> str:
     return ""
 
 
+def find_last_session_id(out_dir: Path, env_name: str = "") -> str:
+    """Most recent live session_id recorded by this script in out-dir logs.
+
+    With env_name given, only logs from that environment qualify (each env's
+    desktop has its own sessions). Records marked session_deleted are skipped
+    so 'last' never points at an already-deleted session.
+    """
+    if not out_dir.is_dir():
+        return ""
+    for log_path in sorted(out_dir.glob("*.log.json"), reverse=True):
+        try:
+            data = json.loads(log_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if str(log_path.name).startswith("teams-"):
+            continue
+        if data.get("session_deleted"):
+            continue
+        if env_name and data.get("env") != env_name:
+            continue
+        sid = str(data.get("session_id") or "").strip()
+        if sid:
+            return sid
+    return ""
+
+
+def recorded_session_ids(out_dir: Path, env_name: str = "") -> list[str]:
+    """All live session_ids this script ever recorded in out-dir logs, newest first."""
+    ids: list[str] = []
+    if not out_dir.is_dir():
+        return ids
+    for log_path in sorted(out_dir.glob("*.log.json"), reverse=True):
+        try:
+            data = json.loads(log_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if str(log_path.name).startswith("teams-"):
+            continue
+        if data.get("session_deleted"):
+            continue
+        if env_name and data.get("env") != env_name:
+            continue
+        sid = str(data.get("session_id") or "").strip()
+        if sid and sid not in ids:
+            ids.append(sid)
+    return ids
+
+
+def mark_session_deleted(out_dir: Path, session_id: str) -> None:
+    """Flag the log(s) recording this session as deleted (idempotent)."""
+    from datetime import datetime
+    for log_path in out_dir.glob("*.log.json"):
+        if str(log_path.name).startswith("teams-"):
+            continue
+        try:
+            data = json.loads(log_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if str(data.get("session_id") or "").strip() == session_id and not data.get("session_deleted"):
+            data["session_deleted"] = True
+            data["session_deleted_at"] = datetime.now().isoformat(timespec="seconds")
+            log_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Ask the local DeepWorks workspace agent one question.")
-    ap.add_argument("--message", required=True, help="the question, sent to the agent as-is")
+    ap.add_argument("--message", default="", help="the question, sent to the agent as-is (omit for delete modes)")
     ap.add_argument("--working-dir", default=None,
                     help="workspace dir open in DeepWorks desktop (auto-picked if only one is open)")
     ap.add_argument("--agent", default="deepworks", help="agent name inside the workspace (default: deepworks)")
@@ -125,16 +192,62 @@ def main() -> int:
     ap.add_argument("--out-dir", default="C:/code_proj/tmp/dp-agent-eval-logs", help="where to write answer+log")
     ap.add_argument("--timeout", type=int, default=900, help="seconds to wait for the final answer")
     ap.add_argument("--dry-run", action="store_true", help="print the message that would be sent, then exit")
+    ap.add_argument("--delete-session", default="", metavar="ID|last",
+                    help="delete one session by id, or 'last' for the one created by the most recent run (from out-dir logs), then exit")
+    ap.add_argument("--delete-ask-sessions", action="store_true",
+                    help="delete ALL sessions recorded in out-dir logs (every run of this script), then exit")
     args = ap.parse_args()
 
     wd = Path(args.working_dir).resolve() if args.working_dir else None
     note = args.working_dir_note.strip()
     message = f"{note}\n{args.message}" if note else args.message
 
+    # ----- delete modes (need desktop up + working dir, but no prompting) -----
+    if args.delete_session or args.delete_ask_sessions:
+        if wd is None:
+            print("FAIL: --working-dir is required for delete modes", file=sys.stderr)
+            return 2
+        log(f"environment: {args.env} ({ENV_DIRS[args.env]})")
+        host = read_host_info(wd, args.env)
+        workspace_id = resolve_workspace_id(host, wd)
+        base = f"{host['base_url']}/workspace/{urllib.parse.quote(workspace_id)}/sessions"
+
+        def delete_one(sid: str) -> None:
+            request_json(f"{base}/{urllib.parse.quote(sid)}", method="DELETE", headers=host["headers"])
+            mark_session_deleted(Path(args.out_dir), sid)
+            log("session deleted", f"env={args.env} session_id={sid}")
+
+        if args.delete_session:
+            target_id = args.delete_session.strip()
+            if target_id == "last":
+                target_id = find_last_session_id(Path(args.out_dir), args.env)
+                if not target_id:
+                    print(f"FAIL: no previous live session id found in out-dir logs for env={args.env}",
+                          file=sys.stderr)
+                    return 2
+            delete_one(target_id)
+        if args.delete_ask_sessions:
+            ids = recorded_session_ids(Path(args.out_dir), args.env)
+            deleted, failed = 0, 0
+            for sid in ids:
+                try:
+                    delete_one(sid)
+                    deleted += 1
+                except Exception as exc:  # noqa: BLE001
+                    failed += 1
+                    log("delete failed, keep going", f"session_id={sid} {str(exc)[:100]}")
+            log("batch delete done", f"{deleted} deleted, {failed} failed, {len(ids)} recorded in {args.out_dir}")
+        return 0
+
     if args.dry_run:
         print("===== MESSAGE (dry-run, as-is) =====\n")
         print(message)
         return 0
+
+    if not message.strip():
+        print("FAIL: --message is required (or use --delete-session / --delete-ask-sessions)",
+              file=sys.stderr)
+        return 2
 
     if wd is None:
         root = appdata_root(args.env)
@@ -166,6 +279,17 @@ def main() -> int:
     if not session_id:
         raise RuntimeError(f"create session did not return id: {session}")
     log("session created", f"session_id={session_id}")
+
+    # Record the session id immediately so --delete-session/--delete-ask-sessions
+    # can clean it up even if this run later times out.
+    out_dir_early = Path(args.out_dir)
+    out_dir_early.mkdir(parents=True, exist_ok=True)
+    record_path = out_dir_early / f"{datetime.now().strftime('%Y%m%d-%H%M%S')}.log.json"
+    record_path.write_text(json.dumps({
+        "env": args.env, "session_id": session_id, "working_dir": str(wd),
+        "status": "started", "steps": LOG_STEPS,
+    }, ensure_ascii=False, indent=1), encoding="utf-8")
+    log("session recorded", record_path.name)
 
     prompt_headers = {**host["headers"], "x-opencode-directory": str(wd)}
     prompt_body: dict = {"agent": args.agent, "parts": [{"type": "text", "text": message}]}
@@ -200,9 +324,9 @@ def main() -> int:
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    stamp = record_path.stem.removesuffix(".log")
     answer_path = out_dir / f"{stamp}.answer.md"
-    log_path = out_dir / f"{stamp}.log.json"
+    log_path = record_path
     answer_path.write_text(
         f"# ask-local {stamp}\n\n- env: {args.env}\n- workspace: {wd}\n- model: {args.model or '(workspace default)'}\n"
         f"- latency: {latency:.1f}s\n\n## 提问\n\n{args.message}\n\n## 回答\n\n{answer}\n",

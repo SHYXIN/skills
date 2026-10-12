@@ -72,6 +72,25 @@ python <skill_dir>/scripts/ask_teams_agent.py \
 - `--dry-run`：只打印要发的消息不真调，先给用户确认
 - `--no-sync-token`：跳过从桌面端刷新 IAM token（桌面端没开时自动跳过）
 
+## 删除会话（清理云端历史）
+
+每次运行（含超时/失败）都会在 out-dir 记录 session_id，之后可清理云端会话：
+
+```bash
+# 删除最近一次运行建的会话（按 --env 匹配，已删的自动跳过）
+python <skill_dir>/scripts/ask_teams_agent.py --delete-session last [--env test]
+
+# 按 id 删指定会话
+python <skill_dir>/scripts/ask_teams_agent.py --delete-session <uuid> [--env test]
+
+# 批量删除本脚本记录在 out-dir 的所有存活会话（成功的打标记，失败的保留待重试）
+python <skill_dir>/scripts/ask_teams_agent.py --delete-ask-sessions [--env test]
+```
+
+- 云端会话按环境隔离，`last` 与批量删除只匹配 `--env` 对应环境的记录
+- 只清理本脚本记录的会话（`teams-*.log.json`），不会碰本地版 dp-ask-deepworks 的记录
+- 删除成功的记录会打上 `session_deleted` 标记，`last` 与批量删除都不会再碰它们
+
 ## 首次准备（每台机器一次）
 
 **通常零配置**：只要对应环境的 DeepWorks 桌面端开着且已登录，脚本会自动通过桌面端

@@ -456,6 +456,43 @@ def list_agents(client: TeamsClient, env: dict[str, str]) -> None:
     print(f"\n{total} agents total. Re-run with --agent-name <名称> --message <任务> to send one task.")
 
 
+def find_last_session_id(out_dir: Path, env_name: str = "") -> str:
+    """Most recent live session_id recorded by this script in out-dir logs.
+
+    With env_name given, only logs from that environment qualify (each env's
+    sessions live on a different cloud and ids don't transfer). Records marked
+    session_deleted are skipped so 'last' never points at a deleted session.
+    """
+    if not out_dir.is_dir():
+        return ""
+    for log_path in sorted(out_dir.glob("teams-*.log.json"), reverse=True):
+        try:
+            data = json.loads(log_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if data.get("session_deleted"):
+            continue
+        if env_name and data.get("env") != env_name:
+            continue
+        sid = text(data.get("session_id")).strip()
+        if sid:
+            return sid
+    return ""
+
+
+def mark_session_deleted(out_dir: Path, session_id: str) -> None:
+    """Flag the log(s) recording this session as deleted (idempotent)."""
+    for log_path in out_dir.glob("teams-*.log.json"):
+        try:
+            data = json.loads(log_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if text(data.get("session_id")).strip() == session_id and not data.get("session_deleted"):
+            data["session_deleted"] = True
+            data["session_deleted_at"] = datetime.now().isoformat(timespec="seconds")
+            log_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Send one task to an Agent Teams cloud agent and wait for completion.")
     ap.add_argument("--message", default="", help="the task, sent to the agent as-is (omit to just list agents)")
@@ -474,6 +511,10 @@ def main() -> int:
     ap.add_argument("--out-dir", default="C:/code_proj/tmp/dp-agent-eval-logs", help="where to write answer+log")
     ap.add_argument("--no-sync-token", action="store_true", help="skip IAM token refresh from desktop app")
     ap.add_argument("--dry-run", action="store_true", help="print the message that would be sent, then exit")
+    ap.add_argument("--delete-session", default="", metavar="ID|last",
+                    help="delete one chat session by id, or 'last' for the one created by the most recent run (from out-dir logs), then exit")
+    ap.add_argument("--delete-ask-sessions", action="store_true",
+                    help="delete ALL chat sessions titled 'ask-teams *' created by this script, then exit")
     args = ap.parse_args()
 
     env_path = Path(args.env_file) if args.env_file else Path("C:/code_proj/gitlab-proj/agent-eval/.env")
@@ -496,6 +537,53 @@ def main() -> int:
 
     client = TeamsClient(env, env_name=args.env)
     log(f"environment: {args.env} ({client.base_url()})")
+
+    # ----- delete modes (no message sending) -----
+    if args.delete_session or args.delete_ask_sessions:
+        workspace_slug = resolve_workspace(client, env)
+        if args.delete_session:
+            target_id = args.delete_session.strip()
+            if target_id == "last":
+                target_id = find_last_session_id(Path(args.out_dir), env_name=args.env)
+                if not target_id:
+                    print(f"FAIL: no live session id found in out-dir logs for env '{args.env}'",
+                          file=sys.stderr)
+                    return 2
+            client.request(f"/api/chat/sessions/{urllib.parse.quote(target_id)}", method="DELETE",
+                           workspace_slug=workspace_slug)
+            mark_session_deleted(Path(args.out_dir), target_id)
+            log("session deleted", f"env={args.env} session_id={target_id}")
+        if args.delete_ask_sessions:
+            # Delete exactly the sessions this script created: session ids are
+            # recorded in out-dir teams-*.log.json, so no guessing by title.
+            # Live records only -- already-deleted ones are not retried.
+            log_paths = sorted(Path(args.out_dir).glob("teams-*.log.json"))
+            ids: list[str] = []
+            for log_path in log_paths:
+                try:
+                    data = json.loads(log_path.read_text(encoding="utf-8"))
+                except (OSError, ValueError):
+                    continue
+                if data.get("session_deleted"):
+                    continue
+                if data.get("env") != args.env:
+                    continue
+                sid = text(data.get("session_id")).strip()
+                if sid and sid not in ids:
+                    ids.append(sid)
+            deleted, failed = 0, 0
+            for sid in ids:
+                try:
+                    client.request(f"/api/chat/sessions/{urllib.parse.quote(sid)}", method="DELETE",
+                                   workspace_slug=workspace_slug)
+                    mark_session_deleted(Path(args.out_dir), sid)
+                    deleted += 1
+                except Exception as exc:  # noqa: BLE001
+                    failed += 1
+                    log("delete failed, keep going", f"session_id={sid} {str(exc)[:100]}")
+            log("batch delete done", f"env={args.env} {deleted} deleted, {failed} failed, {len(ids)} live records in {args.out_dir}")
+        return 0
+
     if args.list or not message or not agent_name:
         if message and not agent_name:
             print("No --agent-name given; listing available agents instead of sending.\n")
@@ -522,6 +610,17 @@ def main() -> int:
     if not session_id:
         raise RuntimeError(f"create chat session did not return id: {session}")
     log("session created", f"session_id={session_id}")
+
+    # Record the session id immediately so --delete-session/--delete-ask-sessions
+    # can clean it up even if this run later times out or fails.
+    out_dir_early = Path(args.out_dir)
+    out_dir_early.mkdir(parents=True, exist_ok=True)
+    record_path = out_dir_early / f"teams-{datetime.now().strftime('%Y%m%d-%H%M%S')}.log.json"
+    record_path.write_text(json.dumps({
+        "env": args.env, "base_url": client.base_url(), "session_id": session_id,
+        "agent_name": agent_name, "status": "started", "steps": LOG_STEPS,
+    }, ensure_ascii=False, indent=1), encoding="utf-8")
+    log("session recorded", record_path.name)
 
     sent = client.request(f"/api/chat/sessions/{urllib.parse.quote(session_id)}/messages", method="POST",
                           workspace_slug=target["workspace_slug"],
@@ -591,9 +690,9 @@ def main() -> int:
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    stamp = record_path.stem.removesuffix(".log")
     answer_path = out_dir / f"teams-{stamp}.answer.md"
-    log_path = out_dir / f"teams-{stamp}.log.json"
+    log_path = record_path
     answer_path.write_text(
         f"# ask-teams {stamp}\n\n- env: {args.env}\n- agent: {agent_name}\n- status: {status}\n- latency: {latency:.1f}s\n\n"
         f"## 任务\n\n{args.message}\n\n## 结果\n\n{answer}\n",
