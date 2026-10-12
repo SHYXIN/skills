@@ -9,15 +9,14 @@ description: 维护本技能市场的 plugin.json / README 与磁盘上 skills/ 
 
 1. **磁盘上的 `skills/<category>/<skill-name>/`** — 技能的实体（SKILL.md + references/）
 2. **`.claude-plugin/plugin.json`** — 市场的注册清单
-3. **`README.md`** — 用户的技能目录（更新命令 + 技能列表 + 目录树）
-
+3. **`README.md`** — 用户的技能目录（技能列表 + 目录树）
 任一源头变动，另外两个必须跟着同步。本 skill 把这套同步自动化。
 
 **核心概念 — curate（策展）**：你是一位技能策展人。策展人的职责不是创作作品，而是确保每件作品被**正确登记、归类、上架 / 下架**。本 skill 不动 SKILL.md 内容本身（那是作者 / 其他 skill 的事），只管**登记 + 归类 + 上架**。
 
 ---
 
-## 三处同步点
+## 两处 README 同步点
 
 ### plugin.json（注册清单）
 
@@ -29,15 +28,14 @@ description: 维护本技能市场的 plugin.json / README 与磁盘上 skills/ 
 
 `GREEN:` `cat .claude-plugin/plugin.json | jq -r '.skills[]'` 的每一行都对应磁盘上一个真实存在的 `skills/<path>/SKILL.md`，没有缺失、没有悬空。
 
-### README.md（三处都要同步）
+### README.md（两处都要同步）
 
 | 位置 | 同步什么 | 操作 |
 |---|---|---|
-| **更新命令区**（`## 更新` 下方代码块） | 单独 update 行 + 批量 update 行都加新 skill 名 | 改两行 |
 | **技能列表区**（`## 技能列表` 下方各 `### 类别` | 标题行 `**skill-name** — 一句话描述`（描述从 SKILL.md frontmatter description 字段抄） | 增/删/改一条 |
 | **目录树区**（`## 目录结构` 下方代码块） | `skill-name/ # 备注` 行 | 增/删一行 |
 
-`GREEN:` README.md 里三处新 skill 的信息都齐全，缺任何一个都算 not-green。
+`GREEN:` README.md 里两处新 skill 的信息都齐全，缺任何一个都算 not-green。
 
 ---
 
@@ -89,13 +87,12 @@ grep -oE '^\- \*\*[a-z-]+\*\*' README.md | sed 's/- \*\*//; s/\*\*//'
 tmp=$(mktemp)
 jq --arg p "./skills/<category>/<new-skill>" '.skills += [$p]' .claude-plugin/plugin.json > "$tmp" && mv "$tmp" .claude-plugin/plugin.md
 
-# 2. 改 README —— 三处同步
-#    a) 更新命令区
-#    b) 技能列表区（描述从 SKILL.md frontmatter 取）
-#    c) 目录树区
+# 2. 改 README —— 两处同步
+#    a) 技能列表区（描述从 SKILL.md frontmatter 取）
+#    b) 目录树区
 ```
 
-`GREEN:` plugin.json 里新条目存在，对应 SKILL.md 也存在；README 三处都改完。
+`GREEN:` plugin.json 里新条目存在，对应 SKILL.md 也存在；README 两处都改完。
 
 ### 3b. 移除旧 skill（plugin.json 有、磁盘没有 或 用户要求下架）
 
@@ -104,10 +101,10 @@ jq --arg p "./skills/<category>/<new-skill>" '.skills += [$p]' .claude-plugin/pl
 tmp=$(mktemp)
 jq --arg p "./skills/<category>/<old-skill>" '.skills = [.skills[] | select(. != $p)]' .claude-plugin/plugin.json > "$tmp" && mv "$tmp" .claude-plugin/plugin.json
 
-# 2. 改 README —— 三处同步删除
+# 2. 改 README —— 两处同步删除
 ```
 
-`GREEN:` plugin.json 不再含该 skill；README 三处都不再含 SKILL.md frontmatter 里的 `name:`。
+`GREEN:` plugin.json 不再含该 skill；README 两处都不再含 SKILL.md frontmatter 里的 `name:`。
 
 ### 3c. 重同步漂移（status 还在但 README 描述过时）
 
@@ -166,9 +163,9 @@ npx skills@latest add <仓库根路径> --skill <skill-a> --skill <skill-b> -y -
 
 ## Pitfalls
 
-### 坑 1 —— README 三处同步漏改
+### 坑 1 —— README 两处同步漏改
 
-最常见的"半同步"：改了 plugin.json + 技能列表，忘了改目录树。每次操作后**三处同时 grep** 验证：
+最常见的"半同步"：改了 plugin.json + 技能列表，忘了改目录树。每次操作后**两处同时 grep** 验证：
 
 ```bash
 grep -c "<skill-name>" .claude-plugin/plugin.json README.md    # 应都 > 0（注册状态一致）
