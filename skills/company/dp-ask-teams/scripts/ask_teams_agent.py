@@ -467,8 +467,11 @@ def main() -> int:
     ap.add_argument("--env", default="test", choices=sorted(ENV_BASE_URLS),
                     help="which cloud environment to hit (default: test; prod needs AGENT_TEAMS_TOKEN_PROD in .env)")
     ap.add_argument("--note", default="", help="optional context note prepended to the message")
+    ap.add_argument("--timeout", type=int, default=1200,
+                    help="seconds per wait window; on expiry, if the task is still running (cold start) the wait is extended")
+    ap.add_argument("--max-wait", type=int, default=2400,
+                    help="total seconds to wait across extensions before giving up (cold-start cap)")
     ap.add_argument("--out-dir", default="C:/code_proj/tmp/dp-agent-eval-logs", help="where to write answer+log")
-    ap.add_argument("--timeout", type=int, default=1200, help="seconds to wait for completion")
     ap.add_argument("--no-sync-token", action="store_true", help="skip IAM token refresh from desktop app")
     ap.add_argument("--dry-run", action="store_true", help="print the message that would be sent, then exit")
     args = ap.parse_args()
@@ -540,7 +543,26 @@ def main() -> int:
             log("stream failed, fall back to polling", str(exc)[:120])
 
     if status != "completed":
-        while time.monotonic() < deadline:
+        # Cloud runtime cold starts can take 10-21+ minutes (verified
+        # 2026-10-12). When a wait window expires but the task is still
+        # alive server-side, extend the wait instead of failing: the task
+        # keeps running in the cloud and re-sending would duplicate it.
+        deadline = time.monotonic() + min(args.timeout, args.max_wait)
+        hard_deadline = time.monotonic() + args.max_wait
+        extensions = 0
+        while True:
+            now = time.monotonic()
+            if now >= hard_deadline:
+                raise TimeoutError(
+                    f"Agent Teams task still running after {args.max_wait}s total (task_id={task_id}); "
+                    "cold start is slow but the task keeps running in the cloud - check the DeepWorks UI or retry later")
+            if now >= deadline:
+                extensions += 1
+                remaining = int(hard_deadline - now)
+                window = min(args.timeout, remaining)
+                log(f"wait window expired, task still running (cold start?) - extending wait #{extensions}",
+                    f"+{window}s (max-wait left: {remaining}s) task_id={task_id}")
+                deadline = now + window
             if run_id:
                 snapshot = client.request(f"/api/chat/runs/{urllib.parse.quote(run_id)}/snapshot",
                                           workspace_slug=target["workspace_slug"])
@@ -554,8 +576,6 @@ def main() -> int:
             if status in {"completed", "failed", "cancelled"}:
                 break
             time.sleep(3)
-        else:
-            raise TimeoutError(f"Agent Teams run did not complete within {args.timeout}s")
 
     payload = client.request(f"/api/chat/sessions/{urllib.parse.quote(session_id)}/messages",
                              workspace_slug=target["workspace_slug"])

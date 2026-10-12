@@ -67,8 +67,8 @@ python <skill_dir>/scripts/ask_teams_agent.py \
 - 不带 `--agent-name` 或 `--message`（或用 `--list`）→ 只列出专家名单后退出，不发送
 - `--env` 可选：test（默认，test.deepworks.cn）/ prod（agentteam.deepworks.cn）；运行日志首行打印所连环境
 - `--agent-name` 按名字精确匹配，会在**所有 project** 里搜（专家分布在不同 project）
-- `--message` 必填（就是发给云端 agent 的任务描述，原样发送）
-- `--timeout` 默认 1200s；云端 runtime 首跑冷启动可能 10–21 分钟，给足余量
+- `--timeout` 单个等待窗口秒数（默认 1200）；窗口到期但任务还在云端跑（冷启动）会**自动续等**并打日志，不会失败退出
+- `--max-wait` 总等待上限秒数（默认 2400）；冷启动实测 10–21 分钟，跑长任务建议加大到 3600
 - `--dry-run`：只打印要发的消息不真调，先给用户确认
 - `--no-sync-token`：跳过从桌面端刷新 IAM token（桌面端没开时自动跳过）
 
@@ -96,5 +96,5 @@ AGENT_TEAMS_TOKEN_PROD=  # prod
 - 「TOKEN missing」且没开桌面端 → 开对应环境桌面端（已登录）重跑，或手填 .env
 - 「token sync failed ... not logged in」→ 桌面端开着但未登录，先登录
 - 「agent not found by name 'xx'」→ 报错里列出全部名字，抄一个重跑；或先不带参数跑一遍看名单
-- 超时 → 云端 runtime 首跑可能极慢（实测冷启动 10–21 分钟才出回复，任务在云端不会丢，UI 里最终会出结果）；复杂任务 `--timeout` 给足（如 1800），中断重跑亦可
+- 超时 → 窗口到期自动续等（日志可见 "extending wait #N"），直到 `--max-wait`（默认 2400s）才放弃；冷启动实测 10–21 分钟，任务在云端不会丢，放弃后也可去 UI 看结果或稍后重试
 - 长时间 "streaming"/running 无进展 → 多半是 runtime 冷启动慢，耐心等或去 DeepWorks UI 看该 session 是否已出回复
