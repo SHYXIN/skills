@@ -33,11 +33,12 @@ uv run python <skill_dir>/scripts/ask_local_deepworks.py \
   --repo <agent-eval 仓库路径> \
   --message "帮我把这个目录里的报表整理成一页总结" \
   [--working-dir-note "补充背景，会和问题一起给 agent"] \
-  [--timeout 900] [--out-dir <目录>] [--dry-run]
+  [--model "dth/DeepSeek-V4.1-Flash"] [--timeout 900] [--out-dir <目录>] [--dry-run]
 ```
 
 - `--repo` 必填；`--message` 必填（就是问 agent 的问题）
 - `--working-dir-note` 可选：附加背景说明，会和问题一起给 agent
+- `--model` 可选：本次调用用的模型（provider 前缀可省，默认 dth）；不传则用工作区默认模型
 - `--dry-run`：只渲染 prompt 不真调，用来先给用户确认要发什么
 - 默认 target `agent_demo1_deepworks`；换被测工作区改 target 或其 yaml 的 `working_dir`
 
