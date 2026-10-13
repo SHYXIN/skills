@@ -1,6 +1,6 @@
 ---
 name: dp-console-admin
-description: DeepWorks 管理面 CLI：在管理控制台层面创建/发布/绑定 专家（agent）、Skill、专家团（squad），列出 runtime，删除测试资源。当用户说「建一个专家」「创建 skill 并发布」「给专家配 skill」「组个专家团」「清理测试专家」，或要在 DeepWorks 管理界面批量做资源管理时触发。走受控 Chrome + CDP 桥接（管理面写操作必须 console 会话，桌面端 token 权限恒空），首次运行自动登录。
+description: DeepWorks 管理面 CLI：在管理控制台层面创建/发布/绑定 专家（agent）、Skill、专家团（squad），列出 runtime，删除测试资源。当用户说「建一个专家」「创建 skill 并发布」「给专家配 skill」「组个专家团」「清理测试专家」，或要在 DeepWorks 管理界面批量做资源管理时触发。走受控 Chrome + CDP 桥接（需 console 会话，不支持桌面端 token），首次运行自动登录。
 ---
 
 # dp-console-admin — 管理面资源管理 CLI（CDP 桥接版）
@@ -8,19 +8,17 @@ description: DeepWorks 管理面 CLI：在管理控制台层面创建/发布/绑
 直接操作 DeepWorks 管理控制台背后的 API（agent-teams-backend），等价于在
 `https://agentteam-test.deepworks.cn/deepsense-workspace/agents` 界面上手工操作。
 
-## 为什么是 CDP 桥接（不是纯 Bearer）
+## 认证形态
 
-管理面写操作要求 **console 会话**（Workbench OIDC 企业登录，JWT `src=console`），
-后端按请求实时查 Workbench 按钮权限。桌面端同步来的 token 是 `src=app`，
-后端**硬编码返回空权限**（auth.py），所有写操作 403——纯 Bearer CLI 此路不通
-（2026-10-13 实测+源码确认）。
+管理面写操作要求 console 会话（Workbench OIDC 企业登录）；桌面端 token
+无管理面权限，写操作会 403。
 
 方案：脚本启动一个**受控 Chrome**（独立 profile `C:/code_proj/tmp/dp-console-chrome-profile`，
 CDP 端口 9333），在管理页里 `Runtime.evaluate` 执行 fetch，cookie+CSRF 自动携带。
 首次自动填企业账密登录（deepsense/deepsense，可用 `DP_CONSOLE_USER/_TENANT/_PASS`
 环境变量覆盖），cookie 持久化，之后静默复用。
 
-## 硬约束（实测踩坑得出）
+## 硬约束
 
 1. **draft skill 绑不上**：skill 必须先 publish 才能绑定（draft → 404 `skill not found`）。
    加 `--publish-skills` 自动先发布。

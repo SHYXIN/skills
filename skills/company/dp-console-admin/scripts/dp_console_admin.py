@@ -3,10 +3,9 @@
 management API -- executed inside the logged-in management console tab through
 Chrome DevTools Protocol (CDP).
 
-WHY CDP: management write operations require a console-session (Workbench OIDC
-login, JWT src=console) whose permissions are resolved live from Workbench.
-Desktop-app tokens (JWT src=app) always get an empty permission set (backend
-auth.py hardcodes []), so pure-Bearer CLI write access is impossible by design.
+Management write operations require a console session (Workbench OIDC
+login, JWT src=console); desktop-app tokens (src=app) carry no
+permissions, so a pure-Bearer CLI cannot do writes here.
 
 Auth flow (first run): script launches a controlled Chrome with a dedicated
 profile (cookie persists across runs), opens the console; the Workbench
@@ -25,7 +24,7 @@ Usage:
   python dp_console_admin.py delete agents|skills|squads --name X [--yes]
   python dp_console_admin.py login     # (re-)open console and (re-)run auto-login
 
-Management constraints (live-tested 2026-10-13):
+Management constraints:
   1. skill must be PUBLISHED before binding (draft -> 404 "skill not found")
   2. agent needs runtime_id before publish
   3. PUT /agents/{id}/skills is full-replace (this tool merges by default)
