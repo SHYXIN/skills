@@ -65,6 +65,7 @@
     "./skills/company/ask-dp",
     "./skills/company/dp-eval-run",
     "./skills/company/dp-session-forensics-cloud",
-    "./skills/productivity/closed-loop"
+    "./skills/productivity/closed-loop",
+    "./skills/productivity/skill-iterate"
   ]
 }
