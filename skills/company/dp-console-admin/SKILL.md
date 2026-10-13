@@ -1,9 +1,9 @@
 ---
 name: dp-console-admin
-description: DeepWorks 管理面 CLI：在管理控制台层面创建/发布/绑定 专家（agent）、Skill、专家团（squad），列出 runtime，删除测试资源。当用户说「建一个专家」「创建 skill 并发布」「给专家配 skill」「组个专家团」「清理测试专家」，或要在 DeepWorks 管理界面批量做资源管理时触发。双桥接：默认走 opencli 扩展桥（复用日常 Chrome 登录态，无新窗口），不可用时回退受控 Chrome + CDP。需 console 会话，不支持桌面端 token。
+description: DeepWorks 管理面 CLI：在管理控制台层面创建/发布/绑定 专家（agent）、Skill、专家团（squad），列出 runtime，删除测试资源。当用户说「建一个专家」「创建 skill 并发布」「给专家配 skill」「组个专家团」「清理测试专家」，或要在 DeepWorks 管理界面批量做资源管理时触发。需 console 会话，不支持桌面端 token。
 ---
 
-# dp-console-admin — 管理面资源管理 CLI（双桥接版）
+# dp-console-admin — 管理面资源管理 CLI
 
 直接操作 DeepWorks 管理控制台背后的 API（agent-teams-backend），等价于在
 `https://agentteam-test.deepworks.cn/deepsense-workspace/agents` 界面上手工操作。

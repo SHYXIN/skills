@@ -2,14 +2,9 @@
 """DeepWorks console admin: manage agents / skills / squads via the Agent Teams
 management API -- executed inside the logged-in management console tab.
 
-Two bridges (choose with --bridge):
-  opencli (default, auto): runs fetches in the USER'S DAILY Chrome through the
-      opencli browser bridge (extension + daemon; no separate Chrome window,
-      reuses the daily session's cookies). Falls back to cdp when opencli is
-      unavailable.
-  cdp: launches a controlled Chrome with a dedicated profile
-      (cookie persists across runs) and talks Chrome DevTools Protocol.
-      Required when opencli daemon/extension is not connected.
+Two bridges via --bridge: opencli (daily Chrome via opencli extension) or
+cdp (controlled Chrome, dedicated profile). Default auto: prefer opencli,
+fall back to cdp.
 
 Management write operations require a console session (Workbench OIDC
 login, JWT src=console); desktop-app tokens (src=app) carry no
@@ -378,8 +373,7 @@ class OpenCliBridge:
 
     SESSION = "dpconsole"
 
-    # Windows: subprocess can't exec the extensionless bash shim; resolve
-    # opencli.cmd / opencli.exe once via PATH.
+    # resolve opencli.cmd/.exe via PATH (Windows can't exec the extensionless shim)
     EXE = shutil.which("opencli")
 
     @classmethod
