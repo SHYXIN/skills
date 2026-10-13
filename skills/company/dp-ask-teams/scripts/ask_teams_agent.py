@@ -671,15 +671,29 @@ def main() -> int:
         # 2026-10-12). When a wait window expires but the task is still
         # alive server-side, extend the wait instead of failing: the task
         # keeps running in the cloud and re-sending would duplicate it.
+        #
+        # Extension is gated on PROGRESS, not on liveness. A hung squad run
+        # (incident 2026-10-12: diag-007 hung 2h+ with `--timeout 900`
+        # never firing) reports status=running forever with zero state
+        # change -- that is a stall, not a cold start. Progress = the
+        # snapshot/task payload actually changed since the last poll.
         deadline = time.monotonic() + min(args.timeout, args.max_wait)
         hard_deadline = time.monotonic() + args.max_wait
         extensions = 0
+        last_progress_at = time.monotonic()
+        progress_fingerprint: str | None = None
+        progress_gap_cap = args.timeout  # no visible progress for this long = stall
         while True:
             now = time.monotonic()
             if now >= hard_deadline:
                 raise TimeoutError(
                     f"Agent Teams task still running after {args.max_wait}s total (task_id={task_id}); "
                     "cold start is slow but the task keeps running in the cloud - check the DeepWorks UI or retry later")
+            if now - last_progress_at >= progress_gap_cap:
+                raise TimeoutError(
+                    f"Agent Teams task stalled: no progress for {int(now - last_progress_at)}s "
+                    f"(--timeout {args.timeout}s gap cap, task_id={task_id}, last status={status!r}); "
+                    "the run looks hung, not cold-starting - check the DeepWorks UI")
             if now >= deadline:
                 extensions += 1
                 remaining = int(hard_deadline - now)
@@ -695,8 +709,15 @@ def main() -> int:
                 task = client.request(f"/api/tasks/{urllib.parse.quote(task_id)}",
                                       workspace_slug=target["workspace_slug"])
                 status = text(task.get("status")).lower() if isinstance(task, dict) else ""
+                snapshot = task
             else:
                 raise RuntimeError("neither run_id nor task_id returned from send")
+            # Progress = the poll payload changed since last poll (status flip,
+            # step advance, message count). Identical payload = no progress.
+            fingerprint = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, default=str)
+            if fingerprint != progress_fingerprint:
+                progress_fingerprint = fingerprint
+                last_progress_at = time.monotonic()
             if status in {"completed", "failed", "cancelled"}:
                 break
             time.sleep(3)

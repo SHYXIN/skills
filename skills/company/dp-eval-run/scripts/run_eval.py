@@ -95,11 +95,25 @@ def run_case(case: dict, args, run_dir: Path) -> dict:
         cmd += ["--note", case["note"]]
 
     t0 = time.monotonic()
-    proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    # Harness-level backstop: the ask script enforces its own --timeout/--max-wait,
+    # but a hung subprocess must never stall the whole batch (incident 2026-10-12:
+    # squad case hung 2h+ because the outer run had no timeout of its own).
+    harness_timeout = args.timeout * 2 + 120
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
+                              errors="replace", timeout=harness_timeout)
+    except subprocess.TimeoutExpired:
+        return {
+            "case_id": case["case_id"],
+            "status": "fail",
+            "latency_seconds": round(time.monotonic() - t0, 1),
+            "answer_chars": 0,
+            "answer": f"[harness timeout] ask script exceeded {harness_timeout}s total; killed",
+            "session_hint": f"see {ask_logs.name}/",
+        }
     latency = time.monotonic() - t0
 
     answer = ""
-    # ask scripts write <stamp>.answer.md into --out-dir; newest one for this case
     ask_logs = run_dir / "ask-logs"
     answers = sorted(ask_logs.glob("*.answer.md"), key=lambda p: p.stat().st_mtime) if ask_logs.is_dir() else []
     if answers:
