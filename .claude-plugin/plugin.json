@@ -60,6 +60,7 @@
     "./skills/productivity/ask-wx",
     "./skills/company/dp-ask-deepworks",
     "./skills/company/dp-ask-teams",
+    "./skills/company/dp-console-admin",
     "./skills/company/ask-dp",
     "./skills/company/dp-eval-run",
     "./skills/company/dp-session-forensics-cloud",
