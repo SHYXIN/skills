@@ -1,20 +1,27 @@
 #!/usr/bin/env python3
 """DeepWorks console admin: manage agents / skills / squads via the Agent Teams
-management API -- executed inside the logged-in management console tab through
-Chrome DevTools Protocol (CDP).
+management API -- executed inside the logged-in management console tab.
+
+Two bridges (choose with --bridge):
+  opencli (default, auto): runs fetches in the USER'S DAILY Chrome through the
+      opencli browser bridge (extension + daemon; no separate Chrome window,
+      reuses the daily session's cookies). Falls back to cdp when opencli is
+      unavailable.
+  cdp: launches a controlled Chrome with a dedicated profile
+      (cookie persists across runs) and talks Chrome DevTools Protocol.
+      Required when opencli daemon/extension is not connected.
 
 Management write operations require a console session (Workbench OIDC
 login, JWT src=console); desktop-app tokens (src=app) carry no
 permissions, so a pure-Bearer CLI cannot do writes here.
 
-Auth flow (first run): script launches a controlled Chrome with a dedicated
-profile (cookie persists across runs), opens the console; the Workbench
-enterprise login page appears; the script auto-fills enterprise
-account/password (or you log in manually) and waits for the redirect. Later
-runs reuse the persisted session silently.
+Auth flow: opencli bridge reuses the daily Chrome session (log in manually in
+the opened tab if needed). cdp bridge auto-fills enterprise account/password
+on the Workbench login page (or you log in manually); later runs reuse the
+persisted session silently.
 
 Usage:
-  python dp_console_admin.py list agents|skills|squads|runtimes
+  python dp_console_admin.py [--bridge auto|opencli|cdp] list agents|skills|squads|runtimes
   python dp_console_admin.py create-skill --name N --instructions I [--publish]
   python dp_console_admin.py create-agent --name N [--description D]
           [--skills "a,b"] [--publish-skills] [--publish] [--release-note R] [--force]
@@ -22,7 +29,7 @@ Usage:
   python dp_console_admin.py bind --agent A --skills "a,b" [--publish-skills] [--replace]
   python dp_console_admin.py publish agent|skill --name X [--release-note R]
   python dp_console_admin.py delete agents|skills|squads --name X [--yes]
-  python dp_console_admin.py login     # (re-)open console and (re-)run auto-login
+  python dp_console_admin.py login     # (re-)open console and verify/probe session
 
 Management constraints:
   1. skill must be PUBLISHED before binding (draft -> 404 "skill not found")
@@ -35,6 +42,7 @@ import argparse
 import base64
 import json
 import os
+import shutil
 import socket
 import struct
 import subprocess
@@ -363,9 +371,106 @@ class ConsoleBridge:
             ws.close()
 
 
-# ---------------------------------------------------------------------------
-# item helpers
-# ---------------------------------------------------------------------------
+class OpenCliBridge:
+    """Same interface as ConsoleBridge, but runs fetches in the user's daily
+    Chrome via the `opencli browser` bridge (extension + local daemon).
+    No separate Chrome window; reuses the daily session's cookies."""
+
+    SESSION = "dpconsole"
+
+    # Windows: subprocess can't exec the extensionless bash shim; resolve
+    # opencli.cmd / opencli.exe once via PATH.
+    EXE = shutil.which("opencli")
+
+    @classmethod
+    def _run(cls, args: list[str], timeout: float = 90.0) -> str:
+        if not cls.EXE:
+            raise RuntimeError("opencli not found on PATH")
+        proc = subprocess.run(
+            [cls.EXE, "browser", OpenCliBridge.SESSION, *args],
+            capture_output=True, text=True, encoding="utf-8", timeout=timeout)
+        if proc.returncode != 0:
+            raise RuntimeError(f"opencli {' '.join(args[:2])} failed: "
+                               f"{(proc.stderr or proc.stdout).strip()[:300]}")
+        return proc.stdout
+
+    @classmethod
+    def _available(cls) -> bool:
+        if not cls.EXE:
+            return False
+        try:
+            probe = subprocess.run([cls.EXE, "doctor"], capture_output=True,
+                                   text=True, encoding="utf-8", timeout=20)
+        except (OSError, subprocess.TimeoutExpired):
+            return False
+        out = (probe.stdout or "") + (probe.stderr or "")
+        return probe.returncode == 0 and "Extension: connected" in out
+
+    # -- bridge interface ----------------------------------------------------
+
+    def ensure_browser(self) -> None:
+        if not OpenCliBridge._available():
+            raise RuntimeError(
+                "opencli bridge not connected (daemon or extension down). "
+                "Run `opencli doctor`, or use --bridge cdp.")
+        url_probe = self._run(["get", "--property", "url"], timeout=30.0)
+        if "agentteam-test.deepworks.cn" not in url_probe:
+            log("opening console tab in daily Chrome")
+            self._run(["open", CONSOLE_URL], timeout=60.0)
+            time.sleep(3)
+
+    def login(self) -> None:
+        """Ensure daemon/extension up + console tab open; verify session."""
+        self.ensure_browser()
+        probe = self.api("/agents/page?page=1&page_size=1")
+        log("console session OK", f"via opencli bridge, agents sample={str(probe)[:60]}")
+
+    def eval_js(self, expression: str, timeout_ms: int = 45000) -> object:
+        # opencli awaits the result only when the expression itself evaluates
+        # to a Promise; keep the expression a bare async IIFE (api() resolves
+        # to a JSON string, which opencli prints raw). Newlines are collapsed:
+        # Windows argv transport mangles multi-line JS.
+        single = " ".join(expression.split())
+        out = self._run(["eval", single], timeout=max(timeout_ms / 1000.0, 30.0) + 15.0)
+        lines = [line for line in out.splitlines() if line.strip()]
+        if not lines:
+            raise RuntimeError("opencli eval produced no output")
+        raw = lines[-1].strip()
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            return raw  # plain string value (opencli prints strings unquoted)
+
+    # -- authenticated API call (mirrors ConsoleBridge.api) -------------------
+
+    def api(self, path: str, method: str = "GET", body: dict | None = None) -> object:
+        body_js = json.dumps(body, ensure_ascii=False) if body is not None else "null"
+        js = f"""
+(async function(){{
+  const m = document.cookie.match(/deepexi_csrf=([^;]+)/);
+  const csrf = m ? decodeURIComponent(m[1]) : '';
+  const r = await fetch('{API_BASE}{path}', {{
+    method: '{method}',
+    headers: {{ 'Content-Type': 'application/json', 'x-csrf-token': csrf }},
+    credentials: 'include',
+    body: {body_js if body is None else 'JSON.stringify(' + body_js + ')'},
+  }});
+  const t = await r.text();
+  let data = null;
+  try {{ data = JSON.parse(t); }} catch (e) {{ data = null; }}
+  return JSON.stringify({{status: r.status, data: data, raw: data === null ? t.slice(0, 200) : null}});
+}})()
+"""
+        value = self.eval_js(js)
+        payload = json.loads(value) if isinstance(value, str) else value
+        if not isinstance(payload, dict):
+            raise RuntimeError(f"unexpected eval result: {payload!r}")
+        status = int(payload.get("status", 0))
+        if status >= 400:
+            detail = payload.get("data") or payload.get("raw")
+            raise RuntimeError(f"{method} {path} -> HTTP {status}: {str(detail)[:300]}")
+        return payload.get("data")
+
 
 def items(payload: object) -> list:
     if isinstance(payload, list):
@@ -492,7 +597,7 @@ def cmd_login(bridge: ConsoleBridge, _args) -> int:
 
 def cmd_list(bridge: ConsoleBridge, args) -> int:
     kind = args.what
-    log("console session", f"controlled Chrome port={bridge.port}")
+    log("console session", f"bridge={type(bridge).__name__}")
     if kind == "runtimes":
         workspaces = [w for w in items(bridge.api("/workspaces")) if isinstance(w, dict)]
         ws_id = text(workspaces[0].get("id")) if workspaces else ""
@@ -645,9 +750,18 @@ def main() -> int:
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--yes", action="store_true")
     ap.add_argument("--cdp-port", type=int, default=CDP_PORT)
+    ap.add_argument("--bridge", choices=["auto", "opencli", "cdp"], default="auto",
+                    help="auto: prefer opencli (daily Chrome), fall back to cdp")
     args = ap.parse_args()
 
-    bridge = ConsoleBridge(port=args.cdp_port)
+    if args.bridge == "opencli" or (args.bridge == "auto" and OpenCliBridge._available()):
+        if args.bridge == "auto":
+            log("bridge: opencli (daily Chrome)")
+        bridge = OpenCliBridge()
+    else:
+        if args.bridge == "auto":
+            log("bridge: opencli unavailable, falling back to cdp")
+        bridge = ConsoleBridge(port=args.cdp_port)
 
     if args.command == "login":
         return cmd_login(bridge, args)
