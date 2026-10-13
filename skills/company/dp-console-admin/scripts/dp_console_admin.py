@@ -179,7 +179,7 @@ class ConsoleBridge:
         exe = next((p for p in CHROME_CANDIDATES if p and Path(p).is_file()), None)
         if not exe:
             raise RuntimeError("Chrome not found; edit CHROME_CANDIDATES")
-        profile = str(PROFILE_DIR)
+        profile = PROFILE_DIR
         profile.mkdir(parents=True, exist_ok=True)
         subprocess.Popen([
             exe, f"--remote-debugging-port={self.port}",
