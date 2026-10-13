@@ -29,22 +29,24 @@ git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bas
 npm install -g cn-skills-cli --registry=https://registry.npmmirror.com
 
 # 2) 安装本仓库技能（自动走 Gitee）
-cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex
+cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 3) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL；当前冻结版 v0.15.15）
-cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
+cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 4) 安装推荐搭配 mattpocock/skills（Gitee 镜像；放最后，使 tdd/teach 采用 matt 版，见下「同名技能」）
+cn-skills add mattpocock/skills --yes --global --agent codebuddy,claude-code,codex,workbuddy
+
 # 5) 安装 opencli CLI + 全部 opencli 技能（让 agent 操控日常 Chrome；CLI 已装则跳过 npm 那步）
 npm install -g @jackwener/opencli --registry=https://registry.npmmirror.com
-cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,codex
+cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
 # 装好后 opencli doctor 验证，完整引导见 setup-opencli 技能
 
 # 6) asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读（无 Gitee 镜像，直连 GitHub）
-cn-skills add danyuchn/asd-ste100-skill --yes --global --agent codebuddy,claude-code,codex
+cn-skills add danyuchn/asd-ste100-skill --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
 **更新（国内）**

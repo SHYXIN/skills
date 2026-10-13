@@ -3,15 +3,15 @@
 #
 # 远程一键运行（Gitee 对 raw 文件有反爬拦截，curl 直接拉 /raw/ 会 403，请用 clone 方式）：
 #   git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh; rm -rf /tmp/skills-cn
-#   git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh "codebuddy,claude-code,codex"; rm -rf /tmp/skills-cn
+#   git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh "codebuddy,claude-code,codex,workbuddy"; rm -rf /tmp/skills-cn
 #
 # 本地运行：
-#   ./install-cn.sh                          # 默认装到 codebuddy,claude-code,codex（全局）
+#   ./install-cn.sh                          # 默认装到 codebuddy,claude-code,codex,workbuddy（全局）
 #   ./install-cn.sh "codebuddy"              # 只装 codebuddy
 #   ./install-cn.sh "codebuddy,codex"        # 自定义 agent 列表（逗号分隔）
 set -euo pipefail
 
-AGENTS="${1:-codebuddy,claude-code,codex}"
+AGENTS="${1:-codebuddy,claude-code,codex,workbuddy}"
 
 # 确保 cn-skills-cli 已安装（国内用 npmmirror 加速）
 if ! command -v cn-skills >/dev/null 2>&1; then
