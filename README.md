@@ -325,6 +325,7 @@ npx rea-agents setup                                                            
 - **dp-ask-teams** — 向 Agent Teams 云端 agent 单发一个任务并等到完成拿结果（非测评，不限领域）。脚本自包含（纯标准库，任意目录可跑）：IAM token 自动从已登录桌面端获取（零手填）→ 跨 project 解析专家 → chat session → SSE 流式等待（回退轮询），进度全程可见，结果与日志落盘。不带参数先列出全部可用专家。`--env test|prod` 切测试/正式云端；冷启动窗口到期自动续等。会话管理：`--list-sessions [N]` 盘点 → `--delete-session last|ID` 单删 → `--delete-ask-sessions` 批删（按环境过滤、已删自动跳过；详见 skill 内 SKILL.md）。注意：云端 runtime 首跑冷启动可能 10–21 分钟。
 - **dp-session-forensics-cloud** — DeepWorks 会话取证，一个入口管本地+云端。`--source teams` 查 Agent Teams 云端会话（云 API 拉会话列表/消息明细，IAM token 自动从已登录桌面端同步）；`--source local` 转发本地版查本机 opencode.db。list / dump / export（jsonl+markdown）三子命令，`--env prod|test` 双环境。实测端点：GET /api/chat/sessions[/{id}/messages]。
 - **dp-eval-run** — DeepWorks 回归评测。问题集 JSON 批量跑本地工作区 agent 或云端 Agent Teams，逐 case 打分（标记命中/禁词/超长/延迟），落盘 run 目录；diff 子命令对比两轮出 markdown 报告；cleanup 一键删除评测会话。兼容 agent-eval JSONL。闭环：改知识库 → baseline → after → diff → 取证。
+- **dp-console-admin** — DeepWorks 管理面 CLI：在管理控制台层面创建/发布/绑定专家（agent）、Skill、专家团（squad），列出 runtime，删除测试资源。当用户说「建一个专家」「创建 skill 并发布」「给专家配 skill」「组个专家团」「清理测试专家」，或要在 DeepWorks 管理界面批量做资源管理时触发。走受控 Chrome + CDP 桥接（需 console 会话，不支持桌面端 token），首次运行自动登录。
 - **ask-dp** — DeepWorks 技能闭环路由器。一张闭环地图（准备/知识/执行/诊断/回归五层）+ preflight 环境体检（双环境桌面端端口活性、teams token、deepworks 仓库、python/node），按用户意图路由到对应 dp-* 技能，缺项打印影响面。当任务要串多个 dp-* 技能时先走这里。
 
 ### 设计
@@ -406,6 +407,7 @@ skills/
 │   ├── dp-session-forensics-cloud/  # 会话取证云端+本地一个入口（--source teams|local）
 │   ├── dp-eval-run/  # 问题集批量评测 + 两轮 diff 回归 + cleanup
 │   ├── ask-dp/  # DeepWorks 技能闭环路由器 + preflight 体检
+│   ├── dp-console-admin/  # 管理面资源管理 CLI（CDP 桥接：建/发布/绑定专家/Skill/团 + 删除清理）
 ├── devops/            # 运维 / CI-CD 类技能
 │   └── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 ├── personal/          # 个人效率类技能
