@@ -6,23 +6,13 @@
 
 ## 国内安装（免翻墙，推荐）
 
-本仓库已镜像到 Gitee（`theshyxin/skills`），配合 [cn-skills-cli](https://github.com/SHYXIN/cn-skills-cli) 可从 Gitee 拉取，**无需翻墙**。`cn-skills-cli` 已内置别名：`SHYXIN/skills` / `mattpocock/skills` 会自动路由到 Gitee 镜像（需 `cn-skills-cli >= 0.1.10`）。
+本仓库已镜像到 Gitee（`theshyxin/skills`），配合 [cn-skills-cli](https://github.com/SHYXIN/cn-skills-cli) 可从 Gitee 拉取，**无需翻墙**。`cn-skills-cli` 已内置别名：`SHYXIN/skills` / `mattpocock/skills` 会自动路由到 Gitee 镜像（需 `cn-skills-cli >= 0.1.10`；`cn-skills update` 需 `>= 0.1.15`）。
 
-**方式一 · 一键安装（推荐）**
+> **Windows 用户请直接看「方式一 · 手动命令」**——纯 npm + cn-skills 命令，PowerShell / CMD / Git Bash 通吃，无需 bash。下面的「一键脚本」是 bash 脚本，仅适用于 macOS / Linux / 装了 Git Bash 的 Windows。
 
-```bash
-git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh; rm -rf /tmp/skills-cn
-```
+**方式一 · 手动命令（推荐，全平台通用）**
 
-默认装到 `codebuddy,claude-code,codex`（全局）。
-
-自定义 agent 列表（逗号分隔）：
-
-```bash
-git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh "codebuddy,claude-code,codex"; rm -rf /tmp/skills-cn
-```
-
-**方式二 · 手动命令（最稳，零依赖）**
+在任意终端（PowerShell / CMD / bash）逐条执行：
 
 ```bash
 # 1) 安装 cn-skills-cli（国内镜像加速）
@@ -49,16 +39,40 @@ cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,cod
 cn-skills add danyuchn/asd-ste100-skill --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
+> 说明：`--agent` 逗号分隔列表在 PowerShell / CMD / Git Bash 下均可直接使用（`cn-skills-cli >= 0.1.16`）。装完可用 `cn-skills update` 随时更新（详见下方「更新（国内）」）。
+
+**方式二 · 一键脚本（macOS / Linux / Git Bash）**
+
+适合 bash 环境，一条命令拉取并安装全部：
+
+```bash
+git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh; rm -rf /tmp/skills-cn
+```
+
+默认装到 `codebuddy,claude-code,codex,workbuddy`（全局）。
+
+自定义 agent 列表（逗号分隔）：
+
+```bash
+git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh "codebuddy,claude-code,codex"; rm -rf /tmp/skills-cn
+```
+
+> ⚠️ Windows 注意：原生 cmd / PowerShell **没有 bash**，直接跑会报 `execvpe(/bin/bash) failed`（落到 WSL 且 WSL 未装 bash 时）。Windows 用户请用上面的「方式一 · 手动命令」。
+
 **更新（国内）**
 
 ```bash
-cn-skills update            # 更新全部
+cn-skills update            # 更新全部（lock 记录里的 skills）
 cn-skills update socratic-tutor   # 只更新某个
 ```
+
+> 需 `cn-skills-cli >= 0.1.15`。通过 `cn-skills add` 安装的技能会自动记录 lock；`npx skills add` 装的也能更新（兼容读取同一份 `~/skills-lock.json`）。
 
 ## 国外安装（GitHub + npx skills）
 
 本仓库技能通过 [vercel-labs/skills](https://github.com/vercel-labs/skills) 提供的 `npx skills` 工具安装，**无需克隆本仓库**。
+
+> Windows 用户：这里的 `curl … | bash` 同样需要 bash 环境（macOS / Linux / Git Bash）。原生 cmd / PowerShell 下可参照「国内安装 · 方式一」的手动命令，把 `cn-skills` 换成 `npx skills@latest` 逐条执行即可。
 
 **方式一 · 一键安装（推荐，免下载仓库）**
 
