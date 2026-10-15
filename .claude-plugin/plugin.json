@@ -67,6 +67,7 @@
     "./skills/company/dp-session-forensics-cloud",
     "./skills/productivity/closed-loop",
     "./skills/productivity/skill-iterate",
-    "./skills/productivity/loop-driver"
+    "./skills/productivity/loop-driver",
+    "./skills/productivity/domain-modeling-wx"
   ]
 }
