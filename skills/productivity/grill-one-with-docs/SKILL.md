@@ -4,4 +4,4 @@ description: 单问版 grill-with-docs。一轮一问把计划或设计打磨清
 disable-model-invocation: true
 ---
 
-调用两次 Skill 工具："grill-one" 和 "domain-modeling"。
+调用两次 Skill 工具："grill-one" 和 "domain-modeling-wx"。

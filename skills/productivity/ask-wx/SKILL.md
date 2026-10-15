@@ -25,7 +25,7 @@ disable-model-invocation: true
    裁决结果：
 
    - **`/grill-one`**：快、单问、无文档沉淀。对自己已经比较清楚的需求，最快的入口。
-   - **`/grill-one-with-docs`**：同样单问，边问边把术语与决策写进术语表和 ADR。要纸面痕迹时的最轻选择。
+   - **`/grill-one-with-docs`**：同样单问，边问边把术语写进 GLOSSARY.md、关系/歧义写进 CONTEXT.md、决策写进 ADR。要纸面痕迹时的最轻选择。
    - matt 的 **`/grill-with-docs`**：多问、有状态、GLOSSARY + ADR 齐全，且他的 `/to-spec` 等下游原生读它的产物。确定走 matt 全流程时用这个。
    - **共识已定、进入技术选型** → **`/consensus-tech-research`**：比较库/框架，产出有证据的选型报告，喂给 `/to-spec`。
 
