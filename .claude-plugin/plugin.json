@@ -69,6 +69,7 @@
     "./skills/productivity/closed-loop",
     "./skills/productivity/skill-iterate",
     "./skills/productivity/loop-driver",
-    "./skills/productivity/domain-modeling-wx"
+    "./skills/productivity/domain-modeling-wx",
+    "./skills/productivity/handoff-wx"
   ]
 }
