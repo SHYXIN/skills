@@ -186,25 +186,7 @@ curl 兜底：
 
 ```bash
 curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/merge_requests/<iid>/approve"
-```
-
-**含中文（评论 body、MR 标题/描述等）的写操作别用 curl**——本机 Git Bash 下 curl `--data-urlencode` 发中文稳定 400，`body@file` 也读不到 `/tmp` 路径。用 python 发 JSON：
-
-```bash
-python - <<'PYEOF'
-import json, urllib.request, subprocess
-tok = subprocess.run(['git', 'credential', 'fill'],
-                     input='protocol=https\nhost=<host>\n',
-                     capture_output=True, text=True).stdout
-token = [l.split('=', 1)[1] for l in tok.splitlines() if l.startswith('password=')][0]
-body = {"body": "<评论内容，支持 @mention>"}
-req = urllib.request.Request(
-    'https://<host>/api/v4/projects/<ns>%2F<proj>/merge_requests/<iid>/notes',
-    data=json.dumps(body).encode('utf-8'),
-    headers={'PRIVATE-TOKEN': token, 'Content-Type': 'application/json'},
-    method='POST')
-print('note_id:', json.load(urllib.request.urlopen(req))['id'])
-PYEOF
+curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" --data-urlencode "body=<评论>" "$API/projects/$PROJ/merge_requests/<iid>/notes"
 ```
 
 ---
