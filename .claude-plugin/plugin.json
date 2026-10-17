@@ -40,7 +40,7 @@
     "./skills/productivity/rust-windows-setup",
     "./skills/productivity/setup-windows-mcp",
     "./skills/devops/gitlab-runner-provision",
-    "./skills/devops/gitlab-mr",
+    "./skills/devops/gitlab",
     "./skills/design/visualise",
     "./skills/design/visual-verdict",
     "./skills/design/tui-diagram",
