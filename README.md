@@ -264,6 +264,9 @@ npx rea-agents setup                                                            
 
 - **guided-book-reader** — 带读英文技术书 PDF 的工作流技能。用于认真阅读英文技术书、论文集或长篇 PDF：先读取和解析 PDF、转成 txt、按章节拆分，再用中文为主的 teach 风格逐小节讲解、出选择题检查理解，并把每节阅读总结追加到 notes markdown。
 
+- **handoff-wx** — 把当前对话压缩成交接文档，供下一个 agent 会话无缝接手。适用于任何场景（开发/调研/写作/协作），不限代码。存储按序探测当前目录的 `temp/handoffs/` → `tmp/handoffs/`，都没有则退回 OS 临时目录；文件名 `YYYY-MM-DD_HHMM_主题.md`。保留原版纪律：不复制已有工件（只给路径/URL 指针）、脱敏、参数=下个会话重点。改编自 mattpocock/skills 的 handoff，与其存取策略不同。user-invoked。
+- **domain-modeling-wx** — 构建并打磨项目的领域模型：讨论代码库术语、写/改 GLOSSARY.md（术语层，与 matt 上游完全兼容）、CONTEXT.md（关系/对话/歧义 wx 扩展层）或记录 ADR 时使用。
+
 - **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，避免一次抛出多个问题。适合用户明确要求“一次只问一个问题”或希望更慢、更聚焦的设计访谈。
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling-wx 把术语写进 GLOSSARY.md（与 matt 上游兼容）、术语关系/歧义写进 CONTEXT.md、决策写进 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
 - **find-session** — 跨 agent CLI 检索历史会话并给出 resume 命令。通过本机常驻的 agent-sessions 服务（127.0.0.1:8390）跨 codebuddy/claude/codex/pi/copilot 五源检索：内容线索走全文搜索、时间线索走按月分桶浏览，命中后可预览确认再给可直接执行的 resume 命令（孤儿会话注明不可恢复）。当用户说「找一下之前那条对话」「忘了在哪个 agent 里聊的」时触发。
@@ -406,7 +409,8 @@ skills/
 │   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
 │   ├── setup-windows-mcp/  # 新机器安装注册 Windows-MCP 桌面自动化（codebuddy/claude/codex 三件套）
 │   ├── setup-opencli/  # OpenCLI 浏览器桥接配置：CLI + Chrome 扩展 + doctor 验证
-│   └── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊
+│   ├── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊
+│   └── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 ├── design/            # 设计 / 可视化类技能
