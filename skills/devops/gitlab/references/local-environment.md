@@ -57,6 +57,16 @@ TOK=$(awk '/gitlab\.deepexi\.com:/{f=1} f&&/token:/{gsub(/.*token: */,"");print;
 - 常见 project 路径形如 `deepsense/<repo>`，curl 时 URL 编码为 `deepsense%2F<repo>`
 - REST API 端点：`https://gitlab.deepexi.com/api/v4/`
 
+## 3.5 中文内容写操作 → curl 400，用 python urllib JSON
+
+**现象**（2026-10-17 实测，deepworks !1251 评论 / monorepo !136 建 MR 双双中招）：
+
+- `curl --data-urlencode "body=<中文>"` POST notes → **400 Bad Request**，稳定复现
+- `curl --data-urlencode "title=<中文>"` 建 MR → 同样 400；`--data-urlencode "body@/tmp/x.txt"` → curl 报读文件错误（Git Bash 的 /tmp 与原生 curl 路径不互通）
+- 换英文 title 可过；中文 body 没得绕
+
+**结论**：凡是 **POST/PUT 带中文内容**（评论、MR 标题/描述、issue 等），直接用 python `urllib` 发 JSON（`json.dumps(...).encode('utf-8')` + `Content-Type: application/json`），token 仍从 `git credential fill` 取。模板见 SKILL.md 场景 6。纯 ASCII 的表单字段（reviewer_ids、labels 等）curl 照常可用。
+
 ---
 
 ## 4. 分支策略约定（公司仓库）
