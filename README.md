@@ -313,6 +313,8 @@ npx rea-agents setup                                                            
 
 - **setup-opencli** — 在一台新机器上配置 OpenCLI 浏览器桥接：让 agent 通过 Chrome 扩展操控用户日常 Chrome（带全部登录态）。覆盖前置检查、npm 安装 CLI、引导安装 Chrome 扩展、opencli doctor 验证、冒烟测试与常见排障（扩展 Reconnecting、daemon 未启动等）。手动调用（/setup-opencli）。
 
+- **setup-claude-code** — 在新机器上初始化 Claude Code 两项关键设置：`skipWebFetchPreflight`（跳过 WebFetch 域名预检，解决国内网络 "Unable to verify if domain is safe to fetch" 报错）和 `permissions.defaultMode: bypassPermissions`（完全权限免确认框）。幂等改写 `~/.claude/settings.json`，含 JSON 校验、生效条件说明与 4 条踩坑记录。手动调用（/setup-claude-code）。
+
 ### DevOps
 
 - **gitlab-runner-provision** — GitLab Runner 新机器部署全流程引导：SSH 免登录 → 安装 Docker → 安装/注册 GitLab Runner → 最小 CI/CD 流水线跑通。半自动（scripts/ 做检测/生成/校验），通用化不绑定具体机器，验收标准是 push hello-world 流水线变绿。
@@ -409,6 +411,7 @@ skills/
 │   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
 │   ├── setup-windows-mcp/  # 新机器安装注册 Windows-MCP 桌面自动化（codebuddy/claude/codex 三件套）
 │   ├── setup-opencli/  # OpenCLI 浏览器桥接配置：CLI + Chrome 扩展 + doctor 验证
+│   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
 │   ├── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊
 │   └── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 ├── frontend/           # 前端开发类技能
