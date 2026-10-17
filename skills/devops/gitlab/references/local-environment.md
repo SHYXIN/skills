@@ -16,15 +16,28 @@
 
 ---
 
-## 2. token 位置
+## 2. token 获取
 
-token 在 glab 配置文件：
+**首选：`git credential fill`**（走 credential.helper=manager，一步直出，2026-10-17 实测）：
+
+```bash
+TOK=$(git credential fill <<'EOF' | sed -n 's/^password=//p'
+protocol=https
+host=gitlab.deepexi.com
+EOF
+)
+```
+
+- 输出是多行键值（`protocol=` / `host=` / `username=` / `password=`），只取 `password=` 行（`glpat-` 开头，26 位）。
+- 如果 credential manager 里没存该 host，此命令会挂起等待输入——非交互环境下注意，改用下面的 glab config 方式。
+
+**备选：glab 配置文件**：
 
 ```text
 C:\Users\<用户>\AppData\Local\glab-cli\config.yml
 ```
 
-取 `gitlab.deepexi.com` 段下的 `token:`（`glpat-` 开头，26 位）。
+取 `gitlab.deepexi.com` 段下的 `token:`。
 
 **提取坑**：config 里 `gitlab.com` 段也有一个 `token:`（**空值**），`grep "token:"` 会先抓到那个空的。要取 `gitlab.deepexi.com` 段下那一行。
 

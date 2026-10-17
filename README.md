@@ -317,7 +317,7 @@ npx rea-agents setup                                                            
 
 - **gitlab-runner-provision** — GitLab Runner 新机器部署全流程引导：SSH 免登录 → 安装 Docker → 安装/注册 GitLab Runner → 最小 CI/CD 流水线跑通。半自动（scripts/ 做检测/生成/校验），通用化不绑定具体机器，验收标准是 push hello-world 流水线变绿。
 
-- **gitlab-mr** — GitLab 远端协作操作技能（只做平台层，本地 git 流程归 branch-management）：MR 创建/查看/合并/关闭/rebase、指定审核者(reviewer)与指派人(assignee)、labels/milestone、approve 与评论讨论；内置 glab 优先 + 挂死/误报 422 时改 curl + PRIVATE-TOKEN 直连 API 的兜底，以及合并前 merge-tree 冲突预检。通用化不绑定实例，本机/公司特有信息隔离在 references/。凡是涉及 GitLab 远端协作（MR、评审、指派、合并、讨论）的任务触发。
+- **gitlab** — GitLab 平台操作技能（只做平台层，本地 git 流程归 branch-management）：MR 创建/查看/合并/关闭/rebase、指定审核者(reviewer)与指派人(assignee)、labels/milestone、approve 与评论讨论；MR 之外的 REST API 调用、CI pipeline 查询、tag/发布操作、token/凭据获取；内置 glab 优先 + 挂死/误报 422 时改 curl + PRIVATE-TOKEN 直连 API 的兜底，以及合并前 merge-tree 冲突预检。通用化不绑定实例，本机/公司特有信息隔离在 references/。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、凭据的任务触发。
 
 ### 个人
 
@@ -439,7 +439,7 @@ skills/
 │   ├── dp-console-admin/  # 管理面资源管理 CLI（CDP 桥接：建/发布/绑定专家/Skill/团 + 删除清理）
 ├── devops/            # 运维 / CI-CD 类技能
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
-│   └── gitlab-mr/  # GitLab 远端协作（MR 生命周期 / reviewer·assignee / approve / glab→curl 兜底）
+│   └── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·凭据 / reviewer·assignee / glab→curl 兜底）
 ├── personal/          # 个人效率类技能
 │   └── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
 └── skill-curator/     # 技能市场策展（plugin.json / README / 磁盘三者一致）

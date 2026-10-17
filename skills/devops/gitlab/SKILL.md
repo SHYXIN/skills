@@ -1,11 +1,11 @@
 ---
-name: gitlab-mr
-description: GitLab 远端协作操作技能。覆盖 MR 生命周期（创建/查看/合并/关闭/rebase）、指定审核者(reviewer)与指派人(assignee)、labels/milestone、approve 与评论讨论；并内置调用方式与坑（glab 优先，挂死/误报 422 时改 curl + PRIVATE-TOKEN 直连 API）与合并前 merge-tree 冲突预检。凡是涉及 GitLab 远端协作（MR、评审、指派、合并、讨论）的任务就用本技能。本地 git 流程（建分支 / commit / push）见 branch-management。
+name: gitlab
+description: GitLab 平台操作技能，覆盖任意 GitLab 实例的全部远端交互：MR 生命周期（创建/查看/合并/关闭/rebase）、reviewer/assignee、labels/milestone、approve 与评论讨论；以及 REST API 调用（curl + PRIVATE-TOKEN）、CI pipeline 查询、tag/发布操作、token/凭据获取。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、凭据的任务就用本技能。本地 git 流程（建分支 / commit / push）见 branch-management。
 ---
 
-# GitLab MR 远端协作（gitlab-mr）
+# GitLab 平台操作（gitlab）
 
-在**任意 GitLab 实例**上完成"把 MR 从建到合、并把人和标签挂对"的闭环。本技能只做 **GitLab 平台层**（远端协作），不碰本地 git 流程。
+在**任意 GitLab 实例**上完成两类事：一是"把 MR 从建到合、并把人和标签挂对"的闭环，二是 MR 之外的**平台层操作**——调 REST API、查 CI pipeline、打/验 tag、拿凭据。本技能只做 **GitLab 平台层**，不碰本地 git 流程。
 
 ## 定位与边界
 
@@ -13,8 +13,9 @@ description: GitLab 远端协作操作技能。覆盖 MR 生命周期（创建/�
 | --- | --- |
 | 建分支、commit、push、rebase 本地分支、合并后清理本地分支 | `branch-management` |
 | **MR 创建/查看/合并/关闭/rebase、reviewer/assignee、labels/milestone、approve、评论讨论** | **本技能** |
+| **REST API 调用、pipeline 查询、tag 操作、token/凭据获取** | **本技能** |
 
-两者互补：本地流程走 `branch-management`，一旦要动 GitLab 远端（MR 及人员/标签），走本技能。
+两者互补：本地流程走 `branch-management`，一旦要动 GitLab 平台层（MR、API、pipeline、tag、凭据），走本技能。
 
 > 本机 / 公司特有的信息（glab 挂死兜底、token 位置、公司 host、分支策略约定）见 [references/local-environment.md](references/local-environment.md)。SKILL.md 主体保持通用。
 
@@ -46,7 +47,11 @@ description: GitLab 远端协作操作技能。覆盖 MR 生命周期（创建/�
 curl 通用形态：
 
 ```bash
-TOK=$(<从 glab config 取当前 host 的 token>)   # 位置见 references/local-environment.md
+TOK=$(git credential fill <<EOF | sed -n 's/^password=//p'
+protocol=https
+host=<host>
+EOF
+)   # 见 references/local-environment.md；备选 glab config 提取
 PROJ="<namespace>%2F<project>"
 API="https://<host>/api/v4"
 curl -fsS -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/merge_requests/<iid>"
@@ -183,6 +188,31 @@ curl 兜底：
 curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/merge_requests/<iid>/approve"
 curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" --data-urlencode "body=<评论>" "$API/projects/$PROJ/merge_requests/<iid>/notes"
 ```
+
+---
+
+## 场景 7：MR 之外的 API 调用（pipeline / tag / 通用端点）
+
+MR 生命周期外的平台操作直接用 curl 通用形态（见"调用方式"），常用端点：
+
+```bash
+# 查 pipeline（按 ref，如某分支或某 tag）
+curl -fsS -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/pipelines?ref=<ref>&per_page=3"
+# 查单个 pipeline 的 jobs
+curl -fsS -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/pipelines/<pid>/jobs"
+# 查 tag 及其指向
+curl -fsS -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/repository/tags/<tag>"
+# 创建 tag（触发 tag 驱动的发布流水线时）
+curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" \
+  --data-urlencode "tag_name=v1.2.3" --data-urlencode "ref=<commit-or-branch>" \
+  "$API/projects/$PROJ/repository/tags"
+```
+
+要点：
+
+- project 路径一律 URL 编码（`<namespace>%2F<project>`）。
+- 本地打 tag 也可以走 git（`git tag vX.Y.Z <ref> && git push origin vX.Y.Z`），走 API 的好处是可与后续验证在同一脚本里完成。
+- tag 推送 / 删除、发布流水线触发属于发布动作，执行前须用户确认。
 
 ---
 
