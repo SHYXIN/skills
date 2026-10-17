@@ -1,6 +1,6 @@
 ---
 name: setup-claude-code
-description: "在一台新机器上初始化 Claude Code 的两项关键设置：skipWebFetchPreflight（跳过 WebFetch 域名预检，解决国内网络下 'Unable to verify if domain is safe to fetch' 报错）和 permissions.defaultMode: bypassPermissions（完全权限，不再弹确认框）。幂等改写 ~/.claude/settings.json，含 JSON 校验。首次配置 Claude Code、或 WebFetch 报域名校验错误、或想关掉权限确认框时使用。"
+description: "在一台新机器上初始化 Claude Code 的关键设置：skipWebFetchPreflight（跳过 WebFetch 域名预检，解决国内网络下 'Unable to verify if domain is safe to fetch' 报错）、permissions.defaultMode: bypassPermissions（完全权限，不再弹确认框），以及可选的 windows-mcp 注册（已装则跳过，未装转交 setup-windows-mcp）。幂等改写 ~/.claude/settings.json，含 JSON 校验。首次配置 Claude Code、或 WebFetch 报域名校验错误、或想关掉权限确认框时使用。"
 ---# Claude Code 设置初始化（skipWebFetchPreflight + bypassPermissions）
 
 ## 这个 skill 解决什么
@@ -92,6 +92,42 @@ python -c "import json, os; d=json.load(open(os.path.expanduser('~/.claude/setti
 - `defaultMode` 需要**重启 claude** 才加载
 - 重启后用 WebFetch 抓任意网页验证不再报域名校验错误
 
+## Step 4 ——（可选）windows-mcp 注册探测
+
+Windows 桌面自动化 MCP（截屏、点击、UI 树）在 Claude Code 里走 `~/.claude.json` 顶层 `mcpServers`。**幂等探测，已配好就跳过，不重复注册**：
+
+```bash
+python -c "import json, os; d=json.load(open(os.path.expanduser('~/.claude.json'), encoding='utf-8')); s=d.get('mcpServers', {}).get('windows-mcp'); print(json.dumps(s, indent=2) if s else 'NOT REGISTERED')"
+```
+
+三种情况：
+
+1. **已注册且 `command` 指向的 uvx.exe 存在** → 告知用户已配好，跳过本步
+2. **已注册但 uvx.exe 路径失效** → 重新探测本机 uvx（`where uvx` / `~/.local/bin/uvx.exe` / `%LOCALAPPDATA%/hermes/bin/uvx.exe`），用 Python 增改该条目；uvx 本身没了则归入情况 3
+3. **未注册 / uvx 未安装** → **转交 `setup-windows-mcp` skill**（覆盖 uv 安装、国内镜像加速、三 CLI 注册），本 skill 不重复造轮子
+
+情况 2 的快速修复（探测到新 uvx 路径后）：
+
+```bash
+python - <<'EOF'
+import json, os
+p = os.path.expanduser('~/.claude.json')
+with open(p, encoding='utf-8') as f:
+    d = json.load(f)
+d.setdefault('mcpServers', {})['windows-mcp'] = {
+    "type": "stdio",
+    "command": r"<探测到的 uvx.exe 全路径>",
+    "args": ["windows-mcp", "serve"],
+    "env": {},
+}
+with open(p, 'w', encoding='utf-8') as f:
+    json.dump(d, f, ensure_ascii=False, indent=2)
+print('windows-mcp re-registered ->', p)
+EOF
+```
+
+验证：`"C:/path/to/uvx.exe" windows-mcp --help` 能输出 Usage 即为可运行；MCP 连接需重启 claude 生效。
+
 ---
 
 ## 踩坑记录
@@ -100,3 +136,4 @@ python -c "import json, os; d=json.load(open(os.path.expanduser('~/.claude/setti
 2. **`skipWebFetchPreflight` 放错层级**：放进 `env` 对象里无效，必须是 settings.json 顶层字段。
 3. **第三方 API 的第二层坑**：预检跳过后，WebFetch 内部还要调小模型做摘要。若走第三方中转（`ANTHROPIC_BASE_URL` 非官方），需确保 `ANTHROPIC_DEFAULT_HAIKU_MODEL` 指向中转支持的模型，否则 fetch 会静默退化成 curl。
 4. **代理端口想当然**：挂代理解决预检时，别照搬经典的 7890——先 `netstat -an | grep LISTEN` 看本机代理真实端口（如 Clash Verge 默认 7897）。端口写错会导致所有 API 流量 ConnectionRefused。用了 `skipWebFetchPreflight` 后则不再依赖代理。
+5. **windows-mcp 的 uvx 路径漂移**：`~/.claude.json` 里注册的是 uvx **绝对路径**，uv 升级换目录（如 `hermes/bin` → `.local/bin`）后路径失效，MCP 连接静默失败。修法不是重装包，是探测新路径后改注册条目。

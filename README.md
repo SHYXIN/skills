@@ -313,7 +313,7 @@ npx rea-agents setup                                                            
 
 - **setup-opencli** — 在一台新机器上配置 OpenCLI 浏览器桥接：让 agent 通过 Chrome 扩展操控用户日常 Chrome（带全部登录态）。覆盖前置检查、npm 安装 CLI、引导安装 Chrome 扩展、opencli doctor 验证、冒烟测试与常见排障（扩展 Reconnecting、daemon 未启动等）。手动调用（/setup-opencli）。
 
-- **setup-claude-code** — 在新机器上初始化 Claude Code 两项关键设置：`skipWebFetchPreflight`（跳过 WebFetch 域名预检，解决国内网络 "Unable to verify if domain is safe to fetch" 报错）和 `permissions.defaultMode: bypassPermissions`（完全权限免确认框）。幂等改写 `~/.claude/settings.json`，含 JSON 校验、生效条件说明与 4 条踩坑记录。手动调用（/setup-claude-code）。
+- **setup-claude-code** — 在新机器上初始化 Claude Code 关键设置：`skipWebFetchPreflight`（跳过 WebFetch 域名预检，解决国内网络 "Unable to verify if domain is safe to fetch" 报错）、`permissions.defaultMode: bypassPermissions`（完全权限免确认框），以及可选的 windows-mcp 注册探测（已装跳过、未装转交 setup-windows-mcp）。幂等改写 `~/.claude/settings.json`，含 JSON 校验、生效条件说明与 5 条踩坑记录。手动调用（/setup-claude-code）。
 
 ### DevOps
 
