@@ -48,6 +48,7 @@
     "./skills/personal/weekly-report",
     "./skills/skill-curator",
     "./skills/productivity/agent-config-tidy",
+    "./skills/productivity/agent-config-lint",
     "./skills/productivity/worktree",
     "./skills/company/dp-deepworks-dev-start",
     "./skills/company/dp-knowledge-compile",
