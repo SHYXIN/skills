@@ -325,6 +325,8 @@ npx rea-agents setup                                                            
 
 - **weekly-report** — 周报生成器。把多人的例会全文（如钉钉/飞书导出的周会记录）整理成单人周报邮件正文，自动提取指定成员（默认 王鑫）的「本周内容/进度」与「下周计划」，并起草「新技术/个人思考」一段，输出带主题行的三段式邮件正文。调用：`/weekly-report [成员名]`。
 
+- **wx-flow** — 个人全任务流程驱动器（适用于所有代码任务，不限仓库）。五个阶段：需求澄清（grill）→ 隔离判断（worktree 硬裁决）→ 开发 → 收尾验证（按改动类型分流提示）→ MR + 清理（固定衔接 branch-management 与 worktree 场景 3）。AI 领路，每个阶段收口处停下等用户拍板后再进下一阶段。调用：`/wx-flow`。
+
 ### 前端开发
 
 - **miniprogram-iconfont** — 微信小程序 Iconfont 图标集成。从 iconfont.cn 挑选下载图标，自动替换字体文件、更新 CSS、扫描并替换 WXML/JS 中的 emoji 为 iconfont 类名。引导式交互 + 自动化脚本，覆盖完整的图标集成流程。
@@ -444,7 +446,8 @@ skills/
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 │   └── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·凭据 / reviewer·assignee / glab→curl 兜底）
 ├── personal/          # 个人效率类技能
-│   └── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
+│   ├── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
+│   └── wx-flow/        # 个人全任务流程驱动器（grill → 隔离 → 开发 → 验证 → 清理）
 └── skill-curator/     # 技能市场策展（plugin.json / README / 磁盘三者一致）
 ```
 
