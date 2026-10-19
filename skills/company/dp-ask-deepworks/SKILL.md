@@ -44,6 +44,29 @@ python <skill_dir>/scripts/ask_local_deepworks.py \
 - `--working-dir-note` 可选：附加背景说明，会和问题一起给 agent
 - `--dry-run`：只打印要发的消息不真调，先给用户确认
 
+## 多轮对话（复用既有会话）
+
+默认每次运行新建会话；加 `--session` 可在**既有会话**里继续追问（和 DeepWorks UI 里看到的是同一个会话，含完整历史）：
+
+```bash
+# 继续最近一次脚本跑的会话
+python <skill_dir>/scripts/ask_local_deepworks.py \
+  --message "继续，回答我上一条的反问" \
+  --session last --working-dir "C:/path/to/工作区"
+
+# 指定会话 id（可用 --list-sessions 查，或填 UI 里已有会话的 id）
+python <skill_dir>/scripts/ask_local_deepworks.py \
+  --message "..." --session ses_xxxxxxxx --working-dir "C:/path/to/工作区"
+
+# 只读：不发消息，取某会话最新的最终回答（适合轮询一个正在跑的长任务）
+python <skill_dir>/scripts/ask_local_deepworks.py \
+  --read --session last --working-dir "C:/path/to/工作区"
+```
+
+- `--session last` 从 out-dir 日志里取最近未删除的会话；要操控 UI 里手动建的会话，直接传它的 `ses_xxx` id
+- 复用的会话也会记入 out-dir 日志（`resumed: true`），`--delete-session last` 照常可清理
+- 典型多轮循环：发消息（省略 `--session`）→ 拿回答 → 需要追问再带 `--session last` 发下一条 → 中途可用 `--read` 反复查最新回答而不打扰 agent
+
 ## 盘点 / 删除会话（清理历史）
 
 每次运行（含超时/失败）都会在 out-dir 记录 session_id，之后可盘点与清理：

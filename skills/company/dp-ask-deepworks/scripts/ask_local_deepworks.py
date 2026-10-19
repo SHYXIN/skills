@@ -16,6 +16,14 @@ Usage:
       [--model "dth/DeepSeek-V4.1-Flash"] [--working-dir-note "背景"] \
       [--timeout 900] [--out-dir <dir>] [--dry-run]
 
+  # Multi-turn: keep talking in an EXISTING session (same one the DeepWorks UI shows)
+  python ask_local_deepworks.py --message "继续，回答我上一条的反问" \
+      --session last --working-dir "C:/path/to/workspace"
+  python ask_local_deepworks.py --message "..." --session ses_xxxxxxxx [...]
+
+  # Read-only: fetch the latest final answer of a session without sending anything
+  python ask_local_deepworks.py --read --session last --working-dir "C:/path/to/workspace"
+
   python ask_local_deepworks.py --delete-session <id|last> [--working-dir ...] [--env ...]
   python ask_local_deepworks.py --delete-ask-sessions [--working-dir ...] [--env ...]
 
@@ -103,11 +111,15 @@ def resolve_workspace_id(host: dict, working_dir: Path) -> str:
     raise RuntimeError(f"workspace not visible from /workspaces: {working_dir}")
 
 
-def final_assistant_text(messages: list) -> str:
+def final_assistant_text(messages: list, exclude_ids: set | None = None) -> str:
     for message in reversed(messages):
         info = message.get("info", {})
         if info.get("role") != "assistant" or info.get("finish") != "stop":
             continue
+        if exclude_ids:
+            mid = str(info.get("id") or message.get("id") or "")
+            if mid and mid in exclude_ids:
+                continue  # resumed session: skip answers that existed before this prompt
         text = "\n".join(str(p.get("text", "")) for p in message.get("parts", []) if p.get("type") == "text")
         if text.strip():
             return text
@@ -200,6 +212,13 @@ def main() -> int:
                     help="delete ALL sessions recorded in out-dir logs (every run of this script), then exit")
     ap.add_argument("--list-sessions", nargs="?", const="20", default="", metavar="N",
                     help="list the N most recent sessions in the workspace (default 20), then exit")
+    ap.add_argument("--session", default="", metavar="ID|last",
+                    help="continue an EXISTING session instead of creating one: pass a session id, "
+                         "or 'last' (the most recent live session recorded in out-dir logs). "
+                         "Enables multi-turn dialogue with the same session the DeepWorks UI shows.")
+    ap.add_argument("--read", action="store_true",
+                    help="read-only: print the latest final answer of --session (or 'last') "
+                         "without sending any message, then exit")
     args = ap.parse_args()
 
     wd = Path(args.working_dir).resolve() if args.working_dir else None
@@ -233,6 +252,36 @@ def main() -> int:
             shown += 1
         if not shown:
             print("(no sessions)")
+        return 0
+
+    # ----- read mode: fetch latest answer of an existing session, send nothing -----
+    if args.read:
+        if wd is None:
+            print("FAIL: --working-dir is required for --read", file=sys.stderr)
+            return 2
+        target = args.session.strip() or "last"
+        if target == "last":
+            target = find_last_session_id(Path(args.out_dir), args.env)
+            if not target:
+                print(f"FAIL: --read --session last: no live session id in out-dir logs for env={args.env} "
+                      "(pass --session <id> explicitly)", file=sys.stderr)
+                return 2
+        log(f"environment: {args.env} ({ENV_DIRS[args.env]})")
+        host = read_host_info(wd, args.env)
+        workspace_id = resolve_workspace_id(host, wd)
+        base = f"{host['base_url']}/workspace/{urllib.parse.quote(workspace_id)}/opencode"
+        headers = {**host["headers"], "x-opencode-directory": str(wd)}
+        url = (f"{base}/session/{urllib.parse.quote(target)}/message"
+               f"?limit=200&directory={urllib.parse.quote(str(wd))}")
+        payload = request_json(url, headers=headers)
+        messages = payload if isinstance(payload, list) else (payload.get("items", []) if isinstance(payload, dict) else [])
+        answer = final_assistant_text(messages)
+        if not answer:
+            print(f"FAIL: no final assistant answer found in session {target}", file=sys.stderr)
+            return 1
+        print("\n===== ANSWER =====\n")
+        print(answer)
+        print(f"\n-----\nsession: {target}")
         return 0
 
     # ----- delete modes (need desktop up + working dir, but no prompting) -----
@@ -278,7 +327,7 @@ def main() -> int:
         return 0
 
     if not message.strip():
-        print("FAIL: --message is required (or use --delete-session / --delete-ask-sessions)",
+        print("FAIL: --message is required (or use --read / --delete-session / --delete-ask-sessions)",
               file=sys.stderr)
         return 2
 
@@ -302,30 +351,64 @@ def main() -> int:
     log("resolve workspace", f"{wd}")
     workspace_id = resolve_workspace_id(host, wd)
     base = f"{host['base_url']}/workspace/{urllib.parse.quote(workspace_id)}/opencode"
-    log("creating session", f"workspace_id={workspace_id} agent={args.agent}")
-    session = request_json(
-        f"{base}/session", method="POST", headers=host["headers"],
-        body={"directory": str(wd), "title": f"ask-local {datetime.now().strftime('%Y%m%d-%H%M%S')}",
-              "agent": args.agent},
-    )
-    session_id = session.get("id") or session.get("sessionID") if isinstance(session, dict) else None
-    if not session_id:
-        raise RuntimeError(f"create session did not return id: {session}")
-    log("session created", f"session_id={session_id}")
+
+    resume_target = args.session.strip()
+    if resume_target == "last":
+        resume_target = find_last_session_id(Path(args.out_dir), args.env)
+        if not resume_target:
+            print(f"FAIL: --session last: no live session id in out-dir logs for env={args.env} "
+                  "(pass --session <id> explicitly)", file=sys.stderr)
+            return 2
+
+    if resume_target:
+        session_id = resume_target
+        log("resuming session", f"session_id={session_id}")
+    else:
+        log("creating session", f"workspace_id={workspace_id} agent={args.agent}")
+        session = request_json(
+            f"{base}/session", method="POST", headers=host["headers"],
+            body={"directory": str(wd), "title": f"ask-local {datetime.now().strftime('%Y%m%d-%H%M%S')}",
+                  "agent": args.agent},
+        )
+        session_id = session.get("id") or session.get("sessionID") if isinstance(session, dict) else None
+        if not session_id:
+            raise RuntimeError(f"create session did not return id: {session}")
+        log("session created", f"session_id={session_id}")
 
     # Record the session id immediately so --delete-session/--delete-ask-sessions
-    # can clean it up even if this run later times out.
+    # can clean it up even if this run later times out. Resumed sessions are
+    # recorded too (status marks them, and mark_session_deleted stays idempotent).
     out_dir_early = Path(args.out_dir)
     out_dir_early.mkdir(parents=True, exist_ok=True)
     record_path = out_dir_early / f"{datetime.now().strftime('%Y%m%d-%H%M%S')}.log.json"
     record_path.write_text(json.dumps({
         "env": args.env, "session_id": session_id, "working_dir": str(wd),
+        "resumed": bool(resume_target),
         "status": "started", "steps": LOG_STEPS,
     }, ensure_ascii=False, indent=1), encoding="utf-8")
     log("session recorded", record_path.name)
 
     prompt_headers = {**host["headers"], "x-opencode-directory": str(wd)}
     prompt_body: dict = {"agent": args.agent, "parts": [{"type": "text", "text": message}]}
+
+    # Resumed session: snapshot pre-existing assistant message ids BEFORE sending,
+    # so the poll loop only accepts answers produced after this prompt.
+    prior_answer_ids: set = set()
+    if resume_target:
+        try:
+            snap_url = (f"{base}/session/{urllib.parse.quote(session_id)}/message"
+                        f"?limit=500&directory={urllib.parse.quote(str(wd))}")
+            snap = request_json(snap_url, headers=prompt_headers)
+            snap_msgs = snap if isinstance(snap, list) else (snap.get("items", []) if isinstance(snap, dict) else [])
+            for m in snap_msgs:
+                info = m.get("info", {}) if isinstance(m, dict) else {}
+                if info.get("role") == "assistant":
+                    mid = str(info.get("id") or m.get("id") or "")
+                    if mid:
+                        prior_answer_ids.add(mid)
+            log("baseline answers", f"{len(prior_answer_ids)} prior assistant messages")
+        except Exception as exc:  # noqa: BLE001 - baseline is an optimization; fail open
+            log("baseline snapshot failed, polling may match an old answer", str(exc)[:100])
     if args.model:
         # Verified 2026-10-12: "model" must be an OBJECT here; a plain string is
         # rejected by payload schema and the prompt is silently dropped.
@@ -345,11 +428,15 @@ def main() -> int:
                f"?limit=200&directory={urllib.parse.quote(str(wd))}")
         payload = request_json(url, headers=prompt_headers)
         messages = payload if isinstance(payload, list) else (payload.get("items", []) if isinstance(payload, dict) else [])
-        if final_assistant_text(messages):
+        if final_assistant_text(messages, exclude_ids=prior_answer_ids or None):
             break
         time.sleep(2)
 
-    answer = final_assistant_text(messages)
+    answer = final_assistant_text(messages, exclude_ids=prior_answer_ids or None)
+    if not answer and prior_answer_ids:
+        raise TimeoutError(
+            f"no NEW assistant answer within {args.timeout}s (session {session_id} has "
+            f"{len(prior_answer_ids)} prior answers that were excluded)")
     if not answer:
         raise TimeoutError(f"no final assistant answer within {args.timeout}s: {session_id}")
     latency = time.perf_counter() - t0
@@ -362,11 +449,13 @@ def main() -> int:
     log_path = record_path
     answer_path.write_text(
         f"# ask-local {stamp}\n\n- env: {args.env}\n- workspace: {wd}\n- model: {args.model}\n"
+        f"- session: {session_id}{' (resumed)' if resume_target else ' (new)'}\n"
         f"- latency: {latency:.1f}s\n\n## 提问\n\n{args.message}\n\n## 回答\n\n{answer}\n",
         encoding="utf-8",
     )
     log_path.write_text(json.dumps({
         "env": args.env, "session_id": session_id, "workspace_id": workspace_id, "working_dir": str(wd),
+        "resumed": bool(resume_target),
         "latency_seconds": round(latency, 1), "steps": LOG_STEPS,
         "messages_tail": json.dumps(messages, ensure_ascii=False)[-4000:],
     }, ensure_ascii=False, indent=1), encoding="utf-8")
