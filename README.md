@@ -37,6 +37,9 @@ cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,cod
 
 # 6) asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读（无 Gitee 镜像，直连 GitHub）
 cn-skills add danyuchn/asd-ste100-skill --yes --global --agent codebuddy,claude-code,codex,workbuddy
+
+# 7) 公司内部 dp-* 技能（DeepWorks 工具链，已迁公司 GitLab，需内网权限；装完见 ask-dp 路由器说明）
+git clone https://gitlab.deepexi.com/deepsense/skills.git /tmp/deepsense-skills && cn-skills add /tmp/deepsense-skills/wangxin --yes --global --agent codebuddy,claude-code,codex,workbuddy && rm -rf /tmp/deepsense-skills
 ```
 
 > 说明：`--agent` 逗号分隔列表在 PowerShell / CMD / Git Bash 下均可直接使用（`cn-skills-cli >= 0.1.16`）。装完可用 `cn-skills update` 随时更新（详见下方「更新（国内）」）。
@@ -124,6 +127,9 @@ npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code c
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
 npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code codex hermes-agent
+
+# 公司内部 dp-* 技能（DeepWorks 工具链，已迁公司 GitLab，需内网权限）
+git clone https://gitlab.deepexi.com/deepsense/skills.git /tmp/deepsense-skills && npx skills@latest add /tmp/deepsense-skills/wangxin -y -g -a codebuddy claude-code codex hermes-agent && rm -rf /tmp/deepsense-skills
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
@@ -344,19 +350,9 @@ npx rea-agents setup                                                            
 - **tdd-pstack** — pstack 版 TDD Bug Fix：只在有明确、便宜的测试落点时，把 bug 先写成失败测试再改产品代码；测试难写/昂贵/依赖端到端时明确跳过，用最接近的可执行回归检查替代。与 matt 版 `tdd`（完整 red-green-refactor 参考）并存。
 - **teach-pstack** — pstack 版 Teach：把一段工作讲清楚让人真正理解。内部运行 pstack 自有的 `how` / `why` 技能，把结果揉成一段平实讲解；只在用户想被「讲明白」时触发，不改动任何东西。与 matt 版 `teach`（跨会话有状态学习区）并存。
 
-### 公司
+### 公司（已迁出）
 
-- **dp-session-forensics** — DeepWorks 会话取证。查询本机 opencode.db（SQLite，只读）还原 agent 实际收到的注入、思考与工具调用，定位「agent 行为和预期不符」类问题；支持 list / injections / reasoning 对比 / dump / 导出双格式（交互式 HTML + jsonl）五个子命令。
-- **dp-deepworks-dev-start** — Windows 本地启动 DeepWorks 桌面开发环境：设置开发变量、启用 CLI 灰度、运行桌面构建并报告启动状态，适用于所有 DeepWorks 本地开发场景。
-- **dp-dev-bootstrap** — monorepo dev 环境一键体检（preflight）+ 确定性修复。检测依赖缺失、types 未构建、sidecar 缺失、native 模块 ABI 不匹配、Build Tools 未装、镜像未配等启动前置问题；轻量项 `--fix` 自动修，重量级（数 GB 安装/提权）只提示命令。声明式 profile 驱动，内置 deepworks，新仓库加 JSON 即支持；换新电脑跑一次即可拉齐环境。
-- **dp-knowledge-compile** — 把 xmind 诊断树/知识树一键编译成 deepworks 知识中心可加载的本地知识库。自动生成项目骨架、拉取线上 foil schema（或用本地基准）、编译实体与关系、三层校验（spec Zod / 实例 / list-outputs）全绿才交付。业务无关，换领域只改 mappings.yaml。手动调用（/dp-knowledge-compile）。
-- **dp-dth-key-setup** — 把 DeepWorks 桌面端企业账号的积分计费 DTH/TokenHub key 接入 pi coding agent。从 Electron localStorage (leveldb) 提取 modelPlatformApiKey（纯 Node 解析，含 snappy），写入 ~/.pi/agent 三件套并端到端验证；key 轮换后重跑即可。test/prod 网关按安装版本自动判定，预留 opencode 等其他 agent 扩展位。
-- **dp-ask-deepworks** — 向本机 DeepWorks 工作区 agent 单发一个问题并拿回答复（非测评，无 dataset/judge）。脚本自包含（纯标准库，任意目录可跑）：读桌面 token → localhost API → opencode session，消息原样发送，进度日志全程打印，回答与步骤日志落盘可回看。`--env prod|test` 选正式/测试桌面端。多轮对话：`--session last|ID` 在既有会话里继续追问（UI 同款会话含历史）、`--read` 只拉最新回答不发言。会话管理：`--list-sessions [N]` 盘点 → `--delete-session last|ID` 单删 → `--delete-ask-sessions` 批删（按环境过滤、已删自动跳过；详见 skill 内 SKILL.md）。前置：对应环境桌面端已打开目标工作区。
-- **dp-ask-teams** — 向 Agent Teams 云端 agent 单发一个任务并等到完成拿结果（非测评，不限领域）。脚本自包含（纯标准库，任意目录可跑）：IAM token 自动从已登录桌面端获取（零手填）→ 跨 project 解析专家 → chat session → SSE 流式等待（回退轮询），进度全程可见，结果与日志落盘。不带参数先列出全部可用专家。`--env test|prod` 切测试/正式云端；冷启动窗口到期自动续等。会话管理：`--list-sessions [N]` 盘点 → `--delete-session last|ID` 单删 → `--delete-ask-sessions` 批删（按环境过滤、已删自动跳过；详见 skill 内 SKILL.md）。注意：云端 runtime 首跑冷启动可能 10–21 分钟。
-- **dp-session-forensics-cloud** — DeepWorks 会话取证，一个入口管本地+云端。`--source teams` 查 Agent Teams 云端会话（云 API 拉会话列表/消息明细，IAM token 自动从已登录桌面端同步）；`--source local` 转发本地版查本机 opencode.db。list / dump / export（jsonl+markdown）三子命令，`--env prod|test` 双环境。实测端点：GET /api/chat/sessions[/{id}/messages]。
-- **dp-eval-run** — DeepWorks 回归评测。问题集 JSON 批量跑本地工作区 agent 或云端 Agent Teams，逐 case 打分（标记命中/禁词/超长/延迟），落盘 run 目录；diff 子命令对比两轮出 markdown 报告；cleanup 一键删除评测会话。兼容 agent-eval JSONL。闭环：改知识库 → baseline → after → diff → 取证。
-- **dp-console-admin** — DeepWorks 管理面 CLI：在管理控制台层面创建/发布/绑定专家（agent）、Skill、专家团（squad），列出 runtime，删除测试资源。当用户说「建一个专家」「创建 skill 并发布」「给专家配 skill」「组个专家团」「清理测试专家」，或要在 DeepWorks 管理界面批量做资源管理时触发。走受控 Chrome + CDP 桥接（需 console 会话，不支持桌面端 token），首次运行自动登录。
-- **ask-dp** — DeepWorks 技能闭环路由器。一张闭环地图（准备/知识/执行/诊断/回归五层）+ preflight 环境体检（双环境桌面端端口活性、teams token、deepworks 仓库、python/node），按用户意图路由到对应 dp-* 技能，缺项打印影响面。当任务要串多个 dp-* 技能时先走这里。
+公司内部 dp-* 技能（DeepWorks 工具链：ask-dp / dp-ask-deepworks / dp-ask-teams / dp-eval-run / dp-session-forensics(-cloud) / dp-dev-bootstrap / dp-deepworks-dev-start / dp-knowledge-compile / dp-dth-key-setup / dp-console-admin）**已迁移到公司 GitLab [deepsense/skills](https://gitlab.deepexi.com/deepsense/skills) 的 `wangxin/` 目录**，本仓库不再维护。安装命令见上方「国内安装」第 7 步或「国外安装 · 方式三」末条（需内网权限）。
 
 ### 设计
 
@@ -436,18 +432,6 @@ skills/
 │   └── teach-pstack/  # pstack 版 Teach（与 matt 的 teach 并存）
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
-├── company/           # 公司内部工作流技能
-│   ├── dp-session-forensics/  # DeepWorks 会话取证（查 opencode.db 定位 agent 行为分歧）
-│   ├── dp-dev-bootstrap/  # monorepo dev 环境体检+修复（preflight 引擎 + 声明式 profile）
-│   ├── dp-deepworks-dev-start/  # DeepWorks 本地桌面开发启动
-│   ├── dp-knowledge-compile/  # xmind 一键编译 deepworks 本地知识库（三层校验）
-│   ├── dp-dth-key-setup/  # DeepWorks 积分 DTH key 接入 pi（leveldb 提取+配置写入）
-│   ├── dp-ask-deepworks/  # 单发问题到本机 DeepWorks 工作区拿回复（含多轮 --session/--read、会话盘点/删除、日志落盘）
-│   ├── dp-ask-teams/  # 单发任务到 Agent Teams 云端 agent 拿结果（含会话盘点/删除、冷启动续等）
-│   ├── dp-session-forensics-cloud/  # 会话取证云端+本地一个入口（--source teams|local）
-│   ├── dp-eval-run/  # 问题集批量评测 + 两轮 diff 回归 + cleanup
-│   ├── ask-dp/  # DeepWorks 技能闭环路由器 + preflight 体检
-│   ├── dp-console-admin/  # 管理面资源管理 CLI（CDP 桥接：建/发布/绑定专家/Skill/团 + 删除清理）
 ├── devops/            # 运维 / CI-CD 类技能
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 │   └── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·凭据 / reviewer·assignee / glab→curl 兜底）
