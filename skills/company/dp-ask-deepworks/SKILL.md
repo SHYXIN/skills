@@ -119,10 +119,30 @@ python <skill_dir>/scripts/ask_local_deepworks.py --delete-ask-sessions [--env p
 
 对应环境的 DeepWorks 桌面端已打开目标工作区（读不到端口/令牌文件或工作区未开会明确提示并列出该环境已开工作区）。
 
+工作区没开时，可以先用 `scripts/open_local_workspace.py` 从 CLI 打开（免 UI 点击）：
+
+```bash
+# 预写 workspace-state.json（三个 id 字段指向目标）→ 启动桌面端 → 轮询端口文件探活
+python <skill_dir>/scripts/open_local_workspace.py --path "C:/path/to/workspace" [--env prod] [--preset starter|knowledge]
+
+# 只看不写（打印将写入的 state）；已运行桌面端会拒绝执行（state 只在启动时读）
+python <skill_dir>/scripts/open_local_workspace.py --path ... --dry-run
+```
+
+原理（2026-10-22 实测）：桌面端主进程启动时自行 boot 选中工作区（优先级 watchedId > selectedId >
+activeId > 第一个），不经过渲染层。脚本据此预写 `%APPDATA%/com.deepexi.deepworks[_test]/workspace-state.json`
+再启动 exe，引擎起来后端口/令牌文件就绪，ask 脚本即可直连。要点：
+
+- 工作区 id = `ws_` + sha256(反斜杠原生绝对路径)[:12]，可离线推导（已对线上多条 CJK 路径复核）
+- 前提：目标目录真实存在；对应环境的桌面端必须先退出（单实例锁会把新启动转发给旧实例，state 不会重读）
+- 轮询条件是「端口存在 + /workspaces 探活通过」，port-state 里的陈旧端口条目不会误报成功
+- 副作用提醒：这会改变该环境桌面端「下次启动打开的工作区」；要恢复原选区，把 `.bak` 备份写回即可
+
 ## 排查
 
 - 「服务繁忙」/「请求未完成」→ 脚本已默认 `DeepSeek-V4.1-Flash` 规避工作区默认模型的繁忙问题；仍繁忙时 `--model` 换其他模型重跑
-- 「workspace not open」→ 对应环境的桌面端没开或目录不对，报错里会列出该环境已开工作区；确认要连的环境与 `--env` 一致
+- 「workspace not open」→ 对应环境的桌面端没开或目录不对，报错里会列出该环境已开工作区；确认要连的环境与 `--env` 一致；也可以用 `open_local_workspace.py` 直接开（见「前置」一节）
+- 「port-state 有该工作区但连不上」→ 陈旧端口条目；重启桌面端让引擎重新注册，或用 `open_local_workspace.py` 走一遍（探活通过才算就绪）
 - 超时 → 长问题 `--timeout` 加大
 - 回答为空/卡住 → 看 `.log.json` 的 `messages_tail` 与本机 opencode 日志
   （`%APPDATA%/com.deepexi.deepworks/deepworks-engine-data/xdg/data/opencode/log/opencode.log`）
