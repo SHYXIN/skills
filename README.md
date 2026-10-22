@@ -288,7 +288,7 @@ npx rea-agents setup                                                            
 
 - **writing-for-agents-wx** — 中文版写给 agent 的文档写作规范（skill / AGENTS.md / CLAUDE.md）：让 agent 每次走同一套过程，而非产出相同文本。覆盖 context pointer、信息层级、完成标准、引导词与删减等杠杆。
 
-- **wait-what-wx** — 中文版「没懂就喊停」：agent 上一句没说清时，让你手动触发它重讲——补上下文、用更短更主动的句式（技术词保留英文原词）、并套 `CONTEXT.md` 的通用语言。user-invoked，模型不会自触发。
+- **wait-what-wx** — 中文版「没懂就喊停」：agent 上一句没说清时，让你手动触发它重讲——补上下文、用更短更主动的句式（技术词保留英文原词）、用词遵循 `GLOSSARY.md` 的通用语言（多 context 跟 `GLOSSARY-MAP.md`）、表达方式参考 `CONTEXT.md` 的 `## Example dialogue` 示范对话。双层承接 domain-modeling-wx。user-invoked，模型不会自触发。
 
 - **where-am-i-wx** — 中文版「迷路就喊地图」：任务/对话中不知道走到哪时，手动触发画一张纯文字决策地图——已定结论、📍当前位置、未决问题、被否决的选项（附否决原因），关键节点旁标注前置知识（名词+一句话解释，深挖交给 eli5-zh / learn-by-minimal）。与 wait-what-wx 成对：单点没懂→重讲那句；整体迷路→喊地图。user-invoked，模型不会自触发。
 
