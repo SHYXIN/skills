@@ -201,6 +201,10 @@ def main() -> int:
                          "default model DeepSeek-V4.1-Flash because the workspace-default "
                          "glm-5.3-flashx hits '服务繁忙' under batch load)")
     ap.add_argument("--working-dir-note", default="", help="optional context note prepended to the message")
+    ap.add_argument("--system", default="",
+                    help="raw system context injected via prompt_async 'system' field (simulates the "
+                         "DeepWorks host's knowledge-selection injection; see SKILL.md for the exact "
+                         "wording the host sends for @知识中心/@本地知识库 turns)")
     ap.add_argument("--env", default="prod", choices=sorted(ENV_DIRS),
                     help="which DeepWorks desktop install to talk to (default: prod)")
     ap.add_argument("--out-dir", default="C:/code_proj/tmp/dp-agent-eval-logs", help="where to write answer+log")
@@ -388,7 +392,11 @@ def main() -> int:
     }, ensure_ascii=False, indent=1), encoding="utf-8")
     log("session recorded", record_path.name)
 
-    prompt_headers = {**host["headers"], "x-opencode-directory": str(wd)}
+    prompt_headers = {**host["headers"]}
+    # x-opencode-directory carries the workspace path, which may contain CJK
+    # chars that urllib cannot put in HTTP headers (latin-1 encode). The server
+    # proxy reads the directory from the query string instead, so pass it there
+    # and omit the header entirely.
     prompt_body: dict = {"agent": args.agent, "parts": [{"type": "text", "text": message}]}
 
     # Resumed session: snapshot pre-existing assistant message ids BEFORE sending,
@@ -417,7 +425,15 @@ def main() -> int:
             provider, model_id = "dth", args.model
         prompt_body["model"] = {"providerID": provider, "modelID": model_id}
         log("model override", f"{provider}/{model_id}")
-    request_json(f"{base}/session/{urllib.parse.quote(session_id)}/prompt_async",
+    if args.system:
+        # Verified 2026-10-22: prompt_async body accepts a raw "system" string
+        # (SDK SessionPromptData.body.system); the server proxy forwards the body
+        # untouched, so this reaches the model exactly like the host's own
+        # knowledge-selection injection.
+        prompt_body["system"] = args.system
+        log("system override", f"chars={len(args.system)}")
+    request_json(f"{base}/session/{urllib.parse.quote(session_id)}/prompt_async"
+                 f"?directory={urllib.parse.quote(str(wd))}",
                  method="POST", headers=prompt_headers, body=prompt_body)
     log("prompt sent", f"chars={len(message)}")
 

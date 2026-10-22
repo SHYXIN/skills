@@ -42,7 +42,32 @@ python <skill_dir>/scripts/ask_local_deepworks.py \
 - `--working-dir` 可选：目标工作区目录；只开了一个工作区时自动选中，多个时必填
 - `--model` 可选：本次调用用的模型（provider 前缀可省，默认 dth）；**默认 `DeepSeek-V4.1-Flash`**——工作区默认模型 glm-5.3-flashx 批量调用时容易「服务繁忙」，脚本不再省略模型参数
 - `--working-dir-note` 可选：附加背景说明，会和问题一起给 agent
+- `--system` 可选：透传到 `prompt_async` 请求体的 `system` 字段（引擎原生支持），用于**模拟宿主的 @ 注入**，见下节
 - `--dry-run`：只打印要发的消息不真调，先给用户确认
+
+## 模拟宿主 @ 注入（--system）
+
+DeepWorks 桌面端里用户 `@知识中心`/`@本地知识库` 时，宿主（`apps/app/src/app/deepworks/knowledge-agent/runtime-adapter.ts`）会检索知识内容并拼出 system 串，随 `prompt_async` 的 `system` 字段下发。CLI 侧脚本可直接用 `--system` 注入同构的串，让 agent 以为本轮用户已选知识库——**无需改宿主代码**。
+
+```bash
+python <skill_dir>/scripts/ask_local_deepworks.py \
+  --working-dir "C:/path/to/工作区" --agent deepsense \
+  --message "@本地知识库 数码大方MES：主轴轴承保持架断裂" \
+  --system "DeepWorks Knowledge project access boundary:
+The user explicitly selected @知识中心 for this turn, so access to the selected Knowledge workspace is authorized.
+workspacePath: C:/path/to/工作区/.deepsense-payload/设备诊断本体-DeepSense预置"
+```
+
+要点：
+
+- **授权句是门槛**：`The user explicitly selected @知识中心 for this turn...` 这句是 agent 判断「本轮已授权知识库」的依据（措辞来自宿主 `session-context.ts`，逐字保留）；缺了它 agent 会按诊断硬门禁要求先 @ 知识库
+- **`workspacePath:` 一行**指向知识库落盘目录（如 kit 的 `.deepsense-payload/设备诊断本体-DeepSense预置`），agent 据此直接读本体文件
+- 2026-10-22 实测：注入后 caxa 诊断全链路穿越（本体命中 → 根因收敛 → 方案逐字承接 → 报告+工单内链），不注入则同一条消息被硬门禁拦下要求 @ 知识库
+- `@deepsense` 无需模拟：它由宿主剥 AgentPart 后在正文拼 `@deepsense ` 前缀实现，CLI 直接把前缀写进 `--message` 即等效
+
+## CJK 工作区路径说明
+
+工作区路径含中文时，脚本**不发** `x-opencode-directory` 请求头（HTTP 头不能带非 latin-1 字符），改在 URL query 上带 `?directory=<urlencoded>`——DeepWorks 服务端代理两者等价接收。对含中文路径的工作区这是唯一可用通道；纯 ASCII 路径下两种方式都通。
 
 ## 多轮对话（复用既有会话）
 
