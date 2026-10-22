@@ -38,8 +38,8 @@ cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,cod
 # 6) asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读（无 Gitee 镜像，直连 GitHub）
 cn-skills add danyuchn/asd-ste100-skill --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
-# 7) 公司内部 dp-* 技能（DeepWorks 工具链，已迁公司 GitLab，需内网权限；装完见 ask-dp 路由器说明）
-git clone https://gitlab.deepexi.com/deepsense/skills.git /tmp/deepsense-skills && cn-skills add /tmp/deepsense-skills/wangxin --yes --global --agent codebuddy,claude-code,codex,workbuddy && rm -rf /tmp/deepsense-skills
+# 7) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
+cn-skills add deepexi/skills/wangxin --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
 > 说明：`--agent` 逗号分隔列表在 PowerShell / CMD / Git Bash 下均可直接使用（`cn-skills-cli >= 0.1.16`）。装完可用 `cn-skills update` 随时更新（详见下方「更新（国内）」）。
@@ -127,9 +127,6 @@ npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code c
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
 npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code codex hermes-agent
-
-# 公司内部 dp-* 技能（DeepWorks 工具链，已迁公司 GitLab，需内网权限）
-git clone https://gitlab.deepexi.com/deepsense/skills.git /tmp/deepsense-skills && npx skills@latest add /tmp/deepsense-skills/wangxin -y -g -a codebuddy claude-code codex hermes-agent && rm -rf /tmp/deepsense-skills
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
@@ -352,7 +349,7 @@ npx rea-agents setup                                                            
 
 ### 公司（已迁出）
 
-公司内部 dp-* 技能（DeepWorks 工具链：ask-dp / dp-ask-deepworks / dp-ask-teams / dp-eval-run / dp-session-forensics(-cloud) / dp-dev-bootstrap / dp-deepworks-dev-start / dp-knowledge-compile / dp-dth-key-setup / dp-console-admin）**已迁移到公司 GitLab [deepsense/skills](https://gitlab.deepexi.com/deepsense/skills) 的 `wangxin/` 目录**，本仓库不再维护。安装命令见上方「国内安装」第 7 步或「国外安装 · 方式三」末条（需内网权限）。
+公司内部 dp-* 技能（DeepWorks 工具链：ask-dp / dp-ask-deepworks / dp-ask-teams / dp-eval-run / dp-session-forensics(-cloud) / dp-dev-bootstrap / dp-deepworks-dev-start / dp-knowledge-compile / dp-dth-key-setup / dp-console-admin）**已迁移到公司 GitLab [deepsense/skills](https://gitlab.deepexi.com/deepsense/skills) 的 `wangxin/` 目录**，本仓库不再维护。一键安装：`cn-skills add deepexi/skills/wangxin --yes --global`（需内网权限，见上方「国内安装」第 7 步）。
 
 ### 设计
 

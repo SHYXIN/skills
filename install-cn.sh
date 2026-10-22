@@ -58,4 +58,13 @@ cn-skills add virgiliojr94/book-to-skill --yes --global --agent "$AGENTS"
 echo "📦 安装 rea (推荐搭配，GitHub 直连) -> $AGENTS"
 cn-skills add morluto/rea --yes --global --agent "$AGENTS"
 
+# 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限）
+# 内网不通时不中断脚本，跳过并提示
+echo "📦 安装 公司 dp-* 技能 (GitLab deepexi/skills/wangxin) -> $AGENTS"
+if cn-skills add deepexi/skills/wangxin --yes --global --agent "$AGENTS"; then
+  :
+else
+  echo "⚠️  公司 dp-* 技能安装失败（多半是内网未连/无权限），已跳过；其余技能不受影响"
+fi
+
 echo "✅ 完成。运行 'cn-skills list' 查看已安装技能。"
