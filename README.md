@@ -306,6 +306,7 @@ npx rea-agents setup                                                            
 - **skill-iterate** — 迭代打磨一个已存在的 skill：把一次使用中的摩擦（误触发、抢跑、粒度不对、步骤缺失）变成小步修改。一次只改一类行为（±10 行），先要一手摩擦证据不猜失败模式；行为修改只动 SKILL.md，plugin.json/README 按条件同步；只提议 commit 不主动 git。纯删杂质（背景/闲聊/重复自述）转给 agent-config-tidy，行为校准才归本 skill。user-invoked。
 - **loop-driver** — 环式自进化调度器。把任务逼成一个自我改进的循环：收集目标 → 按经验选 skill 组合 → 执行 → 用闭环信号记分 → 沉淀到 ledger 并调权重 → 等下一个目标，一圈比一圈选得准。约束 AI——skill 内容永不被单次上下文污染，只进化"场景→组合"的调度权重；人只在无共识决策和红线处被找：无共识时摆候选选项+标推荐由用户拍板，有共识（weights 有正分背书）直接走，红线处确认不可逆动作。user-invoked。
 - **cn-brief-wx** — 中文简报：agent 刚才的英文步骤/工具调用/输出看不懂时，用中文复述"做了什么、为什么、现在到哪"，不替你改方向。model-invoked。
+- **dingtalk-brief** — 钉钉每日简报。基于 dws CLI 聚合未读邮件、近期收件箱、@我消息、未读会话、今日日程、今日待办，生成 Markdown 摘要；自带可注册为计划任务的脚本（工作日 09:00 自动生成），附按需定制单数据源的 dws 命令速查（均经真实验证）。触发词：「看下钉钉」「今日简报」「@我有什么」。依赖 dws 已登录。
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
 - **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
 
@@ -405,6 +406,7 @@ skills/
 │   ├── skill-iterate/  # skill 迭代打磨：摩擦→小步修改（±10 行），同步真相源，只提议 commit
 │   ├── loop-driver/  # 环式自进化调度器：收目标→选组合→执行→记分→沉淀调权重，skill 内容不污染
 │   ├── cn-brief-wx/  # 中文简报：把 agent 的英文步骤/工具调用/输出翻译成中文复述
+│   ├── dingtalk-brief/  # 钉钉每日简报：dws 聚合六路数据源，自带脚本+计划任务指引
 │   ├── research-wx/  # 中文版研究：后台 agent 调研一手来源，结论带出处存进仓库
 │   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
 │   ├── setup-windows-mcp/  # 新机器安装注册 Windows-MCP 桌面自动化（codebuddy/claude/codex 三件套）
