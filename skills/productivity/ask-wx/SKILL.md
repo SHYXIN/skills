@@ -18,18 +18,16 @@ disable-model-invocation: true
 
 1. **入口：打磨想法**。这是路由的核心裁决区。按判据裁决，一轮问一条（遵循 grill-one 风格）：
    - **一个会话装得下吗？**——全新项目或巨型功能，从这到目的地还看不见路 → 别进 grill 系，走 matt 的 **`/wayfinder`**（见下方支线）。
-   - **要沉淀吗？**——要把术语/决策落盘（ADR、术语表）→ with-docs 系；不要，临时打磨 → `/grill-one`。
-   - **跟谁家走？**——这次工作将继续走 matt 的 spec/tickets 主线，且希望他的下游技能读到他的文档格式 → matt 的 `/grill-with-docs`；自己的小项目或独立打磨 → 本仓库的 grill-one 系。
-   - **认知负载要多大？**——要快、单问 → grill-one 系；可以慢、多问深挖 → matt 的多问版。
-
-   裁决结果：
-
-   - **`/grill-one`**：快、单问、无文档沉淀。对自己已经比较清楚的需求，最快的入口。
-   - **`/grill-one-with-docs`**：同样单问，边问边把术语写进 GLOSSARY.md、关系/歧义写进 CONTEXT.md、决策写进 ADR。要纸面痕迹时的最轻选择。
-   - matt 的 **`/grill-with-docs`**：多问、有状态、GLOSSARY + ADR 齐全，且他的 `/to-spec` 等下游原生读它的产物。确定走 matt 全流程时用这个。
+   - **默认：`/grill-one-with-docs`**——在有工作目录里工作就从这起步：单问快磨，边问边把术语写进 GLOSSARY.md、关系/歧义写进 CONTEXT.md、决策写进 ADR，速度与沉淀兼得。
+   - **无工作目录**（没仓库可落盘的纯想法）→ 退 **`/grill-one`**：同样单问、什么都不写。
+   - 按需偏离默认：
+     - **临时打磨、明确不要在本仓库留痕** → `/grill-one`。
+     - **确定走 matt 全流程，想多问深挖** → matt 的 **`/grill-with-docs`**：多问、有状态、GLOSSARY + ADR 齐全，且他的 `/to-spec` 等下游原生读它的产物。
    - **共识已定、进入技术选型** → **`/consensus-tech-research`**：比较库/框架，产出有证据的选型报告，喂给 `/to-spec`。
 
-2. **主流中后段（matt 系原样）**：`/to-spec` → `/to-tickets` → `/implement`（每票间 `/clear`）→ `/tdd` → `/code-review` → `/pr`。分支逻辑（多会话构建与否、`/implement-spec` 编排）见 ask-matt 的地图，此处不重复。
+2. **分支：设计问题纸上定不了？**——答案要跑起来才知道（状态手感、业务逻辑、得看一眼的 UI）→ 原型绕行（matt 系）：**`/handoff`** 出 → 对着交接文件开新会话跑 **`/prototype`**，用一次性代码回答这个问题 → **`/handoff`** 回所学，接回原思路。完整推演见 ask-matt 主流第 2 步。
+
+3. **主流中后段（matt 系原样）**：`/to-spec` → `/to-tickets` → `/implement`（每票间 `/clear`）→ `/tdd` → `/code-review` → `/pr`。分支逻辑（多会话构建与否、`/implement-spec` 编排）见 ask-matt 的地图，此处不重复。
 
 ### Context hygiene
 
@@ -66,6 +64,8 @@ disable-model-invocation: true
 
 一个会生成工作、然后汇入主流的起点情形：
 
+- **Bug 和请求堆着没人管** → matt 的 **`/triage`**：把外来 issue（bug 报告、原始功能请求——凡不是你自己造的票）过一遍分诊，产出 agent-ready 的票，之后由 `/implement` 接走。注意：`/to-tickets` 产出的票已是 agent-ready，**不要**再进 triage。
+- **东西坏了、且是硬骨头** → matt 的 **`/diagnosing-bugs`**：用于第一眼看不出的 bug、间歇性 flake、两个已知好状态之间爬进来的回归。它拒绝先理论后动手：必须先有**紧反馈回路**（一条对当前 bug 必红已红的命令），再用回归测试修。修完在同一会话跑 `/retro` 问怎么防再犯。
 - **雾很大的巨型想法** → matt 的 **`/wayfinder`**：绿地项目或超大构建，大到一个会话装不下。它在 issue tracker 上铺一张**决策票**共享地图，一次解决一张，产出**决策而非交付物**，直到雾散。雾散后**它交接、不施工**：在 `/to-spec` 处汇入主流（把地图的关联决策收拢成可构建的计划），之后照常 `/to-tickets` → `/implement`。把地图直接灌进 `/implement` 会扔掉关联细节——除非工作量真的小，否则别这么走。
 - **要调研一个问题** → **`/research-wx`**：后台 agent 针对一手来源调研，产出带出处的 Markdown 存进仓库。它产出的是带进入口打磨的材料，不是替代品。
 - **上下文丢了/在别的会话里** → **`/find-session`**：跨五源找历史会话并给出 resume 命令；找回上下文后回到入口打磨。

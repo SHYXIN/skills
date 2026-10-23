@@ -274,7 +274,7 @@ npx rea-agents setup                                                            
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling-wx 把术语写进 GLOSSARY.md（与 matt 上游兼容）、术语关系/歧义写进 CONTEXT.md、决策写进 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
 - **find-session** — 跨 agent CLI 检索历史会话并给出 resume 命令。通过本机常驻的 agent-sessions 服务（127.0.0.1:8390）跨 codebuddy/claude/codex/pi/copilot 五源检索：内容线索走全文搜索、时间线索走按月分桶浏览，命中后可预览确认再给可直接执行的 resume 命令（孤儿会话注明不可恢复）。当用户说「找一下之前那条对话」「忘了在哪个 agent 里聊的」时触发。
 - **retro-wx** — 复盘一次编码会话，向 agent 的环境提出改进建议（改环境不改代码，只提议不执行）。按导航/自动检查/编码标准/steering 瘦身/工具经济/no-op/信息可达七类扫描痛点，按严重度排序；当前会话直接用上下文，历史会话经 agent-sessions 服务检索，落点含个人 skills 仓库新 skill 提议与 auto-memory。改编自 mattpocock/skills 的 retro，与其共存（本版数据层跨五源、落点本地化）。user-invoked。
-- **ask-wx** — 工作流主线路由器：问该用哪个技能。入口裁决区按三条判据（要沉淀吗/跟谁家走/认知负载多大）在 grill-one、grill-one-with-docs、matt 的 grill-with-docs、consensus-tech-research 之间选定；中后段（spec/tickets/implement/review）指向 matt 系原样，验证层（verify-run 系）与复盘（retro vs retro-wx）用自有技能；附纠错层（where-am-i-wx/wait-what-wx/source-trace-wx/next-step）与支线（research-wx/find-session）。推荐前必读目标技能的 SKILL.md。user-invoked。
+- **ask-wx** — 工作流主线路由器：问该用哪个技能。入口裁决区默认 `/grill-one-with-docs`（有工作目录即起步：单问快磨 + GLOSSARY/CONTEXT/ADR 沉淀），无工作目录退 `/grill-one`，确定走 matt 全流程想多问深挖才用 matt 的 grill-with-docs；共识已定走 consensus-tech-research 选型。主流含原型绕行（handoff 出 → prototype → handoff 回）与 matt 系中后段（spec/tickets/implement/review），验证层（verify-run 系）与复盘（retro vs retro-wx）用自有技能；附纠错层（where-am-i-wx/wait-what-wx/source-trace-wx/next-step）与支线（triage/diagnosing-bugs/wayfinder/research-wx/find-session）。推荐前必读目标技能的 SKILL.md。user-invoked。
 - **step-card-wx** — 生成保姆级测试/操作步骤卡，让不看代码的人也能照着走并把结果交回判定。基础档=通用操作指引（分步+命令原文+说明）；验收档=叠加排雷第0步+每步预期结果+测试者/判定者分离闭环。用于"给我测试步骤""怎么测""写个操作指引""验收步骤卡"等场景。
 - **rust-windows-setup** — Windows 上安装 Rust 工具链（含需要 C 编译器的项目，如 rusqlite）。覆盖 rustup 国内镜像加速、Missing manifest 修复、MinGW/MSVC 选择、dlltool/ld 的 PATH 坑。在 Windows 配 Rust 环境或遇到 'Missing manifest' / 'dlltool not found' 报错时使用。
 
@@ -382,7 +382,7 @@ skills/
 │   ├── domain-modeling-wx/  # 领域建模 wx 版（GLOSSARY 术语层 + CONTEXT 关系层 + ADR）
 │   ├── find-session/  # 跨 agent 会话检索 + resume 命令（agent-sessions 常驻后端）
 │   ├── retro-wx/  # 会话复盘：七类扫描改环境，只提议不执行（与 matt 版 retro 共存）
-│   ├── ask-wx/  # 工作流主线路由器：入口裁决 grill 系，中后段指向 matt 系
+│   ├── ask-wx/  # 工作流主线路由器：默认 grill-one-with-docs 入口，中后段指向 matt 系
 │   ├── step-card-wx/  # 保姆级测试/操作步骤卡（基础档+验收档）
 │   ├── verify-manual-after-implementation/  # 实现后手动验收手册生成（含结构化操作约定）
 │   ├── verify-run/  # opencli 通用自动验证执行器（手册/仓库/URL 三档输入）
