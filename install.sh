@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 复制安装（--copy）：各 agent 目录写入独立副本而非软链，不依赖 symlink
 # 一键安装 SHYXIN/skills + humanlayer/skills(show-me) + pstack + mattpocock/skills 到本地 agent
 #
 # 远程一键运行（无需克隆仓库）:
@@ -15,19 +16,19 @@ AGENTS="${1:-codebuddy claude-code codex hermes-agent}"
 
 echo "📦 安装 SHYXIN/skills -> agents: $AGENTS"
 # 未加引号以让空格分隔的 agent 列表展开为多个 -a 参数
-npx skills@latest add SHYXIN/skills -y -g -a $AGENTS
+npx skills@latest add SHYXIN/skills -y --copy -g -a $AGENTS
 
 echo "📦 安装 humanlayer/skills show-me (推荐搭配) -> agents: $AGENTS"
-npx skills@latest add humanlayer/skills --skill show-me -y -g -a $AGENTS
+npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a $AGENTS
 
 # pstack 整包（poteto-mode 路由 + 23 playbook + 24 principle，自带 unslop，故不再单独装 cursor/plugins）
 echo "📦 安装 pstack (推荐搭配，整包) -> agents: $AGENTS"
-npx skills@latest add backnotprop/pstack -y -g -a $AGENTS
+npx skills@latest add backnotprop/pstack -y --copy -g -a $AGENTS
 
 # mattpocock/skills 放在 pstack 之后：同名技能 tdd/teach 后装者胜，这里让 matt 版覆盖 pstack 版
 # （matt 的 tdd/teach 带额外参考文件且被其 /implement、/ask-matt 内部依赖，语义更完整）
 echo "📦 安装 mattpocock/skills (推荐搭配) -> agents: $AGENTS"
-npx skills@latest add mattpocock/skills -y -g -a $AGENTS
+npx skills@latest add mattpocock/skills -y --copy -g -a $AGENTS
 
 # opencli：让 agent 操控用户日常 Chrome（带登录态）。CLI 是本体，技能是说明书，两者都装
 # 技能装全量（usage/browser/smart-search/autofix/adapter-author），它们成套互相引用
@@ -35,21 +36,21 @@ echo "📦 安装 opencli CLI + 全部 opencli 技能 -> agents: $AGENTS"
 if ! command -v opencli >/dev/null 2>&1; then
   npm install -g @jackwener/opencli
 fi
-npx skills@latest add jackwener/opencli -y -g -a $AGENTS
+npx skills@latest add jackwener/opencli -y --copy -g -a $AGENTS
 echo "⚠️  opencli 还需 Chrome 扩展（无法静默安装）：https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk"
 echo "    装好扩展后运行 'opencli doctor' 验证；完整引导见 setup-opencli 技能"
 
 # asd-ste100：ASD-STE100 受控英语规则，改写给 agent 消费的英文文本（工具描述/错误消息/提示词），防误读
 echo "📦 安装 asd-ste100-skill (推荐搭配) -> agents: $AGENTS"
-npx skills@latest add danyuchn/asd-ste100-skill -y -g -a $AGENTS
+npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a $AGENTS
 
 # book-to-skill：把书/文档蒸馏成结构化技能，章节按需加载省 token（PDF 等格式转换时按需补 Python 依赖）
 echo "📦 安装 book-to-skill (推荐搭配) -> agents: $AGENTS"
-npx skills@latest add virgiliojr94/book-to-skill -y -g -a $AGENTS
+npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a $AGENTS
 
 # rea（Reverse Engineer Anything）：全栈逆向 MCP 的技能说明书，轻量无依赖
 # MCP server 本体（npx rea-agents setup，50MB + 逆向引擎）属"要用时再装"的重型件
 echo "📦 安装 rea (推荐搭配) -> agents: $AGENTS"
-npx skills@latest add morluto/rea -y -g -a $AGENTS
+npx skills@latest add morluto/rea -y --copy -g -a $AGENTS
 
 echo "✅ 完成。运行 'npx skills list' 查看已安装技能。"

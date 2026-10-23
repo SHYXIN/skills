@@ -19,27 +19,27 @@
 npm install -g cn-skills-cli --registry=https://registry.npmmirror.com
 
 # 2) 安装本仓库技能（自动走 Gitee）
-cn-skills add SHYXIN/skills --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add SHYXIN/skills --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 3) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL；当前冻结版 v0.15.15）
-cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add https://gitee.com/theshyxin/pstack --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 4) 安装推荐搭配 mattpocock/skills（Gitee 镜像；放最后，使 tdd/teach 采用 matt 版，见下「同名技能」）
-cn-skills add mattpocock/skills --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add mattpocock/skills --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 5) 安装 opencli CLI + 全部 opencli 技能（让 agent 操控日常 Chrome；CLI 已装则跳过 npm 那步）
 npm install -g @jackwener/opencli --registry=https://registry.npmmirror.com
-cn-skills add jackwener/opencli --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add jackwener/opencli --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
 # 装好后 opencli doctor 验证，完整引导见 setup-opencli 技能
 
 # 6) asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读（无 Gitee 镜像，直连 GitHub）
-cn-skills add danyuchn/asd-ste100-skill --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add danyuchn/asd-ste100-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 7) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
-cn-skills add deepexi/skills/wangxin --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
 > 说明：`--agent` 逗号分隔列表在 PowerShell / CMD / Git Bash 下均可直接使用（`cn-skills-cli >= 0.1.16`）。装完可用 `cn-skills update` 随时更新（详见下方「更新（国内）」）。
@@ -111,22 +111,22 @@ cd skills
 
 ```bash
 # 安装本仓库技能
-npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add SHYXIN/skills -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # 同时安装推荐搭配（顺序有意义：matt 放最后，让 tdd/teach 采用 matt 版）
-npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claude-code codex hermes-agent
-npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex hermes-agent
-npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add backnotprop/pstack -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # opencli：让 agent 操控日常 Chrome（CLI 已装则跳过 npm 那步；技能装全量，成套互相引用）
 npm install -g @jackwener/opencli
-npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读
-npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
-npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
@@ -142,7 +142,7 @@ npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code 
 [mattpocock/skills](https://github.com/mattpocock/skills) 是社区高质量技能集（TypeScript / 工程实践向）。上面的一键脚本已默认一并安装；如需单独安装：
 
 ```bash
-npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code codex hermes-agent
 ```
 
 ### humanlayer/skills (show-me)
@@ -150,7 +150,7 @@ npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex her
 [humanlayer/skills](https://github.com/humanlayer/skills) 中的 **show-me** 技能：讲解当前主题时自动配简洁图表、代码形状草图和聚焦的 HTML artifact。一键脚本已默认只安装 show-me；如需单独安装：
 
 ```bash
-npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebuddy claude-code codex hermes-agent
 ```
 
 ### pstack
@@ -160,13 +160,13 @@ npx skills@latest add humanlayer/skills --skill show-me -y -g -a codebuddy claud
 本仓库按**整包**安装。pstack 自带 `unslop`，因此不再单独安装 `cursor/plugins` 的 unslop（两者同源，独立安装会导致同名技能双副本、更新/卸载互相打架）。一键脚本已默认安装；如需单独安装：
 
 ```bash
-npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add backnotprop/pstack -y --copy -g -a codebuddy claude-code codex hermes-agent
 ```
 
 pstack 还随附 `poteto-agent` 与 `Comment Sicko` 两个子代理定义（在 `agents/` 下），但 `npx skills` 只安装 `skills/` 里的技能，**子代理不会自动落地**。缺失时 poteto-mode 会降级为"普通子代理 + 固定前缀"运行（pstack 的 Harness 章节写明此路径），功能可用，只是不复用 `poteto-agent` 的完整读取流程。国内安装走 Gitee 镜像仓 `theshyxin/pstack`（默认分支当前对应冻结版 `v0.15.15`，每周自动同步上游，冻结 tag 见仓内 `refs/tags`）。注意用**完整 Gitee URL**：`cn-skills` 的 `owner/repo` 简写会解析到 GitHub，而 `npx skills` 从 Gitee 拉取会被反爬 403：
 
 ```bash
-cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebuddy,claude-code,codex
+cn-skills add https://gitee.com/theshyxin/pstack --copy --yes --global --agent codebuddy,claude-code,codex
 ```
 
 ### opencli
@@ -174,7 +174,7 @@ cn-skills add https://gitee.com/theshyxin/pstack --yes --global --agent codebudd
 [jackwener/opencli](https://github.com/jackwener/opencli) 让 agent 操控你的日常 Chrome（带全部登录态）。一键脚本已默认安装（CLI + 全部 opencli 技能）；如需单独安装：
 
 ```bash
-npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code codex hermes-agent
 ```
 
 > 注意：还需手动装 Chrome 扩展（无法静默安装）：<https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk>，装好后 `opencli doctor` 验证。完整引导见 setup-opencli 技能。
@@ -184,7 +184,7 @@ npx skills@latest add jackwener/opencli -y -g -a codebuddy claude-code codex her
 [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill) 把航空航天受控英语标准 ASD-STE100 改造成 Claude Code 技能：改写给 agent 消费的英文文本（工具描述、错误消息、系统提示词、跨 agent 指令），消除歧义防止下游误读。与 [writing-for-agents-wx](#技能列表)（中文写作规范）是英文侧的天然搭档。一键脚本已默认安装；如需单独安装：
 
 ```bash
-npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 ```
 
 ### ppt-master
@@ -192,7 +192,7 @@ npx skills@latest add danyuchn/asd-ste100-skill -y -g -a codebuddy claude-code c
 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) 从任意文档生成可编辑的原生 PPTX：幻灯片生成、页面视觉重构、品牌/风格/版式工作区、原生模板填充、成品增强，支持讲解词与动画。**不随一键脚本安装**——子目录 64MB 且带 Python 依赖（`requirements.txt`），属"要用时再装"的重型工具，需要 PPT 能力时单独安装：
 
 ```bash
-npx skills@latest add hugohe3/ppt-master -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add hugohe3/ppt-master -y --copy -g -a codebuddy claude-code codex hermes-agent
 ```
 
 ### book-to-skill
@@ -200,7 +200,7 @@ npx skills@latest add hugohe3/ppt-master -y -g -a codebuddy claude-code codex he
 [virgiliojr94/book-to-skill](https://github.com/virgiliojr94/book-to-skill) 把技术书、文档夹或一组资料蒸馏成**结构化技能**（不是摘要）：框架、决策规则、反模式、术语表、速查表，章节文件按需加载，回答基于原文不幻觉——官方实测比整本塞上下文省 24–51 倍 token。输入不限书籍：内部文档、品牌手册、论文集、RFC 都行。一键脚本已默认安装；如需单独安装：
 
 ```bash
-npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 ```
 
 > 注意：转换 PDF/EPUB/DOCX 等格式时按需安装 Python 依赖（`pip install "book-to-skill[pdf]"` 等，纯 Markdown 免依赖）；对 Python 3.9+。
@@ -210,7 +210,7 @@ npx skills@latest add virgiliojr94/book-to-skill -y -g -a codebuddy claude-code 
 [morluto/rea](https://github.com/morluto/rea) 一个 MCP 覆盖全栈逆向：原生二进制（配合 Hopper/Ghidra/IDA）、Electron/JavaScript、.NET 程序集、网站行为——看中某个应用的特性，让 agent 拆解它怎么实现、出示证据、指导复刻。分析全程本地运行。一键脚本只装**技能本体**（`reverse-engineer-anything`，纯说明书，轻量无依赖）；**MCP server 本体**（`npx rea-agents setup`，仓库 50MB）与原生分析引擎属"要用时再装"的重型件，需要逆向能力时单独安装：
 
 ```bash
-npx skills@latest add morluto/rea -y -g -a codebuddy claude-code codex hermes-agent   # 技能（一键脚本已含）
+npx skills@latest add morluto/rea -y --copy -g -a codebuddy claude-code codex hermes-agent   # 技能（一键脚本已含）
 npx rea-agents setup                                                                  # MCP server（要用时再装）
 ```
 
@@ -272,9 +272,8 @@ npx rea-agents setup                                                            
 
 - **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，避免一次抛出多个问题。适合用户明确要求“一次只问一个问题”或希望更慢、更聚焦的设计访谈。
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling-wx 把术语写进 GLOSSARY.md（与 matt 上游兼容）、术语关系/歧义写进 CONTEXT.md、决策写进 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
-- **find-session** — 跨 agent CLI 检索历史会话并给出 resume 命令。通过本机常驻的 agent-sessions 服务（127.0.0.1:8390）跨 codebuddy/claude/codex/pi/copilot 五源检索：内容线索走全文搜索、时间线索走按月分桶浏览，命中后可预览确认再给可直接执行的 resume 命令（孤儿会话注明不可恢复）。当用户说「找一下之前那条对话」「忘了在哪个 agent 里聊的」时触发。
-- **retro-wx** — 复盘一次编码会话，向 agent 的环境提出改进建议（改环境不改代码，只提议不执行）。按导航/自动检查/编码标准/steering 瘦身/工具经济/no-op/信息可达七类扫描痛点，按严重度排序；当前会话直接用上下文，历史会话经 agent-sessions 服务检索，落点含个人 skills 仓库新 skill 提议与 auto-memory。改编自 mattpocock/skills 的 retro，与其共存（本版数据层跨五源、落点本地化）。user-invoked。
-- **ask-wx** — 工作流主线路由器：问该用哪个技能。入口裁决区默认 `/grill-one-with-docs`（有工作目录即起步：单问快磨 + GLOSSARY/CONTEXT/ADR 沉淀），无工作目录退 `/grill-one`，确定走 matt 全流程想多问深挖才用 matt 的 grill-with-docs；共识已定走 consensus-tech-research 选型。主流含原型绕行（handoff 出 → prototype → handoff 回）与 matt 系中后段（spec/tickets/implement/review），验证层（verify-run 系）与复盘（retro vs retro-wx）用自有技能；附纠错层（where-am-i-wx/wait-what-wx/source-trace-wx/next-step）与支线（triage/diagnosing-bugs/wayfinder/research-wx/find-session）。推荐前必读目标技能的 SKILL.md。user-invoked。
+- **retro-wx** — 复盘一次编码会话，向 agent 的环境提出改进建议（改环境不改代码，只提议不执行）。按导航/自动检查/编码标准/steering 瘦身/工具经济/no-op/信息可达七类扫描痛点，按严重度排序；默认复盘当前会话，也可直接 grep 本机五源会话日志（codebuddy/claude/codex/copilot/pi 的 jsonl，无需服务）复盘任意 harness 的历史会话，落点含个人 skills 仓库新 skill 提议与 auto-memory。改编自 mattpocock/skills 的 retro（主体同构），与 matt 版共存。user-invoked。
+- **ask-wx** — 工作流主线路由器：问该用哪个技能。入口裁决区默认 `/grill-one-with-docs`（有工作目录即起步：单问快磨 + GLOSSARY/CONTEXT/ADR 沉淀），无工作目录退 `/grill-one`，确定走 matt 全流程想多问深挖才用 matt 的 grill-with-docs；共识已定走 consensus-tech-research 选型。主流含原型绕行（handoff 出 → prototype → handoff 回）与 matt 系中后段（spec/tickets/implement/review），验证层（verify-run 系）与复盘（retro vs retro-wx）用自有技能；附纠错层（where-am-i-wx/wait-what-wx/source-trace-wx/next-step）与支线（triage/diagnosing-bugs/wayfinder/research-wx）。推荐前必读目标技能的 SKILL.md。user-invoked。
 - **step-card-wx** — 生成保姆级测试/操作步骤卡，让不看代码的人也能照着走并把结果交回判定。基础档=通用操作指引（分步+命令原文+说明）；验收档=叠加排雷第0步+每步预期结果+测试者/判定者分离闭环。用于"给我测试步骤""怎么测""写个操作指引""验收步骤卡"等场景。
 - **rust-windows-setup** — Windows 上安装 Rust 工具链（含需要 C 编译器的项目，如 rusqlite）。覆盖 rustup 国内镜像加速、Missing manifest 修复、MinGW/MSVC 选择、dlltool/ld 的 PATH 坑。在 Windows 配 Rust 环境或遇到 'Missing manifest' / 'dlltool not found' 报错时使用。
 
@@ -349,7 +348,7 @@ npx rea-agents setup                                                            
 
 ### 公司（已迁出）
 
-公司内部 dp-* 技能（DeepWorks 工具链：ask-dp / dp-ask-deepworks / dp-ask-teams / dp-eval-run / dp-session-forensics(-cloud) / dp-dev-bootstrap / dp-deepworks-dev-start / dp-knowledge-compile / dp-dth-key-setup / dp-console-admin）**已迁移到公司 GitLab [deepsense/skills](https://gitlab.deepexi.com/deepsense/skills) 的 `wangxin/` 目录**，本仓库不再维护。一键安装：`cn-skills add deepexi/skills/wangxin --yes --global`（需内网权限，见上方「国内安装」第 7 步）。
+公司内部 dp-* 技能（DeepWorks 工具链：ask-dp / dp-ask-deepworks / dp-ask-teams / dp-eval-run / dp-session-forensics(-cloud) / dp-dev-bootstrap / dp-deepworks-dev-start / dp-knowledge-compile / dp-dth-key-setup / dp-console-admin）**已迁移到公司 GitLab [deepsense/skills](https://gitlab.deepexi.com/deepsense/skills) 的 `wangxin/` 目录**，本仓库不再维护。一键安装：`cn-skills add deepexi/skills/wangxin --copy --yes --global`（需内网权限，见上方「国内安装」第 7 步）。
 
 ### 设计
 
@@ -380,8 +379,7 @@ skills/
 │   ├── grill-one/  # 单问版 grilling
 │   ├── grill-one-with-docs/  # 单问版 grill-with-docs（访谈+ADR/术语表沉淀）
 │   ├── domain-modeling-wx/  # 领域建模 wx 版（GLOSSARY 术语层 + CONTEXT 关系层 + ADR）
-│   ├── find-session/  # 跨 agent 会话检索 + resume 命令（agent-sessions 常驻后端）
-│   ├── retro-wx/  # 会话复盘：七类扫描改环境，只提议不执行（与 matt 版 retro 共存）
+│   ├── retro-wx/  # 会话复盘：七类扫描改环境，支持 grep 五源历史会话，只提议不执行
 │   ├── ask-wx/  # 工作流主线路由器：默认 grill-one-with-docs 入口，中后段指向 matt 系
 │   ├── step-card-wx/  # 保姆级测试/操作步骤卡（基础档+验收档）
 │   ├── verify-manual-after-implementation/  # 实现后手动验收手册生成（含结构化操作约定）

@@ -54,7 +54,6 @@
     "./skills/productivity/setup-claude-code",
     "./skills/productivity/verify-run",
     "./skills/productivity/verify-replay",
-    "./skills/productivity/find-session",
     "./skills/productivity/retro-wx",
     "./skills/productivity/ask-wx",
     "./skills/productivity/closed-loop",

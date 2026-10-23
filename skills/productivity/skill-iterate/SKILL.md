@@ -19,7 +19,7 @@ matt/skills、rea、context-mode、book-to-skill 四个高维护 skill 仓库的
 
 拿到摩擦描述后，先找**发生了什么**的证据，再想怎么改：
 
-- **会话记录**：当前会话直接用上下文；历史会话经 agent-sessions 服务检索（`http://127.0.0.1:8390`，用法见 `find-session`）。找 skill 实际运行时的关键片段：它读了什么、跳过了什么、在哪一步跑偏。
+- **会话记录**：当前会话直接用上下文；历史会话直接 grep 本机各 harness 的 jsonl 日志（`~/.codebuddy|claude|codex|copilot|pi/...`，窄关键词搜内容、`ls -t` 按时间翻）。找 skill 实际运行时的关键片段：它读了什么、跳过了什么、在哪一步跑偏。
 - **没有证据时**，向用户要一个具体实例：「上次它做了什么、你期望什么」。不要基于想象中的失败模式改 skill——那是往 skill 里塞 no-op。
 - 摩擦分类（决定改动类型）：
   - **误触发**（不该调用时调用了）→ 收紧 description 的触发措辞

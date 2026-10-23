@@ -46,7 +46,7 @@ disable-model-invocation: true
 ## 复盘（收尾）
 
 - **`/retro`**（matt）：绑定他的 code-review 链，直接读当前 harness 的会话记录。
-- **`/retro-wx`**（本仓库）：数据层走 agent-sessions（跨五源检索历史会话），落点含个人 skills 仓库提议与 auto-memory。
+- **`/retro-wx`**（本仓库）：主体与 matt 版同构，可直接 grep 本机五源会话日志复盘任意 harness 的历史会话，落点含个人 skills 仓库提议与 auto-memory。
 
 默认用 `/retro`（当前会话、matt 主线收尾）；要跨 harness 翻历史会话、或想把发现沉淀成自己的 skill / memory 时用 `/retro-wx`。
 
@@ -68,7 +68,6 @@ disable-model-invocation: true
 - **东西坏了、且是硬骨头** → matt 的 **`/diagnosing-bugs`**：用于第一眼看不出的 bug、间歇性 flake、两个已知好状态之间爬进来的回归。它拒绝先理论后动手：必须先有**紧反馈回路**（一条对当前 bug 必红已红的命令），再用回归测试修。修完在同一会话跑 `/retro` 问怎么防再犯。
 - **雾很大的巨型想法** → matt 的 **`/wayfinder`**：绿地项目或超大构建，大到一个会话装不下。它在 issue tracker 上铺一张**决策票**共享地图，一次解决一张，产出**决策而非交付物**，直到雾散。雾散后**它交接、不施工**：在 `/to-spec` 处汇入主流（把地图的关联决策收拢成可构建的计划），之后照常 `/to-tickets` → `/implement`。把地图直接灌进 `/implement` 会扔掉关联细节——除非工作量真的小，否则别这么走。
 - **要调研一个问题** → **`/research-wx`**：后台 agent 针对一手来源调研，产出带出处的 Markdown 存进仓库。它产出的是带进入口打磨的材料，不是替代品。
-- **上下文丢了/在别的会话里** → **`/find-session`**：跨五源找历史会话并给出 resume 命令；找回上下文后回到入口打磨。
 
 ## 不在本图内
 

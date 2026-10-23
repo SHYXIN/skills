@@ -1,6 +1,6 @@
 ---
 name: retro-wx
-description: "复盘一次编码会话。"
+description: "复盘一次编码会话（中文版，支持复盘任意 harness 的历史会话）。"
 disable-model-invocation: true
 ---
 
@@ -10,7 +10,17 @@ disable-model-invocation: true
 
 1. 参考 `writing-for-agents-wx` 技能，作为写作风格指南。
 
-2. 读取用户指定会话的一手记录。用户未指定时，默认当前会话——直接使用上下文中的记录。指定历史会话时，通过本机 agent-sessions 服务检索（`http://127.0.0.1:8390`，接口用法见 `find-session` 技能；`source` 取值 `codebuddy|claude|codex|pi|copilot`）。服务失联时询问用户如何拉起，不要猜测本机路径。
+2. 读取用户指定会话的一手记录。用户未指定时，默认当前会话——直接使用上下文中的记录。指定历史会话时，直接在本机会话日志里检索（五个 harness 的 jsonl 都落盘，无需任何服务）：
+
+   | harness | 日志目录 |
+   | --- | --- |
+   | codebuddy | `~/.codebuddy/projects/**/*.jsonl` |
+   | claude | `~/.claude/projects/**/*.jsonl` |
+   | codex | `~/.codex/sessions/**/*.jsonl` |
+   | copilot | `~/.copilot/**/*.jsonl` |
+   | pi | `~/.pi/**/*.jsonl` |
+
+   内容线索用窄关键词 grep（报错原文、文件路径、函数名，别用宽泛词）；时间线索对目录 `ls -t` 翻最近改动。命中多条时抽文件头尾几行确认是目标会话再全量读。
 
 3. 在以下类别中寻找改进候选。
 

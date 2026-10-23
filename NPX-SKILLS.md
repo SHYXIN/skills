@@ -4,7 +4,7 @@
 
 > 国内用户（免翻墙）请改用 [`cn-skills-cli`](https://github.com/SHYXIN/cn-skills-cli)，从 Gitee 镜像拉取，用法见仓库 README 的「国内安装」。本文档面向可直接访问 GitHub 的环境。
 
-全文示例均基于本仓库 `SHYXIN/skills`，默认装到 `codebuddy claude-code codex`（全局）。把 `SHYXIN/skills` 换成任意 `owner/repo` 即可用于其他技能集。
+全文示例均基于本仓库 `SHYXIN/skills`，默认装到 `codebuddy claude-code codex`（全局）。本仓库统一用**复制安装**（命令带 `--copy`，各 agent 目录写独立副本、不依赖软链）。把 `SHYXIN/skills` 换成任意 `owner/repo` 即可用于其他技能集。
 
 ## 命令总览
 
@@ -25,13 +25,13 @@
 npx skills@latest add SHYXIN/skills
 
 # 推荐：全局安装到指定 agent，跳过确认
-npx skills@latest add SHYXIN/skills -y -g -a codebuddy claude-code codex
+npx skills@latest add SHYXIN/skills -y --copy -g -a codebuddy claude-code codex
 
 # 同时安装推荐搭配 pstack 整包（约 60 个技能，按来源一条命令装齐）
-npx skills@latest add backnotprop/pstack -y -g -a codebuddy claude-code codex
+npx skills@latest add backnotprop/pstack -y --copy -g -a codebuddy claude-code codex
 
 # 同时安装社区推荐搭配 mattpocock/skills（放最后：同名 tdd/teach 采用 matt 版，后装者胜）
-npx skills@latest add mattpocock/skills -y -g -a codebuddy claude-code codex
+npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code codex
 ```
 
 安装后，在对应 agent（CodeBuddy / Claude Code / Codex 等）中即可直接调用本仓库的技能，例如 `/socratic-tutor`、`/grill-one`。
@@ -292,8 +292,8 @@ npx skills add ./skills --skill socratic-tutor -a codebuddy
 
 | 方式 | 说明 |
 | --- | --- |
-| **软链（推荐）** | 从各 agent 软链到同一份权威副本，单一来源、易于更新 |
-| **复制** | 为各 agent 创建独立副本，软链不支持时使用（`--copy`） |
+| **复制（本仓库默认）** | 为各 agent 创建独立副本，不依赖 symlink（安装命令统一带 `--copy`） |
+| **软链** | 从各 agent 软链到同一份权威副本，单一来源、易于更新（默认行为） |
 
 ## 环境变量
 
