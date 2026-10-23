@@ -1,6 +1,6 @@
 ---
 name: dingtalk-brief
-description: 钉钉每日简报。聚合未读邮件、近期收件箱、@我消息、未读会话、今日日程、今日待办，生成一份 Markdown 摘要。触发词：「看下钉钉」「今日简报」「钉钉简报」「我有什么未读」「@我有什么」「今天有什么日程/待办」。支持只拉单个数据源的定制请求。超出简报范围的钉钉操作（发消息/发邮件/文档/审批等）路由给对应 dingtalk-* 官方家族技能。依赖 dws CLI（已装并登录，`dws auth status` 可验证）。
+description: 钉钉每日简报。聚合未读邮件、近期收件箱、@我消息、未读会话、今日日程、今日待办、知识库动态，生成一份 Markdown 摘要。触发词：「看下钉钉」「今日简报」「钉钉简报」「我有什么未读」「@我有什么」「今天有什么日程/待办」。支持只拉单个数据源的定制请求（速查表含知识库 feed 与读单篇文档的正确姿势）。超出简报范围的钉钉操作（发消息/发邮件/文档/审批等）路由给对应 dingtalk-* 官方家族技能。依赖 dws CLI（已装并登录，`dws auth status` 可验证）。
 ---
 
 # DingTalk Brief
@@ -61,8 +61,17 @@ Register-ScheduledTask -TaskName "DingTalkDailyBrief" -Action $action -Trigger $
 | 有未读的会话 | `dws chat +unread-chats` | `.conversations[]`（name/conversationId） |
 | 今日日程 | `dws calendar +agenda` | `.data.events[]` |
 | 今日到期待办 | `dws todo +due-today` | `.data.tasks[]` |
+| 知识库最近动态 | `dws wiki +space-list` 先拿 workspaceId，再 `dws wiki +feed-list --workspace <id>` | `.data.feeds[]`（time 毫秒时间戳；`content` 是 **JSON 字符串**，需二次 `json.loads` 才能取到 doc.name/users） |
 
 更多能力（发消息、发邮件、文档读写、日历预订等 25 个服务）用 `dws <service> --help` 探索；优先用 `+shortcut` 形式的快捷命令。
+
+读知识库单篇文档（踩过坑，正确姿势）：
+
+```bash
+# nodeId 必须用 feed 数据里的 32 位 dentryUuid，不是 16 位 dentryKey；
+# 且 +node-get 不接受 --workspace 参数（传了会报错）
+dws wiki +node-get --node <32位dentryUuid>
+```
 
 ## 超出简报范围的需求 → 路由给 dingtalk-* 家族
 
@@ -84,5 +93,6 @@ Register-ScheduledTask -TaskName "DingTalkDailyBrief" -Action $action -Trigger $
 ## 注意
 
 - dws 输出是 UTF-8 JSON。在 PowerShell 里解析前必须设置 `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`，否则中文乱码且 JSON 解析失败（踩过坑）。
+- mcp-gw.dingtalk.com 偶发 DNS/TLS 抖动（命令长时间无响应后超时），等一两分钟重试即可恢复，不要误判为 token 失效（踩过坑）。
 - 计划任务静默运行时同样受此约束——自带的脚本已内置该设置。
 - 邮件/消息数据涉敏感内容，摘要时保守转述，不要把完整正文贴进不可信的输出渠道。
