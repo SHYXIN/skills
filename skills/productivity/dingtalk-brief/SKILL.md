@@ -1,6 +1,6 @@
 ---
 name: dingtalk-brief
-description: 钉钉每日简报。聚合未读邮件、近期收件箱、@我消息、未读会话、今日日程、今日待办，生成一份 Markdown 摘要。触发词：「看下钉钉」「今日简报」「钉钉简报」「我有什么未读」「@我有什么」「今天有什么日程/待办」。支持只拉单个数据源的定制请求。依赖 dws CLI（已装并登录，`dws auth status` 可验证）。
+description: 钉钉每日简报。聚合未读邮件、近期收件箱、@我消息、未读会话、今日日程、今日待办，生成一份 Markdown 摘要。触发词：「看下钉钉」「今日简报」「钉钉简报」「我有什么未读」「@我有什么」「今天有什么日程/待办」。支持只拉单个数据源的定制请求。超出简报范围的钉钉操作（发消息/发邮件/文档/审批等）路由给对应 dingtalk-* 官方家族技能。依赖 dws CLI（已装并登录，`dws auth status` 可验证）。
 ---
 
 # DingTalk Brief
@@ -63,6 +63,23 @@ Register-ScheduledTask -TaskName "DingTalkDailyBrief" -Action $action -Trigger $
 | 今日到期待办 | `dws todo +due-today` | `.data.tasks[]` |
 
 更多能力（发消息、发邮件、文档读写、日历预订等 25 个服务）用 `dws <service> --help` 探索；优先用 `+shortcut` 形式的快捷命令。
+
+## 超出简报范围的需求 → 路由给 dingtalk-* 家族
+
+本技能只做信息聚合摘要。用户的钉钉需求超出上表时，**不要在本技能里硬做**，按产品路由给对应的外部官方技能（本机已装）：
+
+| 需求类型 | 路由到 |
+|---|---|
+| 收发消息、建群、群机器人、Webhook | `dingtalk-chat` |
+| 邮件收发、附件、模板、自动回复 | `dingtalk-mail` |
+| 文档读写、块编辑、导入导出 | `dingtalk-doc` |
+| 日程/会议室预订、忙闲 | `dingtalk-calendar` |
+| 待办创建/指派/完成 | `dingtalk-todo` |
+| 知识库、钉盘、通讯录、AI 听记、AI 表格、AI 搜问 | `dingtalk-wiki` / `dingtalk-drive` / `dingtalk-contact` / `dingtalk-minutes` / `dingtalk-aitable` / `dingtalk-aisearch` |
+| OA 审批、考勤、白板、DING、日志填报、OpenAPI 逃生舱等长尾 | `dingtalk-misc` |
+| 泛称"钉钉/ DWS"但不明确产品、跨产品编排、URL 预检 | `dingtalk-shared` |
+
+官方家族技能内含 dws 执行契约（不猜命令、ID 来自真实返回、写后验证），优先走它们而不是裸调 `dws`。
 
 ## 注意
 
