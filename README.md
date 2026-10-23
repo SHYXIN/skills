@@ -394,6 +394,7 @@ skills/
 │   ├── writing-for-agents-wx/  # 写给 agent 的文档（中文版写作规范）
 │   ├── wait-what-wx/  # 没懂就喊停（中文版）
 │   ├── where-am-i-wx/  # 迷路就喊地图：当前任务/对话的决策定位图（中文版）
+│   ├── source-trace-wx/  # 追踪回答的原始依据与来源（一手来源补查）
 │   ├── wizard-wx/  # 生成手把手 bash 向导（中文版）
 │   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending 合并）
 │   ├── upward-networking/ # 向上社交和高价值关系经营
