@@ -1,18 +1,35 @@
 ---
 name: branch-management
-description: 通用 Git 分支管理操作技能。用于帮 wangxin/wx 在当前仓库中新建 feature 分支、同步 develop、提交并 push、MR 前检查、合并后清理分支。默认从 develop 切 feature/wx-YYYYMMDD-<task>，会主动执行低风险 Git 操作；历史重写、远端删除、生产分支相关动作需明确确认。
+description: 通用 Git 分支管理操作技能。用于在当前仓库中新建 feature 分支、同步 develop、提交并 push、MR 前检查、合并后清理分支。分支名默认 feature/<initials>-YYYYMMDD-<task>，initials 从 git config 读取（skill.initials），不硬编码用户身份。提交前校验作者邮箱（skill.email），不一致则拒绝提交。会主动执行低风险 Git 操作；历史重写、远端删除、生产分支相关动作需明确确认。
 ---
 
 # Branch Management
 
 帮用户在**当前 Git 仓库**里执行日常分支管理闭环：新建 feature 分支、同步集成分支、提交并推送、MR 前检查、合并后清理分支。
 
-默认用户身份：
-- 姓名：wangxin / 王鑫
-- initials：`wx`
-- feature 分支格式：`feature/wx-YYYYMMDD-<kebab-task-name>`
+本技能是通用流程，不绑定具体仓库、不绑定具体用户。除非当前仓库另有明确约定，否则按下面的默认规则执行。
 
-本技能是通用流程，不绑定具体仓库。除非当前仓库另有明确约定，否则按下面的默认规则执行。
+## 用户身份（每次进入技能先确认）
+
+分支前缀和提交身份都从 git 配置读取，**不硬编码任何人**：
+
+```bash
+git config --get skill.initials   # 分支前缀，如 wx、zs
+git config --get skill.email      # 提交邮箱，用于 commit 前身份校验
+```
+
+- `skill.initials` 未配置：提示用户执行一次性设置，例如 `git config --global skill.initials wx`；用户不想配置则询问本次分支前缀用什么，仅本次生效。
+- `skill.email` 未配置：跳过提交身份校验，正常提交。
+
+feature 分支格式：
+
+```text
+feature/<initials>-YYYYMMDD-<kebab-task-name>
+```
+
+## 分支归属防线
+
+多人共用技能库、共用仓库时，feature 分支靠 `<initials>` 前缀区分归属。凡是对**不是本人前缀**的分支执行 rebase、删除、强推等写操作前，必须先向用户确认"这个分支是你本人的吗"，防止误操作同事的分支。
 
 ---
 
@@ -25,8 +42,8 @@ description: 通用 Git 分支管理操作技能。用于帮 wangxin/wx 在当�
 - `git fetch --all --prune`
 - `git checkout <branch>`
 - `git pull origin <branch>`
-- `git checkout -b feature/wx-YYYYMMDD-<task>`
-- `git push -u origin feature/wx-YYYYMMDD-<task>`
+- `git checkout -b feature/<initials>-YYYYMMDD-<task>`
+- `git push -u origin feature/<initials>-YYYYMMDD-<task>`
 - `git add <明确文件>`
 - `git commit -m "<message>"`
 - `git push`
@@ -75,30 +92,31 @@ description: 通用 Git 分支管理操作技能。用于帮 wangxin/wx 在当�
 
 流程：
 
-1. 询问或提取任务名，将其转成 kebab-case 英文短语，3-6 个词以内。
-2. 生成当天日期 `YYYYMMDD`。
-3. 生成分支名：
+1. 读取 `skill.initials`（未配置则按「用户身份」一节先完成设置）。
+2. 询问或提取任务名，将其转成 kebab-case 英文短语，3-6 个词以内。
+3. 生成当天日期 `YYYYMMDD`。
+4. 生成分支名：
    ```text
-   feature/wx-YYYYMMDD-<task>
+   feature/<initials>-YYYYMMDD-<task>
    ```
-4. 拉取远端：
+5. 拉取远端：
    ```bash
    git fetch --all --prune
    ```
-5. 切到基线分支并更新：
+6. 切到基线分支并更新：
    ```bash
    git checkout develop
    git pull origin develop
    ```
-6. 创建 feature 分支：
+7. 创建 feature 分支：
    ```bash
-   git checkout -b feature/wx-YYYYMMDD-<task>
+   git checkout -b feature/<initials>-YYYYMMDD-<task>
    ```
-7. 推送并设置 upstream：
+8. 推送并设置 upstream：
    ```bash
-   git push -u origin feature/wx-YYYYMMDD-<task>
+   git push -u origin feature/<initials>-YYYYMMDD-<task>
    ```
-8. 汇报当前分支名和下一步建议。
+9. 汇报当前分支名和下一步建议。
 
 命名禁忌：
 - 不使用 `test`、`temp`、`patch`、`new` 等无意义名
@@ -170,7 +188,13 @@ description: 通用 Git 分支管理操作技能。用于帮 wangxin/wx 在当�
    - `test`：测试相关，例如 `test(unit): 添加认证服务 mock`
    - `hotfix`：紧急线上修复，例如 `hotfix: 回滚聊天面板异常部署`
 4. 只 add 与本次任务相关的文件。
-5. 执行 commit 和 push：
+5. 提交身份护栏（commit 前必做）：
+   - 读取 `git config --get skill.email`：
+     - 未配置 → 跳过校验，直接提交。
+     - 已配置 → 与 `git config --get user.email` 比对：
+       - 一致 → 正常提交。
+       - **不一致 → 拒绝 commit**，报错说明两者不一致，提示用户修正本机 git 配置后再试。不要提供"继续提交"的选项——错误身份的 commit 事后要靠历史重写来补救，代价远高于提交前拦一下。
+6. 护栏通过后执行 commit 和 push：
    ```bash
    git add <files>
    git commit -m "<type>(<scope>): <中文摘要>"
@@ -248,20 +272,21 @@ MR 描述模板：
 流程：
 
 1. 确认 feature 分支已合并。
-2. 切回基线分支并更新：
+2. 核对分支前缀：目标分支的 `<initials>` 不是本人前缀时，按「分支归属防线」先向用户确认归属，确认是别人的分支就停手。
+3. 切回基线分支并更新：
    ```bash
    git checkout develop
    git pull origin develop
    ```
-3. 删除本地 feature 分支前先确认。
-4. 用户确认后：
+4. 删除本地 feature 分支前先确认。
+5. 用户确认后：
    ```bash
-   git branch -d feature/wx-YYYYMMDD-<task>
+   git branch -d feature/<initials>-YYYYMMDD-<task>
    ```
-5. 删除远端 feature 分支前再次确认。
-6. 用户确认后：
+6. 删除远端 feature 分支前再次确认。
+7. 用户确认后：
    ```bash
-   git push origin --delete feature/wx-YYYYMMDD-<task>
+   git push origin --delete feature/<initials>-YYYYMMDD-<task>
    ```
 
 如果 `git branch -d` 拒绝删除，说明 Git 认为未合并。不要改用 `-D`，先调查合并状态。
@@ -295,7 +320,7 @@ MR 描述模板：
 指导恢复：
 ```bash
 git reflog
-git checkout -b feature/wx-YYYYMMDD-<task> <reflog-hash>
+git checkout -b feature/<initials>-YYYYMMDD-<task> <reflog-hash>
 ```
 
 ---
