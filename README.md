@@ -282,7 +282,7 @@ npx rea-agents setup                                                            
 - **ssh-key-setup** — 新机器 SSH 密钥初始化。生成一对 ed25519 密钥（一机一钥），登记到任意多个远端 git 服务（gitLab / GitHub / Gitee 等），逐一 `ssh -T` 验证，清除旧 https/PAT 凭据残留。全中文引导，不自动上传密钥（由用户粘贴入库），含 4 条踩坑记录（CRLF、老 sshd、2FA 绕过、一机一钥）。
 - **sync-workbuddy** — 把技能仓库的本地克隆同步（复制覆盖）到 WorkBuddy 的 `~/.workbuddy/skills/`。WorkBuddy 不在 `npx skills` 支持的 agent 列表里，故用脚本直接复制；只增改、永不删除目标目录中已有技能（第三方/商店安装的不受影响）。适用于改完 skill 后同步到本机 WorkBuddy、新电脑初始化 WorkBuddy 环境。
 
-- **branch-management** — 通用 Git 分支管理操作技能。默认以 wangxin/wx 身份从 `develop` 创建 `feature/wx-YYYYMMDD-<task>`，帮你执行新建 feature、同步基线、提交并 push、MR 前检查、合并后清理分支；历史重写、远端删除、生产分支相关动作会先确认。
+- **branch-management** — 通用 Git 分支管理操作技能。用于在当前仓库中新建 feature 分支、同步 develop、提交并 push、MR 前检查、合并后清理分支。分支名默认 `feature/<initials>-YYYYMMDD-<task>`，initials 从 git config 读取（`skill.initials`），不硬编码用户身份。提交前校验作者邮箱（`skill.email`），不一致则拒绝提交。会主动执行低风险 Git 操作；历史重写、远端删除、生产分支相关动作需明确确认。
 - **worktree** — 通用 Git worktree 隔离工作技能。从基线分支切 feature 分支到主仓库旁的 `.wt-<短任务名>` 目录做目录级隔离，覆盖创建 → 开发 → 合并后清理全生命周期；支持多 worktree 并行与归属盘点（按分支名前缀判断，只动自己的）。分支命名/提交规范沿用 branch-management；一切删除动作（含 worktree、本地/远端分支）执行前必须先确认。
 - **oss-finder** — GitHub 开源贡献第一步：找项目。用 gh CLI 按默认画像（近期活跃、中等规模、带 good first issue）搜索候选仓库，按活跃度 / 社区健康 / 贡献友好度打分，输出候选清单与推荐理由。
 - **oss-triage** — GitHub 开源贡献第二步：选 issue + 读代码。给定目标仓库，拉取 good first issue / help wanted 候选，筛掉已认领、有关联 PR、已过期的，浅克隆到 `~/.oss/<owner>/<repo>` 读代码验证，输出「选题 + 改动方案」。

@@ -1,6 +1,6 @@
 ---
 name: worktree
-description: 通用 Git worktree 隔离工作技能。帮 wangxin/wx 用 git worktree 做目录级任务隔离：从基线分支切 feature 分支到主仓库旁的 .wt-<短任务名> 目录、在 worktree 里开发提交、合并后清理 worktree 与分支。支持多 worktree 并行与归属盘点（不碰别人的工作现场）。分支命名、基线判断、提交规范沿用 branch-management 技能。一切删除动作执行前必须先向用户确认。
+description: 通用 Git worktree 隔离工作技能。用 git worktree 做目录级任务隔离：从基线分支切 feature 分支到主仓库旁的 .wt-<短任务名> 目录、在 worktree 里开发提交、合并后清理 worktree 与分支。支持多 worktree 并行与归属盘点（不碰别人的工作现场）。分支命名、基线判断、提交规范沿用 branch-management 技能。一切删除动作执行前必须先向用户确认。
 ---
 
 # Worktree 隔离工作
@@ -11,9 +11,7 @@ description: 通用 Git worktree 隔离工作技能。帮 wangxin/wx 用 git wor
 本技能覆盖**全生命周期**：创建 → 开发 → 清理。
 分支命名、基线判断、提交与 MR 规范**沿用 branch-management 技能**，本技能只写 worktree 特有部分。
 
-默认用户身份（与 branch-management 一致）：
-- 姓名：wangxin / 王鑫
-- initials：`wx`
+用户身份（与 branch-management 一致）：分支前缀 initials 从 git config 读取（`git config --get skill.initials`），未配置时按 branch-management 的「用户身份」一节先完成设置。不硬编码任何人。
 
 ---
 
@@ -28,7 +26,7 @@ C:/code_proj/<项目域>/<repo>/              ← 主仓库
 C:/code_proj/<项目域>/.wt-<短任务名>/      ← worktree
 ```
 
-示例：分支 `feature/wx-0909-fix-otel` → worktree 目录 `.wt-fix-otel`。
+示例：分支 `feature/wx-0909-fix-otel`（wx 为 initials 示例）→ worktree 目录 `.wt-fix-otel`。
 
 - 短任务名用 kebab-case 英文，2-4 个词，与分支语义对应
 - 一个 worktree 只承载一件事（对应一个分支）
@@ -75,11 +73,11 @@ C:/code_proj/<项目域>/.wt-<短任务名>/      ← worktree
 
 流程：
 
-1. 提取任务名，按 branch-management 规则生成分支名 `feature/wx-<task>`（日期可省略，worktree 场景常用短格式）。
+1. 提取任务名，按 branch-management 规则生成分支名 `feature/<initials>-<task>`（日期可省略，worktree 场景常用短格式）。
 2. 从基线分支创建 worktree + 分支（一步完成）：
    ```bash
    git fetch --all --prune
-   git worktree add ../.wt-<短任务名> -b feature/wx-<task> origin/develop
+   git worktree add ../.wt-<短任务名> -b feature/<initials>-<task> origin/develop
    ```
    路径按"主仓库父目录 + `.wt-<短任务名>`"拼出绝对路径更稳妥。
 3. 进 worktree 工作：
@@ -121,8 +119,8 @@ C:/code_proj/<项目域>/.wt-<短任务名>/      ← worktree
 3. 用户确认后，按顺序执行：
    ```bash
    git worktree remove ../.wt-<短任务名>
-   git branch -d feature/wx-<task>
-   git push origin --delete feature/wx-<task>
+   git branch -d feature/<initials>-<task>
+   git push origin --delete feature/<initials>-<task>
    ```
    远端分支若已被 GitLab/GitHub 在合并时自动删除，会报 `remote ref does not exist`——这是正常情况，不是错误。
 4. 清理失效的远端引用：
@@ -145,12 +143,12 @@ C:/code_proj/<项目域>/.wt-<短任务名>/      ← worktree
 git worktree list
 ```
 
-归属判断约定：**按分支名前缀**（`wx-` 是王鑫的，`mwn-` 等是同事的）。
+归属判断约定：**按分支名前缀**，前缀与本人 `skill.initials` 一致的算自己的，其他前缀（同事的）不算。
 worktree 目录名不一定能看出归属，分支名才可靠。
 
 规则：
 - 盘点时列出每个 worktree 的路径、分支、归属判断。
-- **清理时只动自己的**（分支名含 `wx`）；别人的 worktree 与分支一律不碰、只报告。
+- **清理时只动自己的**（分支名前缀 = 本人 initials）；别人的 worktree 与分支一律不碰、只报告。
 - 发现可疑或长期不用的 worktree，报告给用户，由用户决定。
 
 ---
