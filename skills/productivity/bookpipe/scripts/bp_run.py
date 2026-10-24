@@ -65,11 +65,15 @@ def wait_cf_pass(timeout: int = 45) -> bool:
     """等 Cloudflare 检查页自动放行。"""
     deadline = time.time() + timeout
     while time.time() < deadline:
-        state = bp_suufun.page_state()
+        time.sleep(2)
+        try:
+            state = bp_suufun.page_state()
+        except RuntimeError:
+            continue  # 页面导航中（body 未就绪），重试
         html = json.dumps(state, ensure_ascii=False)
         if not any(m in html for m in CF_MARKERS):
             return True
-        time.sleep(5)
+        time.sleep(3)
     return False
 
 

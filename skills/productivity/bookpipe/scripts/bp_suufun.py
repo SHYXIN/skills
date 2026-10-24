@@ -53,7 +53,9 @@ def open_url(url: str, settle: float = 2.5):
 
 def page_state() -> dict:
     return browser_eval(
-        "(function(){return JSON.stringify({url:location.href,"
+        "(function(){if(!document.body)return JSON.stringify({url:location.href,"
+        "title:'',captcha:false});"
+        "return JSON.stringify({url:location.href,"
         "title:document.title,"
         "captcha:/Resolve the captcha/i.test(document.body.innerText)});})()")
 
