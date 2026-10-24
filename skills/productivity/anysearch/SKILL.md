@@ -1,7 +1,6 @@
 ---
 name: anysearch
 description: Real-time search engine supporting web search, vertical domain search, parallel batch search, and URL content extraction.
-version: 2.0.0
 authors:
   - AnySearch Team
 credentials:

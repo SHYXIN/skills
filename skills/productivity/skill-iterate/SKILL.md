@@ -60,7 +60,7 @@ matt/skills、rea、context-mode、book-to-skill 四个高维护 skill 仓库的
 
 4. `~/.agents/skills/<name>/`（运行时的**第二个独立副本**）→ `~/.codebuddy/skills/`、`~/.claude/skills/`（symlink 自动生效，无需操作；workbuddy 等复制式安装见 `sync-workbuddy`）
 
-注意：仓库 `d:/code_project/skills/skills/` 与 `~/.agents/skills/` 是两个**独立目录**（同内容不同文件）。改完仓库后，已安装的副本不会自动更新——需要把改动同步到 `~/.agents/skills/<name>/`（复制 SKILL.md，或重跑安装脚本）；codebuddy/claude 的 symlink 指向 `~/.agents/skills/`，只要后者更新就自动生效。
+注意：本仓库 `skills/` 目录与 `~/.agents/skills/` 是两个**独立目录**（同内容不同文件）。改完仓库后，已安装的副本不会自动更新——需要把改动同步到 `~/.agents/skills/<name>/`（复制 SKILL.md，或重跑安装脚本）；codebuddy/claude 的 symlink 指向 `~/.agents/skills/`，只要后者更新就自动生效。
 
 ## 护栏
 
