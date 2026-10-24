@@ -312,9 +312,9 @@ npx rea-agents setup                                                            
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
 - **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
 
-- **agent-config-tidy** — 整理/收尾智能体配置（AGENTS.md、soul.md、SKILL.md、agent yaml 及脚本）：扫描并移除混进配置里的决策背景、会话说明、闲聊等不必要内容，只留运行时需要的指令；先出差异确认再改写。用于每轮 grill 迭代改完配置后的克制收尾。交互档：每步等用户确认，确认后才改写。
+- **agent-config-tidy** — 整理/收尾智能体配置（AGENTS.md、soul.md、SKILL.md、agent yaml 及脚本）：扫描并移除混进配置里的决策背景、会话说明、闲聊等不必要内容，只留运行时需要的指令；并交叉检查同一件事在多个配置文件间的描述是否一致（同步缺失/互相矛盾/各说各话）；先出差异确认再改写。用于每轮 grill 迭代改完配置后的克制收尾。交互档：每步等用户确认，确认后才改写。
 
-- **agent-config-lint** — 配置克制自动检查：派只读子 agent 按 agent-config-tidy 的判定规则扫描目标目录，产出带建议动作的差异报告；无人值守、永不改文件。与 agent-config-tidy 成对——lint 是自动检查档（如 wx-flow 阶段 4 配置类改动收尾），要落地修改再走 tidy 逐条确认。
+- **agent-config-lint** — 配置克制自动检查：派只读子 agent 按 agent-config-tidy 的判定规则扫描目标目录（含跨文件描述一致性），产出带建议动作的差异报告，跨文件问题成对列出；无人值守、永不改文件。与 agent-config-tidy 成对——lint 是自动检查档（如 wx-flow 阶段 4 配置类改动收尾），要落地修改再走 tidy 逐条确认。
 
 - **source-trace-wx** — 追踪 agent 回答的原始依据与来源。先列出对话里真实读过的来源，再对没有出处的 claim 去一手来源（官方文档/源码/规范/第一方 API）补查，写成注明出处、区分一手/二手信任级的 Markdown 文件。触发词如「查出处」「原始依据在哪」。model-invoked。
 
@@ -416,8 +416,8 @@ skills/
 │   ├── setup-windows-mcp/  # 新机器安装注册 Windows-MCP 桌面自动化（codebuddy/claude/codex 三件套）
 │   ├── setup-opencli/  # OpenCLI 浏览器桥接配置：CLI + Chrome 扩展 + doctor 验证
 │   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
-│   ├── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊（交互确认档）
-│   ├── agent-config-lint/  # 配置克制自动检查：子 agent 只读扫描出报告，不改文件（自动档）
+│   ├── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊 + 跨文件描述一致性（交互确认档）
+│   ├── agent-config-lint/  # 配置克制自动检查：子 agent 只读扫描出报告（含跨文件一致性），不改文件（自动档）
 │   └── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
