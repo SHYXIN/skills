@@ -267,6 +267,8 @@ npx rea-agents setup                                                            
 
 - **guided-book-reader** — 带读英文技术书 PDF 的工作流技能。用于认真阅读英文技术书、论文集或长篇 PDF：先读取和解析 PDF、转成 txt、按章节拆分，再用中文为主的 teach 风格逐小节讲解、出选择题检查理解，并把每节阅读总结追加到 notes markdown。
 
+- **bookpipe** — forcoder.net → suufun.com 加速 → book-to-skill 的每日书籍流水线。带 URL 直接跑单本全链路（书页→Rapidgator→中转→下载→解压到 `~/bookpipe`）；不带参数抓今日书目并分级预勾选（AI/编程默认勾选，MP4 永不自动）。浏览器操作走 opencli（认证零凭据进脚本），hCaptcha 暂停等人工。转换用 book-to-skill 完成。
+
 - **handoff-wx** — 把当前对话压缩成交接文档，供下一个 agent 会话无缝接手。适用于任何场景（开发/调研/写作/协作），不限代码。存储按序探测当前目录的 `temp/handoffs/` → `tmp/handoffs/`，都没有则退回 OS 临时目录；文件名 `YYYY-MM-DD_HHMM_主题.md`。保留原版纪律：不复制已有工件（只给路径/URL 指针）、脱敏、参数=下个会话重点。改编自 mattpocock/skills 的 handoff，与其存取策略不同。user-invoked。
 - **domain-modeling-wx** — 构建并打磨项目的领域模型：讨论代码库术语、写/改 GLOSSARY.md（术语层，与 matt 上游完全兼容）、CONTEXT.md（关系/对话/歧义 wx 扩展层）或记录 ADR 时使用。
 
@@ -375,6 +377,7 @@ skills/
 │   └── learn-by-doing/
 ├── productivity/      # 效率类技能
 │   ├── anysearch/     # 搜索类技能（含代理适配）
+│   ├── bookpipe/  # forcoder 每日书籍流水线（suufun 加速 + book-to-skill 转换）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
 │   ├── grill-one/  # 单问版 grilling

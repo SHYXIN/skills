@@ -62,6 +62,7 @@
     "./skills/productivity/domain-modeling-wx",
     "./skills/productivity/handoff-wx",
     "./skills/personal/wx-flow",
-    "./skills/productivity/dingtalk-brief"
+    "./skills/productivity/dingtalk-brief",
+    "./skills/productivity/bookpipe"
   ]
 }
