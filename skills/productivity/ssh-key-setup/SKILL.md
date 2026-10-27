@@ -1,6 +1,7 @@
 ---
 name: ssh-key-setup
-description: 在一台新机器上生成一对 SSH 密钥并登记到多个远端 git 服务（gitLab、GitHub、Gitee 等）。每台机器只生成一次密钥，同一把公钥可登记到任意多个远端；最后 ssh -T 验证每个远端连通、清除 https 残留凭据。用户手动调用（/ssh-key-setup）。
+description: 在一台新机器上生成一对 SSH 密钥并登记到多个远端 git 服务（gitLab、GitHub、Gitee 等）。每台机器只生成一次密钥，同一把公钥可登记到任意多个远端；最后 ssh -T 验证每个远端连通、清除 https 残留凭据。换新机器要配 git SSH 时手动调用（/ssh-key-setup）。
+disable-model-invocation: true
 ---
 
 # SSH 密钥设置

@@ -1,6 +1,7 @@
 ---
 name: setup-opencli
-description: 在一台新机器上配置 OpenCLI——让 AI agent 通过 Chrome 扩展桥接操控用户日常 Chrome（带登录态）。覆盖前置检查、npm 安装 CLI、引导安装 Chrome 扩展、opencli doctor 验证、冒烟测试与常见排障（扩展 Reconnecting、daemon 未启动等）。用户手动调用（/setup-opencli）。
+description: 在一台新机器上配置 OpenCLI——让 AI agent 通过 Chrome 扩展桥接操控用户日常 Chrome（带登录态）。覆盖前置检查、npm 安装 CLI、引导安装 Chrome 扩展、opencli doctor 验证、冒烟测试与常见排障（扩展 Reconnecting、daemon 未启动等）。换新机器要配浏览器桥接时手动调用（/setup-opencli）。
+disable-model-invocation: true
 ---
 
 # OpenCLI 浏览器桥接配置

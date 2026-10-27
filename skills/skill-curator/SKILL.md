@@ -1,6 +1,7 @@
 ---
 name: skill-curator
-description: 维护本技能市场的 plugin.json / README 与磁盘上 skills/ 目录三者一致。注册新 skill、移除旧 skill、重同步漂移的元数据。改动文件后自动 git commit（git push 由用户手动触发）。用户手动调用（/skill-curator）。
+description: 维护本技能市场的 plugin.json / README 与磁盘上 skills/ 目录三者一致。注册新 skill、移除旧 skill、重同步漂移的元数据。改动文件后自动 git commit（git push 由用户手动触发）。要注册/移除/同步 skill 时手动调用（/skill-curator）。
+disable-model-invocation: true
 ---
 
 # Skill Curator

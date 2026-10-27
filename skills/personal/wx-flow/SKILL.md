@@ -5,8 +5,9 @@ description: >
   五个阶段：需求澄清（grill）→ 隔离判断（worktree 硬裁决）→ 开发 →
   收尾验证（按改动类型分流提示）→ MR + 清理（固定衔接 branch-management
   与 worktree 场景 3）。AI 领路，每个阶段收口处停下等用户拍板后再进下一阶段。
-  用户手动调用（/wx-flow）。动机：并行 agent 会话共用一个工作区时，
+  要跑完整代码任务流程时手动调用（/wx-flow）。动机：并行 agent 会话共用一个工作区时，
   未提交改动会被另一会话的 git 操作清掉——隔离判断前置到动工之前。
+disable-model-invocation: true
 ---
 
 # wx-flow — 个人全任务流程驱动器
