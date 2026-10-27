@@ -146,7 +146,8 @@ def resolve_rapidgator(book_url: str) -> str:
         "if(/Resolve the captcha/i.test(t))return JSON.stringify({captcha:true});"
         "const links=Array.from(document.querySelectorAll('a[href*=\"/goto/\"]'));"
         "if(!links.length)return JSON.stringify({captcha:false,goto:''});"
-        "return JSON.stringify({captcha:false,goto:links[0].href});})()")
+        "const rar=links.find(a=>/\\.rar$/i.test((a.textContent||'').trim()));"
+        "return JSON.stringify({captcha:false,goto:(rar||links[0]).href});})()")
     info = json.loads(raw) if isinstance(raw, str) else raw
     if info.get("captcha"):
         raise PausePoint(f"书页有 hCaptcha，请人工点掉后重跑: {book_url}")
@@ -188,7 +189,9 @@ def pipeline_run(book_url: str) -> dict:
     downloads = home() / "downloads"
     downloads.mkdir(parents=True, exist_ok=True)
     safe = re.sub(r"[^\w.-]+", "_", name) or "book"
-    rar = downloads / (safe + ".rar")
+    if not safe.lower().endswith(".rar"):
+        safe += ".rar"
+    rar = downloads / safe
     r = subprocess.run(["curl", "-sSL", "-o", str(rar), dl_url],
                        capture_output=True, text=True)
     if r.returncode != 0 or not rar.exists() or rar.stat().st_size < 1000:

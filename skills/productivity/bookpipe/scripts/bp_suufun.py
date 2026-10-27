@@ -52,12 +52,18 @@ def open_url(url: str, settle: float = 2.5):
 
 
 def page_state() -> dict:
-    return browser_eval(
+    data = browser_eval(
         "(function(){if(!document.body)return JSON.stringify({url:location.href,"
         "title:'',captcha:false});"
         "return JSON.stringify({url:location.href,"
         "title:document.title,"
         "captcha:/Resolve the captcha/i.test(document.body.innerText)});})()")
+    if isinstance(data, str):
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            data = {}
+    return data if isinstance(data, dict) else {}
 
 
 # ---------- suufun API ----------

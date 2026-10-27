@@ -12,16 +12,19 @@ description: "forcoder.net → suufun.com 加速 → book-to-skill 转换的每�
 ```
 forcoder.net 书页 (Cloudflare 拦 curl，必须浏览器)
   └─ DOWNLOAD 区 /goto/ 链接（hCaptcha 过后可见，人工点，不绕过）
-       └─ 跳转到 Rapidgator 真实下载页
-            └─ suufun.com/check 粘贴 → 提取链接（扣流量）
-                 └─ 添加到中转队列 → 服务端中转
-                      └─ 签名直链（48h 时效）→ curl 下载 .rar → 7z 解压
+       └─ 书页有多个 /goto/ 链接（Homepage + .rar 文件名），必须取文本以 .rar 结尾的那个
+            └─ 跳转到 Rapidgator 真实下载页
+                 └─ suufun.com/check 粘贴 → 提取链接（扣流量）
+                      └─ 添加到中转队列 → 服务端中转
+                           └─ 签名直链（48h 时效）→ curl 下载 .rar → 7z 解压
 ```
 
 关键事实：
 - forcoder 首页 Cloudflare 检查页通常几秒自动放行，脚本轮询等待；书页下载区有 hCaptcha，**人工点，脚本暂停等重跑**（`PausePoint`，退出码 2）
 - 首页条目选择器：`article.latestPost`，标题链接 `h2.title a`，元信息（日期/ISBN/格式/大小）全在 `article.innerText`
 - suufun API：`POST /api/task/v2/search_check`（检测列表）、`POST /api/task/v2/search_task`（转存列表，`steps` 必须 uppercase 数组）；完成任务对象 `d` 字段 = 主线路签名直链
+- `search_task` 的 `steps` 传多状态数组（如 `["WAIT_ALLOT","URL","DL"]`）会返回空，**单状态查询（如 `["COMPLETE"]`）才可靠**
+- 检测提交后任务不是立即可查：提交后 sleep 2 秒一次性查 `search_check` 会漏（实测发生过），查不到时等几秒重查或重新提交
 - suufun 认证在浏览器，全部 API 调用经 opencli 在已登录页面里 fetch，脚本零凭据
 - 提取链接扣 suufun 流量（约 5 倍文件大小），直链 48 小时失效（失效用 `bp_run.py url <任务名>` 取新链）
 - 7-Zip 在 `C:\Program Files\7-Zip\7z.exe`
