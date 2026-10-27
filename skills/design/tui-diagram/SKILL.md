@@ -148,7 +148,7 @@ description: "TUI 终端字符画图技能——用 Unicode 盒线字符（┌�
 用户要求保存时：
 
 1. **转换载体**：把当前图（可多张）转换成 Mermaid 或保留原样——
-   - 能转的转 Mermaid（对照表见 PARADIGMS.md 末尾）：流程图→`flowchart TD`、时序图→`sequenceDiagram`、状态机→`stateDiagram-v2`、层级树→`graph TD`、结构图→`flowchart LR`、时间线→`gantt`
+   - 能转的转 Mermaid（对照表见 [PARADIGMS.md](./PARADIGMS.md) 末尾）：流程图→`flowchart TD`、时序图→`sequenceDiagram`、状态机→`stateDiagram-v2`、层级树→`graph TD`、结构图→`flowchart LR`、时间线→`gantt`
    - **转不了的保留原样**，用 `text` 代码块：UI 线框、数据条、对比矩阵、以及任何转换后会失真的图
 2. **追加写入**：目标文件是**工作目录根部的 `diagrams.md`**（固定文件名，不询问）。文件不存在则创建并加一级标题；存在则追加，不覆盖已有内容
 3. **条目格式**：每张图一个二级标题 + 代码块 + 来源日期：
