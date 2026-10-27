@@ -1,6 +1,7 @@
 ---
 name: upward-networking
-description: 仅当用户明确调用 upward-networking 或要求使用本技能时使用。帮助用户设计真诚、克制、可执行的向上社交和高价值关系经营动作，支持邀约、请教、跟进、复盘，以及可选的 Obsidian 笔记草稿。
+description: 设计真诚、克制、可执行的向上社交和高价值关系经营动作，支持邀约、请教、跟进、复盘，以及可选的 Obsidian 笔记草稿。想走向上社交流程时手动调用（/upward-networking）。
+disable-model-invocation: true
 ---
 
 # 向上社交
