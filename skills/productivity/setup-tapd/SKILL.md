@@ -72,12 +72,18 @@ tapd-cli --help
 ## Step 4 —— 冒烟测试
 
 ```bash
-tapd-cli user list workspaceid=<你的项目ID> limit=1
+tapd-cli user info
 ```
 
-（或任一条只读查询。）期望返回 JSON 数据而非报错。
+期望返回 `"status": 1` 和当前用户 JSON（name/email/company_id）——这条最稳：不依赖 workspace 参数，直接验证 token 有效性。
 
-`GREEN:` 返回真实数据。
+查项目列表拿真实 workspaceid：
+
+```bash
+tapd-cli user workspaces
+```
+
+`GREEN:` `user info` 返回 `"status": 1`。
 
 ---
 
