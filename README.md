@@ -308,7 +308,6 @@ npx rea-agents setup                                                            
 - **skill-iterate** — 迭代打磨一个已存在的 skill：把一次使用中的摩擦（误触发、抢跑、粒度不对、步骤缺失）变成小步修改。一次只改一类行为（±10 行），先要一手摩擦证据不猜失败模式；行为修改只动 SKILL.md，plugin.json/README 按条件同步；只提议 commit 不主动 git。纯删杂质（背景/闲聊/重复自述）转给 agent-config-tidy，行为校准才归本 skill。user-invoked。
 - **loop-driver** — 环式自进化调度器。把任务逼成一个自我改进的循环：收集目标 → 按经验选 skill 组合 → 执行 → 用闭环信号记分 → 沉淀到 ledger 并调权重 → 等下一个目标，一圈比一圈选得准。人只在无共识决策和红线处被拍板。说"转起来""跑一整个循环""让 loop 转一圈"时手动调用（/loop-driver）。
 - **cn-brief-wx** — 中文简报：agent 刚才的英文步骤/工具调用/输出看不懂时，用中文复述"做了什么、为什么、现在到哪"，不替你改方向。model-invoked。
-- **dingtalk-brief** — 钉钉每日简报。基于 dws CLI 聚合未读邮件、近期收件箱、@我消息、未读会话、今日日程、今日待办、知识库动态，生成 Markdown 摘要；自带可注册为计划任务的脚本（工作日 09:00 自动生成），附按需定制单数据源的 dws 命令速查（含知识库 feed/读单篇文档的正确姿势与网络抖动处理，均经真实验证）。超出简报范围的钉钉操作（发消息/发邮件/文档/审批等）路由给对应 dingtalk-* 官方家族技能。触发词：「看下钉钉」「今日简报」「@我有什么」。依赖 dws 已登录。
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
 - **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
 
@@ -319,6 +318,12 @@ npx rea-agents setup                                                            
 - **source-trace-wx** — 追踪 agent 回答的原始依据与来源。先列出对话里真实读过的来源，再对没有出处的 claim 去一手来源（官方文档/源码/规范/第一方 API）补查，写成注明出处、区分一手/二手信任级的 Markdown 文件。触发词如「查出处」「原始依据在哪」。model-invoked。
 
 - **setup-opencli** — 在一台新机器上配置 OpenCLI 浏览器桥接：让 agent 通过 Chrome 扩展操控用户日常 Chrome（带全部登录态）。覆盖前置检查、npm 安装 CLI、引导安装 Chrome 扩展、opencli doctor 验证、冒烟测试与常见排障（扩展 Reconnecting、daemon 未启动等）。手动调用（/setup-opencli）。
+
+- **setup-dws** — 在一台新机器上配置 dws CLI（钉钉 Workspace CLI，npm 包 dingtalk-workspace-cli）：让 agent 操作钉钉消息/日历/文档/待办等 25+ 服务。覆盖 npm 安装、OAuth 扫码登录（认证 dws 自管，无需配环境变量）、auth status 验证与排障。手动调用（/setup-dws）。
+
+- **setup-tapd** — 在一台新机器上配置 tapd-cli（TAPD OpenAPI CLI）：覆盖从官方 cnb.cool 发版页获取 exe、用户级环境变量三件套（TAPD_API_ENDPOINT / TAPD_TOKEN / TAPD_WORKSPACE_IDS，个人访问令牌不进仓库）、只读命令验证与排障。手动调用（/setup-tapd）。
+
+- **setup-tencent-docs** — 在一台新机器上配置腾讯文档访问：安装官方 tencent-docs 技能、配置 TENCENT_DOCS_TOKEN 用户级环境变量（tokenUrl 页面自助获取）、API 连通性验证与排障。无本地 CLI，纯 token 认证。手动调用（/setup-tencent-docs）。
 
 - **setup-claude-code** — 在新机器上初始化 Claude Code 关键设置：`skipWebFetchPreflight`（跳过 WebFetch 域名预检，解决国内网络 "Unable to verify if domain is safe to fetch" 报错）、`permissions.defaultMode: bypassPermissions`（完全权限免确认框），以及可选的 windows-mcp 注册探测（已装跳过、未装转交 setup-windows-mcp）。幂等改写 `~/.claude/settings.json`，含 JSON 校验、生效条件说明与 5 条踩坑记录。手动调用（/setup-claude-code）。
 
@@ -410,11 +415,13 @@ skills/
 │   ├── skill-iterate/  # skill 迭代打磨：摩擦→小步修改（±10 行），同步真相源，只提议 commit
 │   ├── loop-driver/  # 环式自进化调度器：收目标→选组合→执行→记分→沉淀调权重，skill 内容不污染
 │   ├── cn-brief-wx/  # 中文简报：把 agent 的英文步骤/工具调用/输出翻译成中文复述
-│   ├── dingtalk-brief/  # 钉钉每日简报：dws 聚合六路数据源，自带脚本+计划任务指引
 │   ├── research-wx/  # 中文版研究：后台 agent 调研一手来源，结论带出处存进仓库
 │   ├── rust-windows-setup/  # Windows 上稳健安装 Rust 工具链（含 C 编译器依赖，如 rusqlite）
 │   ├── setup-windows-mcp/  # 新机器安装注册 Windows-MCP 桌面自动化（codebuddy/claude/codex 三件套）
 │   ├── setup-opencli/  # OpenCLI 浏览器桥接配置：CLI + Chrome 扩展 + doctor 验证
+│   ├── setup-dws/  # 钉钉 dws CLI：npm 安装 + OAuth 扫码登录（认证自管，零环境变量）
+│   ├── setup-tapd/  # TAPD tapd-cli：官方发版页 exe + 用户级 env 三件套（endpoint/token/workspace）
+│   ├── setup-tencent-docs/  # 腾讯文档：官方技能安装 + TENCENT_DOCS_TOKEN 用户级 env（无本地 CLI）
 │   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
 │   ├── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊 + 跨文件描述一致性（交互确认档）
 │   ├── agent-config-lint/  # 配置克制自动检查：子 agent 只读扫描出报告（含跨文件一致性），不改文件（自动档）

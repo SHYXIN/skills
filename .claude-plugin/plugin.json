@@ -62,7 +62,9 @@
     "./skills/productivity/domain-modeling-wx",
     "./skills/productivity/handoff-wx",
     "./skills/personal/wx-flow",
-    "./skills/productivity/dingtalk-brief",
-    "./skills/productivity/bookpipe"
+    "./skills/productivity/bookpipe",
+    "./skills/productivity/setup-dws",
+    "./skills/productivity/setup-tapd",
+    "./skills/productivity/setup-tencent-docs"
   ]
 }
