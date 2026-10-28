@@ -50,25 +50,44 @@ python bp_run.py run https://forcoder.net/<slug>/
 成功 → 书落 `~/bookpipe/extracted/<名>/`，打印摘要和下一步提示。
 遇到 hCaptcha → 退出码 2 + 暂停说明，**让用户在 Chrome 里点掉验证码，然后原命令重跑**。
 
-### 转换与登记（agent 手工步骤，脚本不做）
+### 转换与登记（闭环流程，agent 手工步骤，脚本不做）
 
-1. 对解压出的 PDF/EPUB 调 **book-to-skill** skill 完成转换
-2. 转换产物 commit + push 到 `~/book-skills`（私有仓库，一书一目录）
-3. 登记状态（去重靠它）：
+一本书从下载到闭环的完整路径，默认值已固化，**不再每次询问**：
+
+**固定默认值**（用户 2026-10-28 拍板，仅特殊书型才改）：
+- 转换模式：**technical**，DEPTH=**study**
+- 落点：`C:\code_proj\github-proj\wangxin\book-skills\skills\<书名slug>/`
+- 命名：按书内容定 ASCII slug（书名即 slug，与目录一致）
+- 完成标准：`scan_generated_skill.py` + `validate_skill.py` 全绿 + 登记 marketplace.json + README 表 + commit
+- push 永远人工确认，不自动
+
+**流程**：
+1. 对解压出的 PDF/EPUB 调 **book-to-skill** skill 完成转换（下载完成时 `run` 已自动记账为 downloaded 态）
+2. 转换产物 commit 到 `book-skills`（私有仓库，一书一目录）
+3. 登记 marketplace.json + README 表两处
+4. 回写账本（补 skill_name + commit，账本才从 downloaded 翻成闭环）：
 
 ```bash
-python bp_run.py mark <书URL> --title <标题> --isbn <ISBN> \
-  --skill-name <skill名> --commit <hash>
+python bp_run.py mark <书URL> --skill-name <skill名> --commit <hash>
 ```
+
+5. **push 前停下问用户**（既有规则）
+
+### 状态与漏单
+
+```bash
+python bp_run.py status
+```
+
+对比账本与 `extracted/`，输出三态：**下载未转**（账本有、无 skill_name）/ **已转未提交**（有 skill_name、无 commit）/ **已闭环**；`extracted/` 有目录但账本无记录 = **漏单**（run 中断遗留），提示补转换 + 补 mark。每日流程开头跑一次 status 防漏单。
 
 ### 其他子命令
 
-- `status` — 已处理清单
 - `url <任务名>` — 取某中转任务的新签名直链
 
 ## 状态
 
-`$BOOKPIPE_HOME/state/processed.json`（默认 `~/bookpipe`），按 URL 去重，原子写。已种子首本书（build-applications-local-ai-models-mac，commit 1e7ee7c）。
+`$BOOKPIPE_HOME/state/processed.json`（默认 `~/bookpipe`），按 URL 去重，原子写。两阶段记账：`run` 成功即记 downloaded 态，转换收尾 `mark --skill-name --commit` 翻成闭环态。已闭环 3 本（build-applications-local-ai-models-mac commit 1e7ee7c、graph-engineering-loop-memory-model + energy-efficient-embedded-ai commit d53e360）。
 
 ## 每日自动化（以后外挂，不进 skill）
 

@@ -134,6 +134,19 @@ def classify(entries: list, cfg: dict) -> list:
     return entries
 
 
+def _extract_isbn(docs: list) -> str:
+    """从解压出的 rar 目录名/文档路径提取 ISBN（尽力而为，取不到留空）。"""
+    return ""  # ISBN 由 mark 步骤人工补（ forcoder 页面元信息里有）
+
+
+def _extract_fmt(docs: list) -> str:
+    for d in docs:
+        for ext in (".pdf", ".epub", ".mobi", ".azw3"):
+            if d.lower().endswith(ext):
+                return ext.lstrip(".")
+    return ""
+
+
 # ---------- 单本链路 ----------
 
 def resolve_rapidgator(book_url: str) -> str:
@@ -207,9 +220,19 @@ def pipeline_run(book_url: str) -> dict:
     if r.returncode != 0 or not docs:
         raise RuntimeError(f"解压失败或无文档: {r.stderr[:200]}")
 
-    return {"book_url": book_url, "rg_url": rg_url, "name": name,
-            "uid": done.get("uid", ""), "dl_url": dl_url,
-            "dir": str(extracted), "docs": docs}
+    summary = {"book_url": book_url, "rg_url": rg_url, "name": name,
+               "uid": done.get("uid", ""), "dl_url": dl_url,
+               "dir": str(extracted), "docs": docs}
+
+    # 下载侧立即记账（skill_name/commit 留空 = downloaded 态），
+    # 这样即使会话在转换前中断，status 也能发现漏单。
+    state = bp_state.load()
+    bp_state.mark(state, book_url,
+                  title=summary["name"], isbn=_extract_isbn(summary["docs"]),
+                  fmt=_extract_fmt(summary["docs"]), uid=summary["uid"])
+    print("      -> 已记账（downloaded，待转换）")
+
+    return summary
 
 
 # ---------- CLI ----------
@@ -263,11 +286,66 @@ def cmd_mark(url: str, args) -> int:
 def cmd_status() -> int:
     state = bp_state.load()
     recs = state.get("processed", [])
-    print(f"共处理 {len(recs)} 本:")
+    extracted_root = home() / "extracted"
+
+    by_dir = {}
+    if extracted_root.exists():
+        for d in sorted(extracted_root.iterdir()):
+            if d.is_dir() and not d.name.startswith("."):
+                by_dir[norm_dir(d.name)] = d
+
+    pending, converted, uncommitted = [], [], []
     for r in recs:
-        print(f"  {r.get('processed_at', '?')}  {r.get('title', '?')[:60]}"
-              f"  skill={r.get('skill_name', '?')}")
+        if not r.get("skill_name"):
+            pending.append(r)
+        elif not r.get("commit"):
+            uncommitted.append(r)
+        else:
+            converted.append(r)
+
+    recorded_dirs = {norm_dir(bp_dir_name(r)) for r in recs if bp_dir_name(r)}
+    orphans = [d for name, d in by_dir.items() if name not in recorded_dirs]
+
+    print(f"== bookpipe 状态 ==  账本 {len(recs)} 条 / extracted {len(by_dir)} 目录\n")
+
+    if pending:
+        print(f"-- 下载未转 ({len(pending)}):  跑 book-to-skill，完成后 mark --skill-name --commit")
+        for r in pending:
+            print(f"   {r.get('processed_at', '?')}  {r.get('title', '?')[:60]}")
+            print(f"     {r.get('forcoder_url', '')}")
+            print(f"     dir={bp_dir_name(r) or '(未知，查 extracted/)'}")
+    if uncommitted:
+        print(f"\n-- 已转未提交 ({len(uncommitted)}):  补 mark --commit")
+        for r in uncommitted:
+            print(f"   {r.get('skill_name')}  (downloaded_at {r.get('processed_at', '?')})")
+    if converted:
+        print(f"\n-- 已闭环 ({len(converted)}):")
+        for r in converted:
+            print(f"   {r.get('skill_name')}  commit={r.get('commit')}")
+
+    if orphans:
+        print(f"\n!! extracted/ 有但账本没有（漏单，run 时中断遗留）:")
+        for d in orphans:
+            docs = [p.name for p in d.rglob("*")
+                    if p.suffix.lower() in (".pdf", ".epub", ".mobi", ".azw3")]
+            print(f"   {d.name}  docs={docs or '无'}")
+        print("   处理: 补跑 book-to-skill，然后 mark 记账（--url 用书页 URL）")
+
+    if not (pending or uncommitted or orphans):
+        print("全部闭环，无漏单。")
     return 0
+
+
+def bp_dir_name(rec: dict) -> str:
+    """从记录的 title 推断 extracted/ 目录名（run 记账时 title=name=rar 名）。"""
+    name = rec.get("title", "")
+    if not name:
+        return ""
+    return norm_dir(re.sub(r"[^\w.-]+", "_", name))
+
+
+def norm_dir(name: str) -> str:
+    return name.lower().rstrip("/")
 
 
 def cmd_url(name: str) -> int:
