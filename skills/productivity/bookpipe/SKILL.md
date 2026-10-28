@@ -1,6 +1,6 @@
 ---
 name: bookpipe
-description: "forcoder.net → suufun.com 加速 → book-to-skill 转换的每日书籍流水线。带 URL 直接跑单本全链路（下载+解压到 ~/bookpipe）；不带参数抓今日书目并分级预勾选（AI/编程默认勾选，MP4 永不自动）。所有浏览器操作走 opencli session bookpipe（认证在浏览器，脚本零凭据）。hCaptcha 处暂停等人工。转换本身用 book-to-skill skill 完成。"
+description: "forcoder.net → suufun.com 加速 → book-to-skill 转换的每日书籍流水线，下载到 skill 全链路闭环。带 URL 跑单本（下载+解压+即记账）；不带参数抓今日书目并分级预勾选（AI/编程默认勾选，MP4 永不自动）；status 三态查漏单（下载未转/已转未提交/已闭环）；转换默认值已固化（technical+study、落 book-skills、scan/validate 绿、登记、commit），不再每次询问。浏览器操作走 opencli session bookpipe（认证在浏览器，脚本零凭据），hCaptcha 暂停等人工。"
 ---
 
 # bookpipe：forcoder 每日书籍流水线
