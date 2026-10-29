@@ -65,6 +65,7 @@
     "./skills/productivity/bookpipe",
     "./skills/productivity/setup-dws",
     "./skills/productivity/setup-tapd",
-    "./skills/productivity/setup-tencent-docs"
+    "./skills/productivity/setup-tencent-docs",
+    "./skills/productivity/agent-tdd"
   ]
 }
