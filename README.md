@@ -272,6 +272,8 @@ npx rea-agents setup                                                            
 - **handoff-wx** — 把当前对话压缩成交接文档，供下一个 agent 会话无缝接手。适用于任何场景（开发/调研/写作/协作），不限代码。存储按序探测当前目录的 `temp/handoffs/` → `tmp/handoffs/`，都没有则退回 OS 临时目录；文件名 `YYYY-MM-DD_HHMM_主题.md`。保留原版纪律：不复制已有工件（只给路径/URL 指针）、脱敏、参数=下个会话重点。改编自 mattpocock/skills 的 handoff，与其存取策略不同。user-invoked。
 - **domain-modeling-wx** — 构建并打磨项目的领域模型：讨论代码库术语、写/改 GLOSSARY.md（术语层，与 matt 上游完全兼容）、CONTEXT.md（关系/对话/歧义 wx 扩展层）或记录 ADR 时使用。
 
+- **agent-tdd** — agent 开发的 TDD 闭环。改 agent 的 md/skill（系统提示词、工作流规则、技能文档）时用「行为案例」当测试：新行为先写案例跑红再改跑绿（案例先行轨），存量改动跑两轮 diff 防退步（回归护栏轨）；案例写法纪律治 LLM 抖动，diff 红绿复跑仲裁。user-invoked。
+
 - **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，避免一次抛出多个问题。适合用户明确要求“一次只问一个问题”或希望更慢、更聚焦的设计访谈。
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling-wx 把术语写进 GLOSSARY.md（与 matt 上游兼容）、术语关系/歧义写进 CONTEXT.md、决策写进 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
 - **retro-wx** — 复盘一次编码会话，向 agent 的环境提出改进建议（改环境不改代码，只提议不执行）。按导航/自动检查/编码标准/steering 瘦身/工具经济/no-op/信息可达七类扫描痛点，按严重度排序；默认复盘当前会话，也可直接 grep 本机五源会话日志（codebuddy/claude/codex/copilot/pi 的 jsonl，无需服务）复盘任意 harness 的历史会话，落点含个人 skills 仓库新 skill 提议与 auto-memory。改编自 mattpocock/skills 的 retro（主体同构），与 matt 版共存。user-invoked。
@@ -388,6 +390,7 @@ skills/
 │   ├── grill-one/  # 单问版 grilling
 │   ├── grill-one-with-docs/  # 单问版 grill-with-docs（访谈+ADR/术语表沉淀）
 │   ├── domain-modeling-wx/  # 领域建模 wx 版（GLOSSARY 术语层 + CONTEXT 关系层 + ADR）
+│   ├── agent-tdd/  # agent 开发的 TDD 闭环：行为案例双轨（先行轨红绿 + 护栏轨 diff 回归）
 │   ├── retro-wx/  # 会话复盘：七类扫描改环境，支持 grep 五源历史会话，只提议不执行
 │   ├── ask-wx/  # 工作流主线路由器：默认 grill-one-with-docs 入口，中后段指向 matt 系
 │   ├── step-card-wx/  # 保姆级测试/操作步骤卡（基础档+验收档）
