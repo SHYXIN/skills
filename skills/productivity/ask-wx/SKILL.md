@@ -40,8 +40,9 @@ disable-model-invocation: true
 - **`/verify-manual-after-implementation`**：生成可人工打开网站/API/CLI 执行的验收手册。
 - **`/verify-run`**：opencli 驱动的自动验证执行器。三档输入自动探测：有验收手册照单执行、有仓库无手册轻量审计现场推导、只有 URL 探索式驱动。
 - **`/verify-replay`**：verify-run 全绿后，把执行过程固化为 YAML 回放清单，供后续快速重放。
+- **`/agent-tdd`**（agent 行为载体专用）：改动是 agent md / 规则模板 / SKILL.md 这类文案时，验收不用 verify 系——新行为要求阶段先行（写案例跑红→改→跑绿），存量改动跑两轮 diff 防退步。
 
-顺序：生成手册（或直接给仓库）→ verify-run → 全绿后可选 verify-replay。
+顺序：生成手册（或直接给仓库）→ verify-run → 全绿后可选 verify-replay。agent 行为载体改动走 `/agent-tdd` 双轨，与 verify 系互斥并行。
 
 ## 复盘（收尾）
 
