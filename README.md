@@ -335,6 +335,8 @@ npx rea-agents setup                                                            
 
 - **gitlab** — GitLab 平台操作技能（只做平台层，本地 git 流程归 branch-management）：MR 创建/查看/合并/关闭/rebase、指定审核者(reviewer)与指派人(assignee)、labels/milestone、approve 与评论讨论；MR 之外的 REST API 调用、CI pipeline 查询、tag/发布操作、token/凭据获取；内置 glab 优先 + 挂死/误报 422 时改 curl + PRIVATE-TOKEN 直连 API 的兜底，以及合并前 merge-tree 冲突预检。通用化不绑定实例，本机/公司特有信息隔离在 references/。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、凭据的任务触发。
 
+- **repo-init** — 仓库初始化引导器（一次性仪式）。两条路径：新仓库从 0 到 1（git init → 远程建仓 GitLab/GitHub → dev→main|master 分支模型 → 脚手架落盘 → push 点亮 → 设分支保护）；存量仓库只补缺、不改既有，不一致仅标注。GLOSSARY/CONTEXT 遵 domain-modeling-wx 纪律，GitLab 平台操作引用 gitlab skill。手动调用（/repo-init）。
+
 ### 个人
 
 - **weekly-report** — 周报生成器。把多人的例会全文（如钉钉/飞书导出的周会记录）整理成单人周报邮件正文，自动提取指定成员（默认 王鑫）的「本周内容/进度」与「下周计划」，并起草「新技术/个人思考」一段，输出带主题行的三段式邮件正文。调用：`/weekly-report [成员名]`。
@@ -445,7 +447,8 @@ skills/
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
 ├── devops/            # 运维 / CI-CD 类技能
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
-│   └── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·凭据 / reviewer·assignee / glab→curl 兜底）
+│   ├── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·凭据 / reviewer·assignee / glab→curl 兜底）
+│   └── repo-init/  # 仓库初始化引导器（新仓 0→1 / 存量补缺 / 分支保护）
 ├── personal/          # 个人效率类技能
 │   ├── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
 │   └── wx-flow/        # 个人全任务流程驱动器（grill → 隔离 → 开发 → 验证 → 三档停靠提交）

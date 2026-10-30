@@ -66,6 +66,7 @@
     "./skills/productivity/setup-dws",
     "./skills/productivity/setup-tapd",
     "./skills/productivity/setup-tencent-docs",
-    "./skills/productivity/agent-tdd"
+    "./skills/productivity/agent-tdd",
+    "./skills/devops/repo-init"
   ]
 }
