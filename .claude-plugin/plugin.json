@@ -67,6 +67,8 @@
     "./skills/productivity/setup-tapd",
     "./skills/productivity/setup-tencent-docs",
     "./skills/productivity/agent-tdd",
-    "./skills/devops/repo-init"
+    "./skills/devops/repo-init",
+    "./skills/productivity/playbook",
+    "./skills/productivity/consensus-check"
   ]
 }
