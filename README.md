@@ -413,6 +413,7 @@ skills/
 │   ├── source-trace-wx/  # 追踪回答的原始依据与来源（一手来源补查）
 │   ├── wizard-wx/  # 生成手把手 bash 向导（中文版）
 │   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending + Star History 月报）
+│   ├── web-reader-wx/  # 网页读取工具路由器（WebFetch/lightpanda/opencli browser 三分流 + 降级链）
 │   ├── upward-networking/ # 向上社交和高价值关系经营
 │   ├── doc-append-log/  # 只追加文档/日志历史机制（INDEX.md + 脚本，目录无关）
 │   ├── next-step/  # 下一步规划：复盘现状 + 3-5 个带价值/代价/何时选的下一步，标出性价比最高
