@@ -1,3 +1,0 @@
-interface:
-  display_name: "生成手把手向导"
-  short_description: "生成一步步带人操作的互动式 bash 向导"

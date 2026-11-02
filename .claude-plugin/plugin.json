@@ -17,7 +17,6 @@
     "./skills/productivity/writing-for-agents-wx",
     "./skills/productivity/wait-what-wx",
     "./skills/productivity/where-am-i-wx",
-    "./skills/productivity/wizard-wx",
     "./skills/productivity/ai-daily-brief",
     "./skills/backend/fastapi-starlette-admin",
     "./skills/productivity/verify-manual-after-implementation",

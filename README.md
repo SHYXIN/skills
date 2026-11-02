@@ -299,8 +299,6 @@ npx rea-agents setup                                                            
 
 - **where-am-i-wx** — 中文版「迷路就喊地图」：任务/对话中不知道走到哪时，手动触发画一张纯文字决策地图——已定结论、📍当前位置、未决问题、被否决的选项（附否决原因），关键节点旁标注前置知识（名词+一句话解释，深挖交给 eli5-zh / learn-by-minimal）。与 wait-what-wx 成对：单点没懂→重讲那句；整体迷路→喊地图。user-invoked，模型不会自触发。
 
-- **wizard-wx** — 中文版手把手向导生成器：生成一个互动式 bash 脚本，一步步带着人完成只有人能做的操作（配置凭据 / CI secret、走陌生第三方后台、跑一次性迁移）。带 `template.sh` 库（分阶段进度、确认闸门、跨平台开 URL、隐藏式 secret 输入、幂等 `.env` 更新、`gh secret` / `gh variable` 写入）。model-invoked。
-
 - **ai-daily-brief** — AI 每日简报：把「AI HOT 每日新闻」「GitHub 热门仓库」和「Star History 月报」合并成一份中文简报，一次调用出完整结果。AI 新闻走 aihot.news 匿名只读 API，GitHub trending 走 github.com/trending（WebFetch），Star History 走其 newsletter RSS，均免 API Key；支持「今天(24h)」「本周(7d)」「最热(hot-topics)」三种模式。model-invoked。
 
 - **upward-networking** — 设计真诚、克制、可执行的向上社交和高价值关系经营动作，支持邀约、请教、跟进、复盘，以及可选的 Obsidian 笔记草稿。想走向上社交流程时手动调用（/upward-networking）。
@@ -411,7 +409,6 @@ skills/
 │   ├── wait-what-wx/  # 没懂就喊停（中文版）
 │   ├── where-am-i-wx/  # 迷路就喊地图：当前任务/对话的决策定位图（中文版）
 │   ├── source-trace-wx/  # 追踪回答的原始依据与来源（一手来源补查）
-│   ├── wizard-wx/  # 生成手把手 bash 向导（中文版）
 │   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending + Star History 月报）
 │   ├── web-reader-wx/  # 网页读取工具路由器（WebFetch/lightpanda/opencli browser 三分流 + 降级链）
 │   ├── upward-networking/ # 向上社交和高价值关系经营
