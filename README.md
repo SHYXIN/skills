@@ -260,6 +260,7 @@ npx rea-agents setup                                                            
 ### 搜索
 
 - **anysearch** — 实时搜索引擎。支持通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和网页内容提取。已适配 Windows Clash 代理环境，开关代理均可自动连通。
+- **web-reader-wx** — 网页读取工具路由器：按任务性质在 WebFetch（静态最省）、lightpanda MCP（JS 渲染+匿名交互）、opencli browser（真实 Chrome 登录态+像素截图）之间一次选对，附降级链与反模式；含 lightpanda 在 189 的部署事实（Docker 9223→9222、引擎不热加载）与 opencli browser 分工要点。
 
 ### 效率
 

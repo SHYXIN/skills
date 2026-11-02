@@ -69,6 +69,7 @@
     "./skills/productivity/agent-tdd",
     "./skills/devops/repo-init",
     "./skills/productivity/playbook",
-    "./skills/productivity/consensus-check"
+    "./skills/productivity/consensus-check",
+    "./skills/productivity/web-reader-wx"
   ]
 }
