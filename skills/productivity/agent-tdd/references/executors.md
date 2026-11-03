@@ -1,7 +1,5 @@
 # 执行器事实（当前机器：dp-eval-run）
 
-本文件是可变事实层：方法论（SKILL.md）不变，工具换掉时只改这里。
-
 当前执行器：**dp-eval-run**（公司仓 deepsense-skills/wangxin，安装后位于全局技能目录）。支持「案例集批量跑 + 逐 case 判分 + 两轮 diff」，两源可用：
 
 - `--source local`：本地工作区 agent（走 dp-ask-deepworks），测**本地 agent-kit 形态**（agents/templates/SKILL.md）
