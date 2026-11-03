@@ -273,7 +273,7 @@ npx rea-agents setup                                                            
 - **handoff-wx** — 把当前对话压缩成交接文档，供下一个 agent 会话无缝接手。适用于任何场景（开发/调研/写作/协作），不限代码。存储按序探测当前目录的 `temp/handoffs/` → `tmp/handoffs/`，都没有则退回 OS 临时目录；文件名 `YYYY-MM-DD_HHMM_主题.md`。保留原版纪律：不复制已有工件（只给路径/URL 指针）、脱敏、参数=下个会话重点。改编自 mattpocock/skills 的 handoff，与其存取策略不同。user-invoked。
 - **domain-modeling-wx** — 构建并打磨项目的领域模型：讨论代码库术语、写/改 GLOSSARY.md（术语层，与 matt 上游完全兼容）、CONTEXT.md（关系/对话/歧义 wx 扩展层）或记录 ADR 时使用。
 
-- **agent-tdd** — agent 开发的 TDD 闭环。改 agent 的 md/skill（系统提示词、工作流规则、技能文档）时用「行为案例」当测试：新行为先写案例跑红再改跑绿（案例先行轨），存量改动跑两轮 diff 防退步（回归护栏轨）；案例写法纪律治 LLM 抖动，diff 红绿复跑仲裁。user-invoked。
+- **agent-tdd** — agent 开发的 TDD 闭环。改 agent 的 md/skill（系统提示词、工作流规则、技能文档等行为载体）时，用「行为案例」当可执行 spec：案例集必写，红检/绿检默认可跳过，用户点名（「红检跑一下」「跑绿」「红绿一下」）时才真跑；存量改动跑两轮 diff 防退步（回归护栏轨）。当用户说「给这个 agent 改动写测试」「红绿一下」「改完跑回归」「agent 改动会不会退步」时使用。user-invoked。
 
 - **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，避免一次抛出多个问题。适合用户明确要求“一次只问一个问题”或希望更慢、更聚焦的设计访谈。
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling-wx 把术语写进 GLOSSARY.md（与 matt 上游兼容）、术语关系/歧义写进 CONTEXT.md、决策写进 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
