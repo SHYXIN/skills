@@ -344,6 +344,8 @@ npx rea-agents setup                                                            
 
 - **wx-flow** — 个人全任务流程驱动器（适用于所有代码任务，不限仓库）。五个阶段：需求澄清（grill）→ 隔离判断（worktree 硬裁决）→ 开发 → 收尾验证（按改动类型分流提示）→ 提交 + 清理（三档停靠：只提交 / 提交+push / 完整 MR，兜底只提交，升级由用户触发）。AI 领路，每个阶段收口处停下等用户拍板后再进下一阶段。调用：`/wx-flow`。
 
+- **machine-snap** — 机器级环境快照与还原。capture 扫描本机 CLI（winget/choco/pip/npm）+ 三客户端 MCP 配置（codebuddy/claude/codex）+ 用户 PATH 增量，生成可修剪的 manifest；doctor 对账；restore 在新电脑照单还原；redact 出脱敏版。换新电脑想快速配成跟旧电脑一致时用。调用：`/machine-snap`。
+
 ### 前端开发
 
 - **miniprogram-iconfont** — 微信小程序 Iconfont 图标集成。从 iconfont.cn 挑选下载图标，自动替换字体文件、更新 CSS、扫描并替换 WXML/JS 中的 emoji 为 iconfont 类名。引导式交互 + 自动化脚本，覆盖完整的图标集成流程。
@@ -454,7 +456,8 @@ skills/
 │   └── repo-init/  # 仓库初始化引导器（新仓 0→1 / 存量补缺 / 分支保护）
 ├── personal/          # 个人效率类技能
 │   ├── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
-│   └── wx-flow/        # 个人全任务流程驱动器（grill → 隔离 → 开发 → 验证 → 三档停靠提交）
+│   ├── wx-flow/        # 个人全任务流程驱动器（grill → 隔离 → 开发 → 验证 → 三档停靠提交）
+│   └── machine-snap/   # 机器级环境快照（CLI+MCP+PATH → manifest，新机 restore）
 └── skill-curator/     # 技能市场策展（plugin.json / README / 磁盘三者一致）
 ```
 
