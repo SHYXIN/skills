@@ -346,6 +346,8 @@ npx rea-agents setup                                                            
 
 - **machine-snap** — 机器级环境快照与还原。capture 扫描本机 CLI（winget/choco/pip/npm）+ 三客户端 MCP 配置（codebuddy/claude/codex）+ 用户 PATH 增量，生成可修剪的 manifest；doctor 对账；restore 在新电脑照单还原；redact 出脱敏版。换新电脑想快速配成跟旧电脑一致时用。调用：`/machine-snap`。
 
+- **alias** — 通用短名登记：用户嫌实体全名长（专家/仓库/服务器/任务/项目…）时，agent 批量推荐尽量短的名字（❓+➡️ emoji 格式，单字母/单汉字优先，撞名顺延），确认后登记进全局 ~/.alias-registry.json，之后用户直接打短名，agent 查表解析。任何 agent（codebuddy/claude/codex…）通用。
+
 ### 前端开发
 
 - **miniprogram-iconfont** — 微信小程序 Iconfont 图标集成。从 iconfont.cn 挑选下载图标，自动替换字体文件、更新 CSS、扫描并替换 WXML/JS 中的 emoji 为 iconfont 类名。引导式交互 + 自动化脚本，覆盖完整的图标集成流程。
@@ -457,7 +459,8 @@ skills/
 ├── personal/          # 个人效率类技能
 │   ├── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
 │   ├── wx-flow/        # 个人全任务流程驱动器（grill → 隔离 → 开发 → 验证 → 三档停靠提交）
-│   └── machine-snap/   # 机器级环境快照（CLI+MCP+PATH → manifest，新机 restore）
+│   ├── machine-snap/   # 机器级环境快照（CLI+MCP+PATH → manifest，新机 restore）
+│   └── alias/          # 通用短名登记（实体起短名 → 全局登记表，跨 agent 解析）
 └── skill-curator/     # 技能市场策展（plugin.json / README / 磁盘三者一致）
 ```
 

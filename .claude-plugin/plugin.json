@@ -70,6 +70,7 @@
     "./skills/productivity/playbook",
     "./skills/productivity/consensus-check",
     "./skills/productivity/web-reader-wx",
-    "./skills/personal/machine-snap"
+    "./skills/personal/machine-snap",
+    "./skills/personal/alias"
   ]
 }
