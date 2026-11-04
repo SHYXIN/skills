@@ -1,0 +1,37 @@
+{
+  "schema": "machine-snap/2",
+  "capturedAt": "2026-11-04T00:00:00Z",
+  "note": "agent 工具箱白名单：core = MCP/skills 依赖的 runtime 与基础设施，tools = agent 直接调用的 CLI。command 字段 = 实际可执行名（防 winget 包 ID != 命令名的坑）。",
+  "core": [
+    { "manager": "winget", "packageId": "Git.Git", "command": "git", "version": "2.55.0", "note": "MCP clone/skills 基础" },
+    { "manager": "winget", "packageId": "BurntSushi.ripgrep.MSVC", "command": "rg", "version": "15.2.0", "note": "skills 里 Grep 工具的底层" },
+    { "manager": "npm", "packageId": "@jackwener/opencli", "command": "opencli", "version": "2.0.2", "note": "web-reader-wx/verify-run 等技能依赖" },
+    { "manager": "npm", "packageId": "@tencent-ai/codebuddy-code", "command": "codebuddy", "version": "2.179.3", "note": "主 agent CLI" },
+    { "manager": "npm", "packageId": "@anthropic-ai/claude-code", "command": "claude", "version": "2.1.317", "note": "另一个 agent CLI" },
+    { "manager": "npm", "packageId": "@openai/codex", "command": "codex", "version": "0.166.0", "note": "另一个 agent CLI" },
+    { "manager": "npm", "packageId": "@earendil-works/pi-coding-agent", "command": "pi", "version": "0.84.4", "note": "agent CLI" },
+    { "manager": "npm", "packageId": "opencode-ai", "command": "opencode", "version": "1.18.9", "note": "agent CLI，DeepWorks 集成" },
+    { "manager": "npm", "packageId": "@cnbcool/cnb-cli", "command": "cnb", "version": "1.13.4", "note": "cnb.cool 平台 CLI" },
+    { "manager": "npm", "packageId": "dingtalk-workspace-cli", "command": "dws", "version": "1.0.62", "note": "钉钉 dws CLI（消息/日历/文档/待办）" },
+    { "manager": "npm", "packageId": "cn-skills-cli", "command": "cn-skills", "version": "0.1.21", "note": "skills 安装器，日常用 npx skills@latest add ...（npx 拉的是最新版）" },
+    { "manager": "pip", "packageId": "httpie", "command": "http", "version": "3.2.4", "note": "winget 的 HTTPie.HTTPie 是 Electron GUI 假货，CLI 版必须走 pip" },
+    { "manager": "winget", "packageId": "jqlang.jq", "command": "jq", "version": "1.8.2", "note": "GitLab API JSON 处理，skills 里引用 66 处" },
+    { "manager": "winget", "packageId": "junegunn.fzf", "command": "fzf", "version": "0.74.5", "note": "模糊查找" },
+    { "manager": "winget", "packageId": "DuckDB.cli", "command": "duckdb", "version": "1.5.6", "note": "本地文件 SQL 查询" },
+    { "manager": "winget", "packageId": "ast-grep.ast-grep", "command": "sg", "version": "0.51.1", "note": "语法级搜索" },
+    { "manager": "winget", "packageId": "GitHub.cli", "command": "gh", "version": null, "note": "GitHub CLI" },
+    { "manager": "winget", "packageId": "GLab.GLab", "command": "glab", "version": null, "note": "GitLab CLI（本机有挂死史，备 curl 直连）" }
+  ],
+  "coreRuntimes": [
+    { "manager": "manual", "packageId": "nvm4w", "command": "nvm", "version": "1.2.2", "note": "node 走 nvm4w 管理，装 node 前先装它：choco install nvm 或 winget nvm-windows。装好后再 nvm install 22 lts" },
+    { "manager": "manual", "packageId": "python-3.12", "command": "python", "version": "3.12.13", "note": "本机走 uv 管理的 python（~/.local/bin），非 winget 包。新机建议: winget install Python.Python.3.12 或 uv python install 3.12" },
+    { "manager": "manual", "packageId": "uv", "command": "uvx", "version": null, "note": "windows-mcp 等 MCP server 的启动器；官方安装器装到 ~/.local/bin：powershell -c \"irm https://astral.sh/uv/install.ps1 | iex\"" },
+    { "manager": "winget", "packageId": "Microsoft.WindowsTerminal", "command": "wt", "version": null, "note": "可选；默认 shell 体验" }
+  ],
+  "mcp": {
+    "codebuddy": { "file": "~/.codebuddy/mcp.json", "servers": { "tencent-docs": {}, "windows-mcp": {}, "rea": {}, "lightpanda": {} } },
+    "claude": { "file": "~/.claude.json", "servers": {} },
+    "codex": { "file": "~/.codex/config.toml", "servers": [] }
+  },
+  "pathAdditions": []
+}
