@@ -96,7 +96,6 @@ C:/code_proj/<项目域>/.wt-<短任务名>/      ← worktree
 
 1. 提交、push、MR 前检查全部沿用 branch-management 技能（场景 3 / 场景 4）。
 2. 注意当前 shell 的工作目录在 worktree 里，别和主仓库混淆；可用 `git rev-parse --show-toplevel` 随时确认。
-3. 长任务中途离开没关系，worktree 状态独立保存，回来 `git worktree list` 能找回。
 
 ---
 
@@ -150,6 +149,22 @@ worktree 目录名不一定能看出归属，分支名才可靠。
 - 盘点时列出每个 worktree 的路径、分支、归属判断。
 - **清理时只动自己的**（分支名前缀 = 本人 initials）；别人的 worktree 与分支一律不碰、只报告。
 - 发现可疑或长期不用的 worktree，报告给用户，由用户决定。
+
+---
+
+## 已装 worktrunk 时的加速通道（可选）
+
+本机装了 [worktrunk](https://worktrunk.dev)（命令 `git-wt`；安装与 PATH/shell 集成见 `set-worktrunk` skill）时，
+下列操作可用它替代原生命令，用户提「wt」「git-wt」或明确要求加速时用：
+
+- **盘点**：`git-wt list`——表格带工作区改动/CI 状态/最近提交，信息量高于 `git worktree list`，盘点场景优先用它。
+- **创建**：`git-wt switch -c <branch> -b <base>`——一条命令建分支+worktree（等价原生命令两步）。
+  注意：worktrunk 默认把 worktree 放 `<repo>.<branch>` 平级目录，**不走本技能的 `.wt-<短任务名>` 约定**——用户点名用 git-wt 时顺其默认命名，不混用两套。
+- **收尾**：`git-wt remove <branch>`——删 worktree，**未合并分支默认保留**并提示 `git-wt remove -D`；
+  `-D` 强删仍须先向用户确认（本技能「一切删除动作执行前必须先向用户确认」对 git-wt 同样生效）。
+- **提交**：`git-wt step commit`——LLM 生成 commit message（未配 LLM 时 fallback 到 Changes to <files> 格式）。
+
+用户未点名 git-wt 时，保持本技能原生命令流程不变。
 
 ---
 

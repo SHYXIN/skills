@@ -288,7 +288,8 @@ npx rea-agents setup                                                            
 - **sync-workbuddy** — 把技能仓库的本地克隆同步（复制覆盖）到 WorkBuddy 的 `~/.workbuddy/skills/`。WorkBuddy 不在 `npx skills` 支持的 agent 列表里，故用脚本直接复制；只增改、永不删除目标目录中已有技能（第三方/商店安装的不受影响）。适用于改完 skill 后同步到本机 WorkBuddy、新电脑初始化 WorkBuddy 环境。
 
 - **branch-management** — 通用 Git 分支管理操作技能。用于在当前仓库中新建 feature 分支、同步 develop、提交并 push、MR 前检查、合并后清理分支。分支名默认 `feature/<initials>-YYYYMMDD-<task>`，initials 从 git config 读取（`skill.initials`），不硬编码用户身份。提交前校验作者邮箱（`skill.email`），不一致则拒绝提交。会主动执行低风险 Git 操作；历史重写、远端删除、生产分支相关动作需明确确认。
-- **worktree** — 通用 Git worktree 隔离工作技能。从基线分支切 feature 分支到主仓库旁的 `.wt-<短任务名>` 目录做目录级隔离，覆盖创建 → 开发 → 合并后清理全生命周期；支持多 worktree 并行与归属盘点（按分支名前缀判断，只动自己的）。分支命名/提交规范沿用 branch-management；一切删除动作（含 worktree、本地/远端分支）执行前必须先确认。
+- **worktree** — 通用 Git worktree 隔离工作技能。从基线分支切 feature 分支到主仓库旁的 `.wt-<短任务名>` 目录做目录级隔离，覆盖创建 → 开发 → 合并后清理全生命周期；支持多 worktree 并行与归属盘点（按分支名前缀判断，只动自己的）。分支命名/提交规范沿用 branch-management；一切删除动作（含 worktree、本地/远端分支）执行前必须先确认。本机装了 worktrunk（`git-wt`）时提供可选加速通道（list/switch/remove/step commit），删除确认语义对 git-wt 同样生效。
+- **set-worktrunk** — worktrunk（git worktree 管理 CLI，为并行 AI agent 设计）的一次性安装配置：winget 安装、PATH 验证、shell 集成、Windows Terminal wt.exe 撞名提醒（本机用 git-wt）、NTFS 下 CoW 构建缓存不可用说明。装完即结束，日常操作归 worktree skill。
 - **oss-finder** — GitHub 开源贡献第一步：找项目。用 gh CLI 按默认画像（近期活跃、中等规模、带 good first issue）搜索候选仓库，按活跃度 / 社区健康 / 贡献友好度打分，输出候选清单与推荐理由。
 - **oss-triage** — GitHub 开源贡献第二步：选 issue + 读代码。给定目标仓库，拉取 good first issue / help wanted 候选，筛掉已认领、有关联 PR、已过期的，浅克隆到 `~/.oss/<owner>/<repo>` 读代码验证，输出「选题 + 改动方案」。
 - **oss-contribute** — GitHub 开源贡献第三步：fork → 改 → PR。在 `~/.oss` 工作区建分支实现改动、本地验证、push 到自己的 fork、按上游 CONTRIBUTING 开 PR 并跟进 review；fork、push、PR、留言一律先确认。
@@ -409,6 +410,7 @@ skills/
 │   ├── sync-workbuddy/ # 技能仓库克隆 → WorkBuddy 技能目录复制同步（含脚本）
 │   ├── branch-management/ # 通用 Git 分支管理操作
 │   ├── worktree/  # Git worktree 隔离工作：.wt- 目录隔离、全生命周期、归属盘点
+│   ├── set-worktrunk/ # worktrunk CLI 一次性安装配置：winget+PATH+shell 集成+Windows 撞名/CoW 说明
 │   ├── consensus-tech-research/ # 基于共识的技术选型调研
 │   ├── writing-for-agents-wx/  # 写给 agent 的文档（中文版写作规范）
 │   ├── wait-what-wx/  # 没懂就喊停（中文版）
