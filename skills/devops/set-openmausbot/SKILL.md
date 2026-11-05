@@ -1,6 +1,6 @@
 ---
 name: set-openmausbot
-description: "在一台有 Docker 的 Linux 服务器上从零部署 OpenMausBot（开源 AI bot 车队聊天壳），并出公网 HTTPS 地址。覆盖：镜像离线搬运（服务器直连 ghcr.io 超时时）、邮箱验证码登录（QQ 码易混淆推荐 Gmail）、容器常驻启动、cloudflared 二进制手动落位（大文件下载被掐时）、设备配对（每个新设备一次）、OpenAI-compat 引擎接入（直写 config.json）、端到端验收。用户手动调用（/set-openmausbot）。"
+description: "在一台有 Docker 的 Linux 服务器上从零部署 OpenMausBot（开源 AI bot 车队聊天壳），并出公网 HTTPS 地址。覆盖：镜像离线搬运（服务器直连 ghcr.io 超时时）、邮箱验证码登录（QQ 码易混淆推荐 Gmail）、容器常驻启动、cloudflared 二进制手动落位（大文件下载被掐时）、设备配对（每个新设备一次）、OpenAI-compat 引擎接入（直写 config.json）、BYO-VPS 云端电脑（bot 的 Computer 容器跑本服务器，含老内核补丁）、端到端验收。用户手动调用（/set-openmausbot）。"
 disable-model-invocation: true
 ---
 
@@ -22,8 +22,9 @@ disable-model-invocation: true
 
 ```bash
 ssh <server> "docker --version && curl -sI -m 8 https://registry-1.docker.io/ | head -1"
-# 本机能否直连 ghcr.io / GitHub release（决定第 2/5 步走直拉还是离线搬运）
+# 服务器能否直连 docker.io（决定 Step 8.2 是否必须预 build Cua 镜像）
 curl -sI -m 8 https://github.com/cloudflare/cloudflared/releases | head -1
+# 本机/服务器能否直连 GitHub release（决定 Step 1/4 走直拉还是离线搬运）
 ```
 
 任一探测失败不影响流程——本 skill 的默认路径就是**离线搬运**，两处网络不通都绕得开。
@@ -151,6 +152,113 @@ ssh <server> "docker exec openmausbot sh -c 'cat /data/.openmausbot/config.json'
 
 浏览器（已配对设备）打开 public address，发一条「你是什么模型」→ 页面正常回复；服务端 `docker logs openmausbot --since 5m | grep -iE 'turn|model'` 看到回合进出 → **验收绿**。
 
+## Step 8：（可选）BYO-VPS 云端电脑
+
+让 bot 的 Computer（云端电脑）跑在**本服务器自己**身上（Self-hosted VPS 后端）：omb 容器通过 `docker -H ssh://<vps-alias>` 控制宿主 dockerd，为每个 bot 建独立 Cua 容器（XFCE 桌面 + VNC，无公网端口），浏览器里远程操作。前提：Step 1–7 已绿，bot 无进行中回合。
+
+### 8.1 前置探测
+
+```bash
+# 宿主内核 ≥4.6 才支持 cgroup namespaces（Cua 容器默认 --cgroupns private）；
+# CentOS 7 内核 3.10 不支持 → 必须走 8.4 的补丁
+ssh <server> "uname -r"
+# omb 容器内要能免密 SSH 回宿主
+ssh <server> "docker exec openmausbot sh -c 'which ssh || echo NO_SSH; which docker || echo NO_DOCKER_CLI'"
+```
+
+### 8.2 预 build 托管镜像（绕开 docker.io 被墙）
+
+omb provision 时会从 docker.io 拉基础镜像并本地 build 衍生镜像（装 cua-driver + 字体）；国内服务器拉不动 docker.io，**预先在本机（或能直连的机器）build 好**推到宿主，检测到即跳过 pull+build。
+
+镜像按 digest 锁定基础层，4 个 label 校验兼容性（`com.openmausbot.local-vm=1` / `cua-driver=<版本>` / `cua-base=<digest>` / `image-layer=<n>`）。Dockerfile 从 omb 源码模板逐字提取（源码内 `localVmDockerfile` 相关模板），只把 FROM 换成 digest 锁定的镜像源（如 `dockerproxy.net/trycua/xfce-cua@sha256:<digest>`）。基础镜像 digest 与 cua-driver 版本以**当时 omb 源码**为准（`docker run --rm --entrypoint node <omb镜像> -e "..."` 可打印）。
+
+```bash
+# 本机 build（基础镜像走可直连的 proxy 源 + digest 锁定）
+docker build -f omb-cua.Dockerfile -t openmausbot/cua-local-vm:driver-<ver>-v<n> .
+docker save <镜像名> | gzip > "$TEMP/omb-cua.tar.gz"
+scp "$TEMP/omb-cua.tar.gz" <server>:/data/openmausbot/
+ssh <server> "gunzip -c /data/openmausbot/omb-cua.tar.gz | docker load"
+# 验证 4 个 label
+ssh <server> "docker inspect <镜像名> --format '{{json .Config.Labels}}'"
+```
+
+### 8.3 omb 容器装工具 + SSH 通道
+
+omb 镜像内缺 `ssh` 和 `docker` CLI，装在可写层（**容器重建会丢**，装完 snapshot 成镜像）：
+
+```bash
+ssh <server> "docker exec -u root openmausbot sh -c 'apk add openssh-client' && \
+  docker cp \$(which docker) openmausbot:/usr/local/bin/docker && \
+  docker exec -u root openmausbot sh -c 'chmod +x /usr/local/bin/docker'"
+# snapshot（重建容器时改用它启动，工具不丢）
+ssh <server> "docker commit openmausbot omb-with-vps-tools:latest"
+
+# SSH 密钥：落持久卷 /data/.ssh/（容器 HOME=/data），公钥进宿主 authorized_keys
+ssh <server> "docker exec -u root openmausbot sh -c 'ssh-keygen -t ed25519 -N \"\" -f /data/.ssh/id_ed25519 -C omb-vps-link && cat /data/.ssh/id_ed25519.pub'"
+# ↑ 公钥追加进宿主 /root/.ssh/authorized_keys，并写 /data/.ssh/config：
+#   Host <vps-alias>
+#     HostName <服务器IP>
+#     User root
+#     IdentityFile /data/.ssh/id_ed25519
+#     StrictHostKeyChecking accept-new
+ssh <server> "ln -sfn /data/.ssh /home/maus/.ssh"   # 容器内 maus 家目录软链（若 omb 以绝对路径读则不需要）
+```
+
+### 8.4 老内核补丁（内核 ≥4.6 跳过）
+
+CentOS 7 内核 3.10 无 cgroup namespaces，`--cgroupns private` 会直接失败，且 hardening 检查也认 private。改容器内 3 个编译后 JS（`/app/dist-server/` 下；`index.js` 里变量名带 `3` 后缀如 `config3`，先 grep 再改）：
+
+| 文件 | 改动 |
+| --- | --- |
+| `vps-computer.js` + `index.js` | docker run 参数 `--cgroupns` 的值 `private` → `host` |
+| `container-computer.js` + `index.js` | hardening 检查 `CgroupnsMode === "private"` → `["private","host"].includes(...)` |
+| `index.js`（vpsSshTunnelArgs） | `"-o","ExitOnForwardFailure=yes"` 后插入 `"-o","ControlMaster=no","-o","ControlPath=none"` |
+
+```bash
+# 备份原始文件到持久卷，再打补丁（sed/perl 均可；改完 grep 验证 token 完整，别把 "--cgroupns" flag 本身删掉）
+ssh <server> "docker cp openmausbot:/app/dist-server/vps-computer.js /data/vps-computer.js.bak && \
+  docker exec -u root openmausbot perl -pi -e 's/...' /app/dist-server/vps-computer.js /app/dist-server/index.js && \
+  docker restart openmausbot"
+```
+
+> 坑 4：sed 多文件替换时 flag token（`"--cgroupns"`）和值 token 分属两处，别把 flag 一起删了——只剩孤立 `"host"` 会被 docker 当镜像名。
+> 坑 5：补丁后 provision 若复用**首次失败残留的旧容器**（cgroupns=private），补丁看似不生效——`docker ps | grep vps-` 找到残留容器 `docker rm` 后重试。
+> 坑 6：隧道 join 报 `SSH viewer tunnel exited` 但手动跑隧道命令正常 → ControlMaster mux 坑：docker 传输留下的 mux master（`-N` 无转发）让后续 `-L` 子进程秒退 0 被误判失败。补丁加 `ControlMaster=no ControlPath=none`，并 `ssh -O exit <vps-alias>` 清掉现有 mux master 后重启。
+
+### 8.5 注册 VPS 后端 + provision
+
+API 直操作（容器内 loopback `127.0.0.1:8799` 是 admin 可信身份，不用 UI）：
+
+```bash
+# 1) 全局配置 sshAlias（要求所有 bot 空闲；busy 的先停回合）
+ssh <server> "docker exec openmausbot curl -s -X PUT -H 'Content-Type: application/json' \
+  -d '{\"vps\":{\"sshAlias\":\"<vps-alias>\"}}' http://127.0.0.1:8799/api/config"
+
+# 2) 给目标 bot 设 cloudBackend=vps（先 PATCH 再 provision，否则报 Choose Cloud computer）
+ssh <server> "docker exec openmausbot curl -s -X PATCH -H 'Content-Type: application/json' \
+  -d '{\"cloudBackend\":\"vps\",\"computer\":\"cloud\"}' http://127.0.0.1:8799/api/bots/<botId>"
+
+# 3) provision（首次 build/启动 Cua 容器，数分钟；之后秒级唤醒）
+ssh <server> "docker exec openmausbot curl -s -X POST http://127.0.0.1:8799/api/bots/<botId>/computer/provision"
+# 响应应含 ready=true, desktopReady=true, security=hardened
+
+# 4) 验证：宿主上出现 Cua 容器，四进程 RUNNING
+ssh <server> "docker ps | grep vps- && docker exec <cua容器> ps aux | grep -cE 'Xvnc|xfce|cua-driver'"
+# 5) join 出浏览器访问地址（vnc.html 应 200）
+ssh <server> "docker exec openmausbot curl -s -X POST http://127.0.0.1:8799/api/bots/<botId>/computer/join"
+```
+
+日常运维：`POST .../computer/sleep` 休眠（释放资源，下次 provision 秒级唤醒）。改 VPS 配置前先满足护栏中的 bot 空闲要求。
+
+### 8.6 快速恢复清单（容器重建/镜像升级后按序核对）
+
+1. 容器用 `omb-with-vps-tools:latest` 启动（ssh + docker CLI 在）→ 缺则重做 8.3
+2. `/data/.ssh/` 密钥与 config 在持久卷 → 宿主 authorized_keys 公钥还在
+3. 对照 `/data/*.patched` 重打 8.4 三个 JS 补丁（新镜像必做）
+4. 托管镜像 `cua-local-vm:driver-<ver>-v<n>` 还在宿主 → 缺则重做 8.2
+5. `vps.sshAlias` 配置在 omb-data 卷 → PUT /api/config 重写一遍
+6. 逐 bot 重新 provision（PATCH cloudBackend 不用重做，随 bot 数据持久化）
+
 ## 排障速查
 
 | 症状 | 根因 | 处置 |
@@ -161,6 +269,13 @@ ssh <server> "docker exec openmausbot sh -c 'cat /data/.openmausbot/config.json'
 | 页面 403 要求 pair | 新设备未配对 | Step 5 生成新码 |
 | 引擎一直 unavailable | config.json 属主/权限不对 | 坑 3 的 chown/chmod |
 | 公网地址变了 | 换了登录账号 | 地址按账号预留，换号即换址 |
+| provision 报 cgroup namespaces 不支持 | 宿主内核 3.10（CentOS 7） | 8.4 补丁 `--cgroupns host` |
+| provision 报 Choose Cloud computer | bot 未设 cloudBackend | 先 PATCH `cloudBackend=vps` 再 provision |
+| provision 重复拉 docker.io 失败 | 预 build 镜像 label 不全/没被识别 | 8.2 核对 4 个 label（cua-driver/cua-base/image-layer） |
+| 补丁改了但不生效 | 失败残留的旧 Cua 容器被复用 | 坑 5：删残留容器重 provision |
+| join 报 SSH viewer tunnel exited | ControlMaster mux master 干扰 | 坑 6：补丁 + `ssh -O exit` 清 mux |
+| 容器重建后 SSH/docker 工具消失 | 装在可写层 | 用 `omb-with-vps-tools:latest` 启动，或重装 8.3 |
+| omb 镜像升级后 VPS 功能失效 | 容器内补丁被新镜像覆盖 | 对照 `/data/*.patched` 备份重打 8.4 |
 
 ## 护栏
 
@@ -168,3 +283,5 @@ ssh <server> "docker exec openmausbot sh -c 'cat /data/.openmausbot/config.json'
 - API key、验证码、服务器地址、登录邮箱等环境事实只在命令占位符出现，不写进本文档这类发布文件；机器级的具体值由运行时环境或用户记忆提供。
 - 服务器上已有的同名容器（`openmausbot`）先探再动，不盲目覆盖。
 - 本 skill 产出物（镜像 tar 包、cloudflared 二进制）留在服务器 `/data/openmausbot/` 即可，验收后可清理。
+- Step 8 的 PUT /api/config 要求**所有 bot 空闲**；provision/patch 前确认没有进行中的回合。
+- Step 8 容器内改 JS 是对编译产物的补丁，**镜像升级即失效**——备份（`/data/*.patched`）和重打步骤必须留给用户。
