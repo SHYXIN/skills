@@ -38,7 +38,10 @@ cn-skills add jackwener/opencli --copy --yes --global --agent codebuddy,claude-c
 # 6) asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读（无 Gitee 镜像，直连 GitHub）
 cn-skills add danyuchn/asd-ste100-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
-# 7) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
+# 7) anysearch：实时搜索引擎（通用/垂直域/批量/URL 提取），consensus-tech-research 等调研技能的搜索发现层（无 Gitee 镜像，直连 GitHub，可能慢）
+cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+
+# 8) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
 cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
