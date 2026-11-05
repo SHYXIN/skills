@@ -330,6 +330,7 @@ npx rea-agents setup                                                            
 - **setup-tencent-docs** — 在一台新机器上配置腾讯文档访问：安装官方 tencent-docs 技能、配置 TENCENT_DOCS_TOKEN 用户级环境变量（tokenUrl 页面自助获取）、API 连通性验证与排障。无本地 CLI，纯 token 认证。手动调用（/setup-tencent-docs）。
 
 - **setup-claude-code** — 在新机器上初始化 Claude Code 关键设置：`skipWebFetchPreflight`（跳过 WebFetch 域名预检，解决国内网络 "Unable to verify if domain is safe to fetch" 报错）、`permissions.defaultMode: bypassPermissions`（完全权限免确认框），以及可选的 windows-mcp 注册探测（已装跳过、未装转交 setup-windows-mcp）。幂等改写 `~/.claude/settings.json`，含 JSON 校验、生效条件说明与 5 条踩坑记录。手动调用（/setup-claude-code）。
+
 - **setup-agent-desktop** — 在新 Windows 电脑上安装并配置 agent-desktop（Vercel Labs 跨平台桌面 GUI 自动化 CLI：UIA 无障碍树快照 + headless 语义操作 + @ref 寻址，Rust 实现、npm 分发）。覆盖 npm 安装与 postinstall 修复（Git Bash 走 JS wrapper 多 125ms）、status 验证、内置版本匹配指南加载、MCP 注册探针（正式版可能无 `mcp` 子命令，README main 超前于发布，先探针再注册）、记事本无头冒烟与 9 条排障（含快照带出隐私内容的处置纪律）。手动调用（/setup-agent-desktop）。
 
 ### DevOps

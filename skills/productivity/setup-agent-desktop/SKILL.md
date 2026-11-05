@@ -11,7 +11,7 @@ agent-desktop（npm 包 `agent-desktop`）是 Vercel Labs 出的桌面 computer-
 
 新机器上配它的坑不在 CLI 本身，而在五件事：
 
-1. **postinstall 链接只对 PowerShell/cmd 生效**：npm 装好后 `agent-desktop.cmd` 垫片已被重写直指 .exe，但 Git Bash 优先命中不带扩展名的 JS wrapper，每次调用多约 125ms 并打印一次 launcher 警告。原生二进制其实已随包带上，缺的只是链接。
+1. **postinstall 链接只对 PowerShell/cmd 生效**：npm 装好后 `agent-desktop.cmd` 垫片已被重写直指 .exe，但 Git Bash 优先命中不带扩展名的 JS wrapper，每次调用多约 125ms 并打印一次 launcher 警告。
 2. **README（main 分支）超前于正式发布**：README 写了 `agent-desktop mcp`（MCP server 模式），但 npm 最新正式版可能还没有这个子命令（2026-11 实测 1.1.0 即无）。照着 README 注册 MCP 会得到一个启动即失败的坏 server。
 3. **快照活不久**：`find` 产出的 ref 稍后用就 `SNAPSHOT_NOT_FOUND`；拍完照要立即行动，失败重拍即可（`retry: safe`）。
 4. **Windows 上无头 `type` 会被拒**：`type` 是 SendInput 键盘合成，headless 返回 `POLICY_DENIED`；无头写入用 `set-value`（UIA ValuePattern，语义化且带读回验证）。
@@ -23,7 +23,7 @@ agent-desktop（npm 包 `agent-desktop`）是 Vercel Labs 出的桌面 computer-
 - **注册 MCP 前先探针**：`agent-desktop mcp --help` 能识别再注册，unrecognized 就跳过等发版。
 - **ref 必须带快照 id**（`@s8f3k2p9:e1`）；PowerShell 里每个 ref 加单引号（裸 `@token` 是 splatting 操作符，参数会被悄悄吃掉），bash/cmd 不用。
 - **无头优先，别用 `--headed` 救无头失败**；headed 只在用户明确允许物理输入时用。
-- **内置指南比网上 README 可靠**：`agent-desktop skills get desktop` / `skills get platform` 是二进制里版本匹配的一手文档，README main 可能超前。
+- **内置指南比网上 README 可靠**：`agent-desktop skills get desktop` / `skills get platform` 是二进制里版本匹配的一手文档（README main 可能超前，见坑 2）。
 
 ---
 
