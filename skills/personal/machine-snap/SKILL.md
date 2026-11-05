@@ -5,7 +5,7 @@ description: agent 工具箱快照与还原：whitelist.json 记录有利于 age
 
 # Machine Snap
 
-把「新电脑给 agent 配工具箱」从半天回忆压缩成三步：**改白名单 → doctor 对账 → restore 还原**。
+把「新电脑给 agent 配工具箱」压缩成三步：**改白名单 → doctor 对账 → restore 还原**。
 
 与 dp-dev-bootstrap 的分工：那个管**单个仓库**为什么跑不起来，这个管**整台机器**上 agent 的工具集与配置。
 
@@ -63,7 +63,7 @@ node $S redact
 - **包管理器缺失只提示不代装**（提权/重启状态/公司策略坑密度高；提示卡带安装命令）
 - manual 条目只打印 note 不执行
 - 默认装最新版，version 仅作 doctor 对账参考
-- MCP 合并写入（已有的 server 不覆盖），codex 是**追加 TOML 块**（同名块存在则跳过）
+- MCP 合并写入（同名 server 以快照为准，快照没有的不动），codex 是**追加 TOML 块**（同名块存在则跳过）
 - PATH 追加前逐条去重
 - 无 mcp-snapshot.json 时只还原 CLI 并提示（快照文件要人肉从旧机带过来）
 
@@ -74,7 +74,7 @@ node $S redact
 - choco 在有 pending reboot 时会报错，restore 提示用管理员终端
 - winget export 的包 ID 不带版本号，版本靠 doctor 逐条 `--version` 探测暴露
 - claude 的 `~/.claude.json` 里还有 projects/历史等无关状态，snap-mcp 只取 `mcpServers` 键
-- glab 在部分环境有挂死史，备选 curl 直连 API（whitelist note 已记）
+- glab 在部分环境有挂死史，备选 curl 直连 API
 
 ## 通用化约束
 

@@ -1,7 +1,7 @@
 {
   "schema": "machine-snap/2",
   "capturedAt": "2026-11-04T00:00:00Z",
-  "note": "agent 工具箱白名单：core = MCP/skills 依赖的 runtime 与基础设施，tools = agent 直接调用的 CLI。command 字段 = 实际可执行名（防 winget 包 ID != 命令名的坑）。",
+  "note": "agent 工具箱白名单：core = agent 直接调用的 CLI，coreRuntimes = MCP/skills 依赖的 runtime。command 字段 = 实际可执行名（防 winget 包 ID != 命令名的坑）。",
   "core": [
     { "manager": "winget", "packageId": "Git.Git", "command": "git", "version": "2.55.0", "note": "MCP clone/skills 基础" },
     { "manager": "winget", "packageId": "BurntSushi.ripgrep.MSVC", "command": "rg", "version": "15.2.0", "note": "skills 里 Grep 工具的底层" },
@@ -27,11 +27,5 @@
     { "manager": "manual", "packageId": "python-3.12", "command": "python", "version": "3.12.13", "note": "本机走 uv 管理的 python（~/.local/bin），非 winget 包。新机建议: winget install Python.Python.3.12 或 uv python install 3.12" },
     { "manager": "manual", "packageId": "uv", "command": "uvx", "version": null, "note": "windows-mcp 等 MCP server 的启动器；官方安装器装到 ~/.local/bin：powershell -c \"irm https://astral.sh/uv/install.ps1 | iex\"" },
     { "manager": "winget", "packageId": "Microsoft.WindowsTerminal", "command": "wt", "version": null, "note": "可选；默认 shell 体验" }
-  ],
-  "mcp": {
-    "codebuddy": { "file": "~/.codebuddy/mcp.json", "servers": { "tencent-docs": {}, "windows-mcp": {}, "rea": {}, "lightpanda": {}, "engram": {} } },
-    "claude": { "file": "~/.claude.json", "servers": {} },
-    "codex": { "file": "~/.codex/config.toml", "servers": [] }
-  },
-  "pathAdditions": []
+  ]
 }

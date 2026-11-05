@@ -186,7 +186,7 @@ function doctor(wl, mcpBlock) {
   const lines = [];
   const missing = [];
 
-  lines.push('-- core（runtime/基础设施）--');
+  lines.push('-- coreRuntimes（runtime/基础设施）--');
   for (const e of wl.coreRuntimes || []) {
     const present = entryPresent(e);
     let tag = present ? 'ok      ' : 'MISSING ';
@@ -195,7 +195,7 @@ function doctor(wl, mcpBlock) {
     lines.push(`  [${tag}] ${e.manager}:${e.packageId}  (${e.command})  ${ver || ''}`);
   }
 
-  lines.push('-- tools（agent 直接用）--');
+  lines.push('-- core（agent 直接用）--');
   for (const e of wl.core || wl.tools || []) {
     const present = entryPresent(e);
     let tag = present ? 'ok      ' : 'MISSING ';
