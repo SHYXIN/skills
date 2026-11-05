@@ -75,20 +75,6 @@ jq --arg p "./skills/productivity/foo" '.skills = [.skills[] | select(. != $p)]'
 
 ---
 
-## 当前已登记 skill 清单（快照）
-
-| skill | category | frontmatter name |
-|---|---|---|
-| socratic-tutor | teaching | socratic-tutor |
-| grill-one | productivity | grill-one |
-| interview-coach | productivity | interview-coach |
-| fastapi-starlette-admin | backend | fastapi-starlette-admin |
-| verify-manual-after-implementation | _（登记在 plugin.json） | verify-manual-after-implementation |
-| miniprogram-iconfont | frontend | miniprogram-iconfont |
-| ssh-key-setup | productivity | ssh-key-setup |
-
----
-
 ## Git 同步规范
 
 - commit message 类型：`feat: add <skill>` / `chore: remove <skill>` / `chore: sync registry`

@@ -60,7 +60,7 @@ echo "📦 安装 rea (推荐搭配，GitHub 直连) -> $AGENTS"
 cn-skills add morluto/rea --copy --yes --global --agent "$AGENTS"
 
 # anysearch：实时搜索引擎（通用/垂直域/批量/URL 提取），consensus-tech-research 等调研技能的搜索发现层
-# 无 Gitee 镜像，直连 GitHub（国内可能慢）；上游活跃版本化，不 vendored 进本仓库
+# 无 Gitee 镜像，直连 GitHub（国内可能慢）
 echo "📦 安装 anysearch (推荐搭配，GitHub 直连) -> $AGENTS"
 cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent "$AGENTS"
 

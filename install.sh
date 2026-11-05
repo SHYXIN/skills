@@ -54,7 +54,6 @@ echo "📦 安装 rea (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add morluto/rea -y --copy -g -a $AGENTS
 
 # anysearch：实时搜索引擎（通用/垂直域/批量/URL 提取），consensus-tech-research 等调研技能的搜索发现层
-# 上游 anysearch-ai/anysearch-skill 活跃版本化，不 vendored 进本仓库，随推荐搭配外部安装
 echo "📦 安装 anysearch (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add anysearch-ai/anysearch-skill -y --copy -g -a $AGENTS
 
