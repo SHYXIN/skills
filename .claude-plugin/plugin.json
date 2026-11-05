@@ -44,6 +44,7 @@
     "./skills/productivity/retro-wx",
     "./skills/productivity/rust-windows-setup",
     "./skills/productivity/set-worktrunk",
+    "./skills/productivity/setup-agent-desktop",
     "./skills/productivity/setup-claude-code",
     "./skills/productivity/setup-dws",
     "./skills/productivity/setup-opencli",
