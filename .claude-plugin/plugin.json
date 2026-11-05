@@ -10,6 +10,7 @@
     "./skills/devops/gitlab",
     "./skills/devops/gitlab-runner-provision",
     "./skills/devops/repo-init",
+    "./skills/devops/set-openmausbot",
     "./skills/frontend/miniprogram-iconfont",
     "./skills/personal/alias",
     "./skills/personal/machine-snap",
