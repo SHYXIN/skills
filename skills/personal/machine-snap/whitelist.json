@@ -29,7 +29,7 @@
     { "manager": "winget", "packageId": "Microsoft.WindowsTerminal", "command": "wt", "version": null, "note": "可选；默认 shell 体验" }
   ],
   "mcp": {
-    "codebuddy": { "file": "~/.codebuddy/mcp.json", "servers": { "tencent-docs": {}, "windows-mcp": {}, "rea": {}, "lightpanda": {} } },
+    "codebuddy": { "file": "~/.codebuddy/mcp.json", "servers": { "tencent-docs": {}, "windows-mcp": {}, "rea": {}, "lightpanda": {}, "engram": {} } },
     "claude": { "file": "~/.claude.json", "servers": {} },
     "codex": { "file": "~/.codex/config.toml", "servers": [] }
   },

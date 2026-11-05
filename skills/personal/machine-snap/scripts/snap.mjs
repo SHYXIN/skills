@@ -204,7 +204,7 @@ function doctor(wl, mcpBlock) {
     lines.push(`  [${tag}] ${e.manager}:${e.packageId}  (${e.command})  ${ver || ''}`);
   }
 
-  for (const [client, m] of Object.entries(mcpBlock || {})) {
+  for (const [client, m] of Object.entries(mcpBlock.mcp || {})) {
     if (!m) { lines.push(`  [MCP ${client}] （本快照无此客户端）`); continue; }
     const live = liveMcpServerNames(client, m);
     if (live === null) { lines.push(`  [MCP ${client}] 目标文件不存在或不可读: ${m.file}`); continue; }
@@ -214,8 +214,13 @@ function doctor(wl, mcpBlock) {
     lines.push(`  [MCP ${client}] ${lack.length ? '缺: ' + lack.join(', ') : '齐全'}${extra.length ? `  (机器上多出: ${extra.join(', ')})` : ''}`);
   }
   const livePath = captureUserPath();
-  const lackPath = (mcpBlock.pathAdditions || []).filter(p => !livePath.includes(p));
-  lines.push(`  [PATH] ${lackPath.length ? '缺 ' + lackPath.length + ' 条（restore 补）' : '快照为空（首次用先跑 snap-mcp 采集）'}`);
+  const wantPath = mcpBlock.pathAdditions || [];
+  if (!wantPath.length) {
+    lines.push('  [PATH] 快照为空（首次用先跑 snap-mcp 采集）');
+  } else {
+    const lackPath = wantPath.filter(p => !livePath.includes(p));
+    lines.push(`  [PATH] ${lackPath.length ? '缺 ' + lackPath.length + ' 条（restore 补）' : wantPath.length + ' 条全部在位'}`);
+  }
   return { lines, missingClis: missing };
 }
 
