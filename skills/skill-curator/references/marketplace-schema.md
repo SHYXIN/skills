@@ -80,7 +80,7 @@ jq --arg p "./skills/productivity/foo" '.skills = [.skills[] | select(. != $p)]'
 | skill | category | frontmatter name |
 |---|---|---|
 | socratic-tutor | teaching | socratic-tutor |
-| anysearch | productivity | anysearch |
+| grill-one | productivity | grill-one |
 | interview-coach | productivity | interview-coach |
 | fastapi-starlette-admin | backend | fastapi-starlette-admin |
 | verify-manual-after-implementation | _（登记在 plugin.json） | verify-manual-after-implementation |

@@ -83,7 +83,7 @@ cn-skills update socratic-tutor   # 只更新某个
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
 ```
 
-脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」（`mattpocock/skills`、`humanlayer/skills` 的 show-me、`pstack` 整包；**matt 置于最后**，以便 `tdd`/`teach` 采用 matt 版——见「同名技能」一节），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
+脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」的全部外部技能包（**mattpocock/skills 置于最后**，以便 `tdd`/`teach` 采用 matt 版——见「同名技能」一节），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
 
 自定义 agent 列表：
 
@@ -214,6 +214,20 @@ npx skills@latest add morluto/rea -y --copy -g -a codebuddy claude-code codex he
 npx rea-agents setup                                                                  # MCP server（要用时再装）
 ```
 
+### anysearch-ai/anysearch-skill
+
+[anysearch-ai/anysearch-skill](https://github.com/anysearch-ai/anysearch-skill) 是实时搜索引擎：通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和 URL 内容提取，匿名可用（API key 仅提高限额）。`consensus-tech-research` 等调研技能用它做搜索发现层。上游活跃版本化，**不 vendored 进本仓库**，随推荐搭配外部安装；一键脚本已默认安装，如需单独安装：
+
+```bash
+npx skills@latest add anysearch-ai/anysearch-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+```
+
+国内无 Gitee 镜像，`cn-skills` 直连 GitHub（可能慢）：
+
+```bash
+cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+```
+
 ### 同名技能：tdd / teach
 
 推荐搭配之间只有两个技能重名，都发生在 pstack 与 mattpocock/skills 之间：
@@ -259,7 +273,6 @@ npx rea-agents setup                                                            
 
 ### 搜索
 
-- **anysearch** — 实时搜索引擎。支持通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和网页内容提取。已适配 Windows Clash 代理环境，开关代理均可自动连通。
 - **web-reader-wx** — 网页读取工具路由器：按任务性质在 WebFetch（静态最省）、lightpanda MCP（JS 渲染+匿名交互）、opencli browser（真实 Chrome 登录态+像素截图）之间一次选对，附降级链与反模式；含 lightpanda 在 189 的部署事实（Docker 9223→9222、引擎不热加载）与 opencli browser 分工要点。
 
 ### 效率
@@ -290,9 +303,9 @@ npx rea-agents setup                                                            
 - **branch-management** — 通用 Git 分支管理操作技能。用于在当前仓库中新建 feature 分支、同步 develop、提交并 push、MR 前检查、合并后清理分支。分支名默认 `feature/<initials>-YYYYMMDD-<task>`，initials 从 git config 读取（`skill.initials`），不硬编码用户身份。提交前校验作者邮箱（`skill.email`），不一致则拒绝提交。会主动执行低风险 Git 操作；历史重写、远端删除、生产分支相关动作需明确确认。
 - **worktree** — 通用 Git worktree 隔离工作技能。从基线分支切 feature 分支到主仓库旁的 `.wt-<短任务名>` 目录做目录级隔离，覆盖创建 → 开发 → 合并后清理全生命周期；支持多 worktree 并行与归属盘点（按分支名前缀判断，只动自己的）。分支命名/提交规范沿用 branch-management；一切删除动作（含 worktree、本地/远端分支）执行前必须先确认。本机装了 worktrunk（`git-wt`）时提供可选加速通道（list/switch/remove/step commit），删除确认语义对 git-wt 同样生效。
 - **set-worktrunk** — worktrunk（git worktree 管理 CLI，为并行 AI agent 设计）的一次性安装配置：winget 安装、PATH 验证、shell 集成、Windows Terminal wt.exe 撞名提醒（本机用 git-wt）、NTFS 下 CoW 构建缓存不可用说明。装完即结束，日常操作归 worktree skill。
-- **oss-finder** — GitHub 开源贡献第一步：找项目。用 gh CLI 按默认画像（近期活跃、中等规模、带 good first issue）搜索候选仓库，按活跃度 / 社区健康 / 贡献友好度打分，输出候选清单与推荐理由。
-- **oss-triage** — GitHub 开源贡献第二步：选 issue + 读代码。给定目标仓库，拉取 good first issue / help wanted 候选，筛掉已认领、有关联 PR、已过期的，浅克隆到 `~/.oss/<owner>/<repo>` 读代码验证，输出「选题 + 改动方案」。
-- **oss-contribute** — GitHub 开源贡献第三步：fork → 改 → PR。在 `~/.oss` 工作区建分支实现改动、本地验证、push 到自己的 fork、按上游 CONTRIBUTING 开 PR 并跟进 review；fork、push、PR、留言一律先确认。
+- **oss-finder** — GitHub 项目发现：按贡献 / 选型 / 学习三种意图搜索、评估、推荐。贡献意图用 gh CLI 按默认画像（近期活跃、中等规模、带 good first issue）搜候选打分；选型和学习走「web 发现社区共识 → gh 验证硬指标」两段式，分别产出对比决策表与带阅读路径的推荐。
+- **oss-triage** — GitHub 开源贡献第二步：选 issue + 读代码。给定目标仓库，拉取 good first issue / help wanted 候选，筛掉已认领、有关联 PR、已过期的，浅克隆到 `C:/code_proj/github-proj/oss-proj/<owner>/<repo>` 读代码验证，输出「选题 + 改动方案」。
+- **oss-contribute** — GitHub 开源贡献第三步：fork → 改 → PR。在 `C:/code_proj/github-proj/oss-proj` 工作区建分支实现改动、本地验证、push 到自己的 fork、按上游 CONTRIBUTING 开 PR 并跟进 review；fork、push、PR、留言一律先确认。
 
 - **writing-for-agents-wx** — 中文版写给 agent 的文档写作规范（skill / AGENTS.md / CLAUDE.md）：让 agent 每次走同一套过程，而非产出相同文本。覆盖 context pointer、信息层级、完成标准、引导词与删减等杠杆。
 
@@ -395,7 +408,6 @@ skills/
 │   ├── mental-map/
 │   └── learn-by-doing/
 ├── productivity/      # 效率类技能
-│   ├── anysearch/     # 搜索类技能（含代理适配）
 │   ├── bookpipe/  # forcoder 每日书籍流水线（suufun 加速 + book-to-skill 闭环转换 + 防漏单）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
@@ -424,7 +436,7 @@ skills/
 │   ├── upward-networking/ # 向上社交和高价值关系经营
 │   ├── doc-append-log/  # 只追加文档/日志历史机制（INDEX.md + 脚本，目录无关）
 │   ├── next-step/  # 下一步规划：复盘现状 + 3-5 个带价值/代价/何时选的下一步，标出性价比最高
-│   ├── oss-finder/  # GitHub 开源贡献第一步：找项目（gh CLI 搜索打分）
+│   ├── oss-finder/  # GitHub 项目发现：贡献/选型/学习三意图（gh + web 两段式）
 │   ├── oss-triage/  # GitHub 开源贡献第二步：选 issue + 读代码
 │   ├── oss-contribute/  # GitHub 开源贡献第三步：fork → 改 → PR（全确认制）
 │   ├── closed-loop/  # 广义闭环驱动器：动态闭环体检 + 可选陪跑 + 曳光弹验证硬门槛

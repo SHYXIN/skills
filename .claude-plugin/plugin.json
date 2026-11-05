@@ -20,7 +20,6 @@
     "./skills/productivity/agent-config-tidy",
     "./skills/productivity/agent-tdd",
     "./skills/productivity/ai-daily-brief",
-    "./skills/productivity/anysearch",
     "./skills/productivity/ask-wx",
     "./skills/productivity/bookpipe",
     "./skills/productivity/branch-management",

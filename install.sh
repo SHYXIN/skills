@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 复制安装（--copy）：各 agent 目录写入独立副本而非软链，不依赖 symlink
-# 一键安装 SHYXIN/skills + humanlayer/skills(show-me) + pstack + mattpocock/skills 到本地 agent
+# 一键安装 SHYXIN/skills + 推荐搭配（humanlayer show-me / pstack / mattpocock / opencli / asd-ste100 / book-to-skill / rea / anysearch）到本地 agent
 #
 # 远程一键运行（无需克隆仓库）:
 #   curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
@@ -52,5 +52,10 @@ npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a $AGENTS
 # MCP server 本体（npx rea-agents setup，50MB + 逆向引擎）属"要用时再装"的重型件
 echo "📦 安装 rea (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add morluto/rea -y --copy -g -a $AGENTS
+
+# anysearch：实时搜索引擎（通用/垂直域/批量/URL 提取），consensus-tech-research 等调研技能的搜索发现层
+# 上游 anysearch-ai/anysearch-skill 活跃版本化，不 vendored 进本仓库，随推荐搭配外部安装
+echo "📦 安装 anysearch (推荐搭配) -> agents: $AGENTS"
+npx skills@latest add anysearch-ai/anysearch-skill -y --copy -g -a $AGENTS
 
 echo "✅ 完成。运行 'npx skills list' 查看已安装技能。"
