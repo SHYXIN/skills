@@ -37,10 +37,8 @@ description: 网页读取工具路由器：在 WebFetch、lightpanda MCP、openc
 
 **文本引擎边界**：它渲染文本布局，Canvas/WebGL 内容（3D viewer、地图）加载不出——这类页面走 opencli browser。
 
-**部署形态**（本机环境事实，查不到才缓存在此）：
-- MCP 注册在 `~/.codebuddy/mcp.json`，HTTP 指向 `https://deepsense.deepexi.com/lightpanda/mcp/`（189 nginx 反代）
-- 189 容器 `lightpanda-mcp`（镜像 `lightpanda/browser:latest`），`/bin/lightpanda mcp --host 0.0.0.0 --port 9222`，宿主端口 9223→9222，bridge 网络
-- 引擎不热加载：升级镜像后 `docker rm -f lightpanda-mcp` 重启（或走 DeepWorks UI）
+**部署形态**（环境事实，随部署变动；部署/升级流程见 `set-lightpanda` skill）：
+- MCP 注册在 `~/.codebuddy/mcp.json`，HTTP 指向 `https://<public-domain>/lightpanda/mcp/`（服务器 Nginx 反代）
 - 会话：HTTP 模式 `session_new`/`session_close`；stdio 模式只有 default 会话
 
 ## 参考二：opencli browser
