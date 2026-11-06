@@ -323,7 +323,7 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 - **doc-append-log** — 只追加、不改写的文档/日志历史机制。每次变更新建 `YYYY-MM-DD_主题.md`，并用 `INDEX.md` 时间线索引（含"当前事实/当前参考/历史背景"状态）串联，供 CodeBuddy / Claude Code / Codex 等智能体阅读完整历史；目录无关（自动定位 docs/log/logs/ 等，也接受显式路径），附带 `init_index.sh` / `append_entry.sh` / `locate_docs.sh` 三个幂等脚本。model-invoked。
 - **next-step** — 规划"下一步做什么"：用户做完一段事或卡住时，列出 3-5 个带价值/代价/何时选/可照做动作的下一步并标出性价比最高者。适用代码/学习/生活/通用。用户手动调用（/next-step）。
 - **closed-loop** — 把一件事逼到真正闭环：动态体检差距清单（排序 + 指定首选）、每一步带推荐推进、曳光弹端到端拿证据。约束 AI——宣布完成必须附证据。用户手动调用（/closed-loop），当你要确认「这事真的完成了吗」时用。
-- **playbook** — 领域专家路线：调用即扮演该领域行家，按行家手册给当前局面一条带顺序、完成标准、坑位预警的推荐路线；复杂权衡可升级多专家会诊。方向已定、想知道「行家会怎么走」时手动调用（/playbook）。
+- **playbook** — 领域专家路线：先给 2-3 个候选行家角色让用户拍板，再按该行当手册给当前局面一条带顺序、完成标准、坑位预警的推荐路线；复杂权衡可升级多专家会诊。方向已定、想知道「行家会怎么走」时手动调用（/playbook）。
 - **consensus-check** — 共识审计：grill、访谈或长讨论结束后，把双方达成的共识逐条罗列并具体化到可检验细节，标出 ✅ 已对齐 / ⚠️ 有出入 / ❓ AI 补全，暴露隐藏的模糊点。想确认「我们真的对齐了吗」时手动调用（/consensus-check）。
 - **skill-iterate** — 迭代打磨一个已存在的 skill：把一次使用中的摩擦（误触发、抢跑、粒度不对、步骤缺失）变成一个小步修改，并同步真相源。文本审计（授权检查/no-op 判定）派全新上下文子 agent 冷眼执行，摩擦取证与改法拍板留主会话。user-invoked。
 - **loop-driver** — 环式自进化调度器。把任务逼成一个自我改进的循环：收集目标 → 按经验选 skill 组合 → 执行 → 用闭环信号记分 → 沉淀到 ledger 并调权重 → 等下一个目标，一圈比一圈选得准。人只在无共识决策和红线处被拍板。说"转起来""跑一整个循环""让 loop 转一圈"时手动调用（/loop-driver）。
@@ -354,6 +354,7 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 - **gitlab-runner-provision** — GitLab Runner 新机器部署全流程引导：SSH 免登录 → 安装 Docker → 安装/注册 GitLab Runner → 最小 CI/CD 流水线跑通。半自动（scripts/ 做检测/生成/校验），通用化不绑定具体机器，验收标准是 push hello-world 流水线变绿。
 
 - **set-openmausbot** — 在一台有 Docker 的 Linux 服务器上从零部署 OpenMausBot（开源 AI bot 车队聊天壳）并出公网 HTTPS 地址。覆盖：镜像离线搬运（服务器直连 ghcr.io 超时时）、邮箱验证码登录（QQ 码易混淆推荐 Gmail）、容器常驻启动、cloudflared 二进制手动落位、设备配对（每个新设备一次）、OpenAI-compat 引擎接入（直写 config.json）、端到端验收与排障速查。环境事实（服务器地址/邮箱/key）一律占位符，由运行时记忆提供。手动调用（/set-openmausbot）。
+- **set-lightpanda** — 在一台有 Docker + Nginx 的 Linux 服务器上部署 Lightpanda Browser（Zig 写的 headless 浏览器，专为 AI agent 设计）的 MCP 服务，并接入本机 agent CLI。覆盖：镜像离线搬运（服务器直连 Docker Hub 慢时本地中转）、MCP-only 容器启动、Nginx 反代（硬编码 Host 校验坑：域名必须改写 Host 头）、IP 白名单（MCP 无鉴权时的唯一防线）、codebuddy/claude mcp add 接入、端到端验收、镜像升级。用户手动调用（/set-lightpanda）。
 
 - **gitlab** — GitLab 平台操作技能（只做平台层，本地 git 流程归 branch-management）：MR 创建/查看/合并/关闭/rebase、指定审核者(reviewer)与指派人(assignee)、labels/milestone、approve 与评论讨论；MR 之外的 REST API 调用、CI pipeline 查询、tag/发布操作、token/凭据获取；内置 glab 优先 + 挂死/误报 422 时改 curl + PRIVATE-TOKEN 直连 API 的兜底，以及合并前 merge-tree 冲突预检。通用化不绑定实例，本机/公司特有信息隔离在 references/。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、凭据的任务触发。
 
@@ -478,6 +479,7 @@ skills/
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 │   ├── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·凭据 / reviewer·assignee / glab→curl 兜底）
 │   ├── set-openmausbot/  # OpenMausBot 服务器部署（镜像离线搬运→登录→隧道→配对→引擎→验收）
+│   ├── set-lightpanda/  # Lightpanda Browser MCP 服务器部署（镜像搬运→容器→Nginx 反代+白名单→接入→验收→升级）
 │   └── repo-init/  # 仓库初始化引导器（新仓 0→1 / 存量补缺 / 分支保护）
 ├── personal/          # 个人效率类技能
 │   ├── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
