@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Set Lightpanda（浏览器 MCP 部署引导）
 
-把 [Lightpanda Browser](https://github.com/lightpanda-io/browser) 的 MCP 服务部署到一台 Linux 服务器，供本机 agent CLI 远程调用浏览器能力（navigate / tree / markdown / extract / eval / screenshot），最终以「本机 `mcp list` 显示 Connected + 真实抓取一个网页」作为验收。半自动：命令模板已给全，改 Nginx、动防火墙的环节每步明确提示。
+把 [Lightpanda Browser](https://github.com/lightpanda-io/browser) 的 MCP 服务部署到一台 Linux 服务器，供本机 agent CLI 远程调用浏览器能力（navigate / tree / markdown / extract / eval / screenshot），最终以「本机 `mcp list` 显示 Connected + 真实抓取一个网页」作为验收。半自动：改 Nginx、动防火墙的环节每步明确提示。
 
 本 skill 只管**部署、接入、升级**；部署好之后什么任务该用 lightpanda、什么任务该用别的抓取工具，见 `web-reader-wx` skill。
 
