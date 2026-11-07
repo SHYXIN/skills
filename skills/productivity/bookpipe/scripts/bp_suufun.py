@@ -6,7 +6,7 @@ suufun 的认证态在浏览器里，脚本不碰任何凭据。
 探明的 API 细节（2026-10 实测，勿重新逆向）:
 - POST /api/task/v2/search_check         检测任务列表（body: {page,size}）
 - POST /api/task/v2/search_task          转存任务列表（body: {page,page_size,steps,value}）
-  steps 必须是 uppercase 字符串数组，如 ["COMPLETE"] / ["WAIT_ALLOT","URL","DL"]
+  steps 必须是 uppercase 字符串数组；单状态查询（如 ["COMPLETE"]）才可靠，多状态数组会返回空
 - 检测页点「提取链接」提交；行内点「添加到中转队列」触发中转（内部调 /api/task/download_task）
 - 完成后任务对象的 d 字段 = 主线路签名直链（含 ts 参数，有时效，约 48h 有效）
 """

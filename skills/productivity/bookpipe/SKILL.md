@@ -5,7 +5,7 @@ description: "forcoder.net → suufun.com 加速 → book-to-skill 转换的每�
 
 # bookpipe：forcoder 每日书籍流水线
 
-把 forcoder.net 的新书经 suufun.com 加速下载、解压到本地，交给 book-to-skill 转换。值钱的是探明的链路知识，脚本是链路的固化。
+把 forcoder.net 的新书经 suufun.com 加速下载、解压到本地，交给 book-to-skill 转换。
 
 ## 链路知识（2026-10 实测，勿重新逆向）
 
@@ -67,7 +67,7 @@ python bp_run.py run https://forcoder.net/<slug>/
 
 一本书从下载到闭环的完整路径，默认值已固化，**不再每次询问**：
 
-**固定默认值**（用户 2026-10-28 拍板，仅特殊书型才改）：
+**固定默认值**（仅特殊书型才改）：
 - 转换模式：**technical**，DEPTH=**study**
 - 落点：`C:\code_proj\github-proj\wangxin\book-skills\skills\<书名slug>/`
 - 命名：按书内容定 ASCII slug（书名即 slug，与目录一致）
@@ -86,7 +86,7 @@ python bp_run.py mark <书URL> --skill-name <skill名> --commit <hash>
 
 可选 `--title`：默认从账本取原记录 title；若手动传，**必须传 rar 名**（即 extracted/ 目录名，如 `ros-2-scratch-robotics-applications`），不能传人类可读书名——`status` 用 title slug 匹配目录，传书名会误报漏单。`bp_run.py mark` 也支持 `--dir` 直接指定 extracted/ 目录名（优先级最高）。
 
-5. **push 前停下问用户**（既有规则）
+5. **push 前停下问用户**
 
 ### 状态与漏单
 
@@ -102,7 +102,7 @@ python bp_run.py status
 
 ## 状态
 
-`$BOOKPIPE_HOME/state/processed.json`（默认 `~/bookpipe`），按 URL 去重，原子写。两阶段记账：`run` 成功即记 downloaded 态，转换收尾 `mark --skill-name --commit` 翻成闭环态。已闭环 3 本（build-applications-local-ai-models-mac commit 1e7ee7c、graph-engineering-loop-memory-model + energy-efficient-embedded-ai commit d53e360）。
+`$BOOKPIPE_HOME/state/processed.json`（默认 `~/bookpipe`），按 URL 去重，原子写。两阶段记账：`run` 成功即记 downloaded 态，转换收尾 `mark --skill-name --commit` 翻成闭环态。当前三态以 `bp_run.py status` 实时输出为准。
 
 ## 每日自动化（以后外挂，不进 skill）
 
