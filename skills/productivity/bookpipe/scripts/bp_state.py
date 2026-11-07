@@ -65,7 +65,7 @@ def is_processed(state: dict, url: str = None, isbn: str = None) -> bool:
 
 def mark(state: dict, url: str, title: str = "", isbn: str = "", fmt: str = "",
          size_mb: float = None, uid: str = "", skill_name: str = "",
-         commit: str = "") -> dict:
+         commit: str = "", dir: str = "") -> dict:
     """ Upsert 一条已处理记录（按 URL 去重），返回更新后的 state。"""
     rec = find_by_url(state, url) or {}
     rec.update({
@@ -77,6 +77,7 @@ def mark(state: dict, url: str, title: str = "", isbn: str = "", fmt: str = "",
         "suufun_uid": uid or rec.get("suufun_uid", ""),
         "skill_name": skill_name or rec.get("skill_name", ""),
         "commit": commit or rec.get("commit", ""),
+        "dir": dir or rec.get("dir", ""),
         "processed_at": rec.get("processed_at") or _today(),
     })
     state.setdefault("processed", [])

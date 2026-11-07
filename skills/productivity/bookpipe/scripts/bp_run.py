@@ -278,7 +278,7 @@ def cmd_mark(url: str, args) -> int:
     state = bp_state.load()
     bp_state.mark(state, url, title=args.title, isbn=args.isbn,
                   fmt=args.format, uid=args.uid, skill_name=args.skill_name,
-                  commit=args.commit)
+                  commit=args.commit, dir=args.dir)
     print(f"已记录: {url}")
     return 0
 
@@ -337,7 +337,11 @@ def cmd_status() -> int:
 
 
 def bp_dir_name(rec: dict) -> str:
-    """从记录的 title 推断 extracted/ 目录名（run 记账时 title=name=rar 名）。"""
+    """推断 extracted/ 目录名：优先 rec['dir']（mark --dir 显式指定），
+    否则从 title 推导（run 记账时 title=name=rar 名）。"""
+    explicit = rec.get("dir", "")
+    if explicit:
+        return norm_dir(explicit)
     name = rec.get("title", "")
     if not name:
         return ""
@@ -364,6 +368,7 @@ def main():
     p_mark = sub.add_parser("mark", help="记录已处理")
     p_mark.add_argument("url")
     p_mark.add_argument("--title", default="")
+    p_mark.add_argument("--dir", default="", help="extracted/ 目录名（优先于 title 推导）")
     p_mark.add_argument("--isbn", default="")
     p_mark.add_argument("--format", default="")
     p_mark.add_argument("--uid", default="")

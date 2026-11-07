@@ -29,6 +29,19 @@ forcoder.net 书页 (Cloudflare 拦 curl，必须浏览器)
 - 提取链接扣 suufun 流量（约 5 倍文件大小），直链 48 小时失效（失效用 `bp_run.py url <任务名>` 取新链）
 - 7-Zip 在 `C:\Program Files\7-Zip\7z.exe`
 
+### hCaptcha 人工步骤规则（2026-11-07 批量实战教训）
+
+- **解锁令牌绑定页面实例，不共享 cookie**：用户在标签页 A 点掉的验证码，标签页 B 刷新依然锁着。批量模式 = N 本书开 N 个标签页（每本一个 opencli session）→ 用户逐个点 → agent 立即抓 goto 链接 → 之后全自动。
+- **令牌有时效**：用户说「点完了」后 agent 的**第一步就是抓 `.rar` goto 链接**（`browser eval` 定向取，不刷新页面——刷新可能让验证码复活）；goto 链接一旦抓到手，长期有效，后面不再依赖该页面。
+- **信息提取一律用 `browser eval` + `JSON.stringify` 定向取**，不用 `browser state` 快照翻页（快照 60+ 行/次，eval 1-3 行/次）。
+
+### suufun 检测/中转状态机（勿盯错信号）
+
+- `search_check` 里的 `step: PAUSE` 是**「等人工点『添加到中转队列』按钮」的正常稳态**，不是卡住。检测完成的判据 = 页面行内出现「提取成功」或 API `real_consume > 0`；此时行内会出现按钮，**见到就点**，PAUSE 不会自己消失。
+- 「提取完毕自动添加到中转队列」开关是**按会话/页面**记的：某次会话里它是关的，任务就会全部停在 PAUSE 等按钮——批量时先读一次开关状态，关着就逐个点按钮（一次 `eval` 可连点多个）。
+- 页面 DOM 渲染可能滞后于 API 状态（曾出现 API 已 `PAUSE` 14 分钟而页面显示「正在提取」，实际早已提取成功）——**以 API 为准**，怀疑时刷新页面再读。
+- 中转完成后任务从 check 列表消失、出现在 `search_task` 的 `COMPLETE` 里，`d` 字段即直链。`value` 参数按文件名子串过滤不可靠（按链接 hash 查不到），宁可用 `value:''` 全量拉再前端过滤。
+
 ## 使用
 
 ### 抓今日书目（无参数调用的入口）
@@ -70,6 +83,8 @@ python bp_run.py run https://forcoder.net/<slug>/
 ```bash
 python bp_run.py mark <书URL> --skill-name <skill名> --commit <hash>
 ```
+
+可选 `--title`：默认从账本取原记录 title；若手动传，**必须传 rar 名**（即 extracted/ 目录名，如 `ros-2-scratch-robotics-applications`），不能传人类可读书名——`status` 用 title slug 匹配目录，传书名会误报漏单。`bp_run.py mark` 也支持 `--dir` 直接指定 extracted/ 目录名（优先级最高）。
 
 5. **push 前停下问用户**（既有规则）
 
