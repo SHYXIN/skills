@@ -69,7 +69,7 @@ python bp_run.py run https://forcoder.net/<slug>/
 
 **固定默认值**（仅特殊书型才改）：
 - 转换模式：**technical**，DEPTH=**study**
-- 落点：`C:\code_proj\github-proj\wangxin\book-skills\skills\<书名slug>/`
+- 落点：`~/book-skills/skills/<书名slug>/`（book-skills 仓库的本地克隆，SHYXIN/book-skills 私有仓库）
 - 命名：按书内容定 ASCII slug（书名即 slug，与目录一致）
 - 完成标准：`scan_generated_skill.py` + `validate_skill.py` 全绿 + 登记 marketplace.json + README 表 + commit
 - push 永远人工确认，不自动
