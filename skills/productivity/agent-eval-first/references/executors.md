@@ -30,7 +30,9 @@ python $S/run_eval.py --source local --only <case_id> \
 
 ## 案例集格式
 
-JSON，字段：`case_id` / `user_message` / `expected.required_markers` / `expected.forbidden_markers` / `expected.answer_max_chars` / `tags`。完整示例见 dp-eval-run 的 `questions.example.json`。
+JSON（`cases` 数组），字段：`case_id` / `user_message` / `expected.required_markers` / `expected.forbidden_markers` / `expected.answer_max_chars` / `tags`。
+
+案例 JSON 是**编译产物**，源文件是对话剧本（MD，人可读写）——剧本格式与编译命令见 `references/script-format.md`，编译器在 `scripts/compile.py`。手写 JSON 仅在快速试验单 case 时可接受。
 
 ## 注入型 skill：run_eval.py 测不了，逐 case 走 ask 脚本
 

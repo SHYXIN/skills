@@ -19,7 +19,7 @@
     "./skills/personal/wx-flow",
     "./skills/productivity/agent-config-lint",
     "./skills/productivity/agent-config-tidy",
-    "./skills/productivity/agent-tdd",
+    "./skills/productivity/agent-eval-first",
     "./skills/productivity/ai-daily-brief",
     "./skills/productivity/ask-wx",
     "./skills/productivity/bookpipe",
