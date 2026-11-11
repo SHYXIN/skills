@@ -12,7 +12,7 @@ S=<dp-eval-run 安装目录>/scripts
 
 # 护栏轨：改前基线
 python $S/run_eval.py --source local --env prod \
-  --questions <被测仓>/eval/questions.json --label baseline
+  --questions <被测仓>/eval/questions.json --label baseline-20261111
 
 # 先行轨：改 md 前跑红（新案例预期失败）
 python $S/run_eval.py --source teams \
@@ -52,7 +52,7 @@ python $A --env prod --working-dir <工作区> --system "$SYSTEM" \
 
 判分逻辑简单（关键词 + 禁词 + 长度），套着案例集 JSON 写个十几行的本地脚本循环即可，不必改执行器技能。facade 只保留驱动行为的最小段（行为级一致，不逐字复刻宿主全文）；内容来自会话取证（dp-session-forensics dump 出真实会话的 `system` 字段）。
 
-## 环境事实（踩过的坑）
+## 环境事实
 
 - 桌面端开着多个工作区时，`run_eval.py` 和 ask 脚本都必须显式 `--working-dir`，否则报「multiple/no workspaces open」直接失败（不是案例红，是环境挡）
 - 要真实装环境/真建模的 case，600s 常常不够；**超时 ≠ 失败**——agent 可能还在跑，用 ask 脚本的 `--read --session <id>` 轮询同一会话拿最终回答
@@ -60,7 +60,7 @@ python $A --env prod --working-dir <工作区> --system "$SYSTEM" \
 
 ## 红期排查
 
-案例跑红且改不动 md 时，可用 **dp-session-forensics** 看该次会话的注入与工具调用，区分「规则没写对」和「规则没被读到」。
+改不动 md 时的排查流程见 SKILL.md 步骤 7。工具：**dp-session-forensics**（会话取证）。
 
 ## 注意
 

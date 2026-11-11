@@ -35,7 +35,7 @@ grill 收尾（需求最鲜活）
 
 ### 2. 编译 + 评审
 
-剧本写完即编译：`scripts/compile.py` 从剧本生成案例 JSON 与对话 HTML（衍生品永不手改，改剧本重编译）。
+剧本写完即编译：`scripts/compile.py` 从剧本生成案例 JSON 与对话 HTML（衍生品纪律见 `references/script-format.md`）。
 
 对话 HTML 是静态分镜预览（用户消息在右、预期回复在左、判分点高亮），给不读 JSON 的人评审「预期对话长什么样」。评审不通过回步骤 1 改剧本。
 
