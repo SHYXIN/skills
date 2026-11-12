@@ -54,8 +54,10 @@ TOK=$(awk '/gitlab\.deepexi\.com:/{f=1} f&&/token:/{gsub(/.*token: */,"");print;
 ## 3. 公司 GitLab 实例
 
 - host：`gitlab.deepexi.com`
+- 版本：**15.2.5**（2026-11-12 查证；`GET /api/v4/version`）
 - 常见 project 路径形如 `deepsense/<repo>`，curl 时 URL 编码为 `deepsense%2F<repo>`
 - REST API 端点：`https://gitlab.deepexi.com/api/v4/`
+- **保护分支 API 只认旧版单数参数**：`push_access_level=0` / `merge_access_level=40`；复数数组、`allowed_to_push` 对象、`_attributes` 嵌套等新格式全部被静默忽略（响应 2xx 但读回钳回 40）。详见 SKILL.md 场景 8。
 
 ---
 

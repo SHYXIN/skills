@@ -1,6 +1,6 @@
 ---
 name: gitlab
-description: GitLab 平台操作技能，覆盖任意 GitLab 实例的全部远端交互：MR 生命周期（创建/查看/合并/关闭/rebase）、reviewer/assignee、labels/milestone、approve 与评论讨论；以及 REST API 调用（curl + PRIVATE-TOKEN）、CI pipeline 查询、tag/发布操作、token/凭据获取。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、凭据的任务就用本技能。本地 git 流程（建分支 / commit / push）见 branch-management。
+description: GitLab 平台操作技能，覆盖任意 GitLab 实例的全部远端交互：MR 生命周期（创建/查看/合并/关闭/rebase）、reviewer/assignee、labels/milestone、approve 与评论讨论；以及 REST API 调用（curl + PRIVATE-TOKEN）、CI pipeline 查询、tag/发布操作、分支保护（protected_branches 禁直推）、token/凭据获取。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、分支保护、凭据的任务就用本技能。本地 git 流程（建分支 / commit / push）见 branch-management。
 ---
 
 # GitLab 平台操作（gitlab）
@@ -13,7 +13,7 @@ description: GitLab 平台操作技能，覆盖任意 GitLab 实例的全部远�
 | --- | --- |
 | 建分支、commit、push、rebase 本地分支、合并后清理本地分支 | `branch-management` |
 | **MR 创建/查看/合并/关闭/rebase、reviewer/assignee、labels/milestone、approve、评论讨论** | **本技能** |
-| **REST API 调用、pipeline 查询、tag 操作、token/凭据获取** | **本技能** |
+| **REST API 调用、pipeline 查询、tag 操作、token/凭据获取、分支保护** | **本技能** |
 
 两者互补：本地流程走 `branch-management`，一旦要动 GitLab 平台层（MR、API、pipeline、tag、凭据），走本技能。
 
@@ -216,6 +216,57 @@ curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" \
 
 ---
 
+## 场景 8：分支保护（protected branches）
+
+查看 / 设置分支保护（禁直推、MR-only）。API 端点：`/projects/:id/protected_branches`。
+
+查询（只读，可直接执行）：
+
+```bash
+curl -fsS -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/protected_branches"
+```
+
+创建保护（push=No one、必须 MR）：
+
+```bash
+curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" \
+  "$API/projects/$PROJ/protected_branches?name=<branch>&push_access_level=0&merge_access_level=40"
+```
+
+更新 / 删除：GitLab < 15.6 没有 PATCH 单分支端点，改用 **DELETE + POST 重建**：
+
+```bash
+curl -fsS -X DELETE -H "PRIVATE-TOKEN: $TOK" "$API/projects/$PROJ/protected_branches/<branch>"   # 204
+curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" \
+  "$API/projects/$PROJ/protected_branches?name=<branch>&push_access_level=0&merge_access_level=40"
+```
+
+access_level 取值：0=No one，30=Developer，40=Maintainer。
+
+### ⚠️ 参数格式坑（老版本实例必读）
+
+**设 push=No one 时只有旧版单数参数 `push_access_level=0` 生效**。以下"标准"写法在部分实例（实测：GitLab 15.2.5）上**响应 2xx 但参数被静默忽略**，读回全部变成 40（Maintainers），看起来像服务端钳位，实际是参数没被解析：
+
+- `push_access_levels[]=0` / `push_access_levels[]=[0]`（复数数组，query 或 form）
+- JSON body `{"push_access_levels":[0]}`
+- `allowed_to_push:[{"access_level":0}]`（16.x 新格式）及空数组形式
+- `push_access_levels_attributes:[{"access_level":0}]`（嵌套写法）
+
+**纪律：设完必须 GET 读回验证**，不能只看 POST 的响应码。
+
+### 排障方法（读回不对时）
+
+1. **对照实验**：用无关分支名（如 `test-protect`）传同样参数，区分"分支特有"还是"项目/实例级"问题；测完删除。
+2. **翻历史成功用例**：同一实例之前设成功的 session 日志 / 记忆里找当时的确切命令格式。
+3. 仍不行 → 让用户在 Web UI 的 Settings → Repository → Protected branches 手动设置，然后 API 读回确认。
+
+### 安全护栏
+
+- 修改 / 删除保护规则属写操作，**先报后做**，用户点头才执行。
+- DELETE+POST 重建存在短暂无保护窗口，提醒用户（窗口内直推理论上可行，风险自评）。
+
+---
+
 ## 安全护栏（必须遵守）
 
 以下动作**执行前必须获得用户明确确认**：
@@ -239,6 +290,7 @@ curl -fsS -X POST -H "PRIVATE-TOKEN: $TOK" \
 | curl 报 404 | project 路径未 URL 编码 | 用 `<namespace>%2F<project>` |
 | curl 报 401 | token 取错（如抓到别的 host 的空值） | 取当前 host 段下的 token（见 references） |
 | 合并后目标分支缺改动 | 合到了错误的目标分支 | 先确认 target 分支是仓库集成分支 |
+| 设保护分支读回 access_level 与传入不符 | 老版本实例不解析复数/新格式参数，静默回退默认 40 | 改旧版单数参数 `push_access_level=0`（见场景 8 参数格式坑） |
 
 ---
 
