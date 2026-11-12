@@ -7,6 +7,7 @@
     "./skills/design/tui-diagram",
     "./skills/design/visual-verdict",
     "./skills/design/visualise",
+    "./skills/devops/bot-skill-sync",
     "./skills/devops/gitlab",
     "./skills/devops/gitlab-runner-provision",
     "./skills/devops/repo-init",

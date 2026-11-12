@@ -345,6 +345,8 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 
 ### DevOps
 
+- **bot-skill-sync** — 把本地技能同步到 bot 宿主（open-superagent DSH 技能目录）：list 对比两端清单、push 覆盖推送（保护远端 .env 与 DEPLOY-NOTES.md，推送前后 md5 校验）、remove 软删到 /tmp 备份并记台账。宿主地址不内置，环境事实从运行时记忆取。升级/下线/盘点 bot 技能时使用。手动调用（/bot-skill-sync）。
+
 - **gitlab-runner-provision** — GitLab Runner 新机器部署全流程引导：SSH 免登录 → 安装 Docker → 安装/注册 GitLab Runner → 最小 CI/CD 流水线跑通。半自动（scripts/ 做检测/生成/校验），通用化不绑定具体机器，验收标准是 push hello-world 流水线变绿。
 
 - **set-openmausbot** — 在一台有 Docker 的 Linux 服务器上从零部署 OpenMausBot（开源 AI bot 车队聊天壳）并出公网 HTTPS 地址。覆盖：镜像离线搬运（服务器直连 ghcr.io 超时时）、邮箱验证码登录（QQ 码易混淆推荐 Gmail）、容器常驻启动、cloudflared 二进制手动落位、设备配对（每个新设备一次）、OpenAI-compat 引擎接入（直写 config.json）、端到端验收与排障速查。环境事实（服务器地址/邮箱/key）一律占位符，由运行时记忆提供。手动调用（/set-openmausbot）。
@@ -467,6 +469,7 @@ skills/
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
 ├── devops/            # 运维 / CI-CD 类技能
+│   ├── bot-skill-sync/  # 本地技能同步到 bot 宿主（list 对比 / push 覆盖保护 .env / remove 软删备份）
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 │   ├── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·分支保护·凭据 / reviewer·assignee / glab→curl 兜底）
 │   ├── set-openmausbot/  # OpenMausBot 服务器部署（镜像离线搬运→登录→隧道→配对→引擎→验收）
