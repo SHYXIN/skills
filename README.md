@@ -289,8 +289,6 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 - **handoff-wx** — 把当前对话压缩成交接文档，供下一个 agent 会话无缝接手。适用于任何场景（开发/调研/写作/协作），不限代码。存储按序探测当前目录的 `temp/handoffs/` → `tmp/handoffs/`，都没有则退回 OS 临时目录；文件名 `YYYY-MM-DD_HHMM_主题.md`。保留原版纪律：不复制已有工件（只给路径/URL 指针）、脱敏、参数=下个会话重点。改编自 mattpocock/skills 的 handoff，与其存取策略不同。user-invoked。
 - **domain-modeling-wx** — 构建并打磨项目的领域模型：讨论代码库术语、写/改 GLOSSARY.md（术语层，与 matt 上游完全兼容）、CONTEXT.md（关系/对话/歧义 wx 扩展层）或记录 ADR 时使用。
 
-- **agent-eval-first** — agent 行为载体（提示词、规则、技能文档等 md/skill 文案）的评测先行纪律：动手改之前，把行为预期写成对话剧本（MD 唯一源，人可读写），编译出评测案例 JSON 与对话 HTML 预览（静态分镜：左 AI 右用户、判分点高亮）——案例集即可执行 spec。红/绿真跑默认可跳（点名或翻转既有裁决时才跑），存量改动跑两轮 diff 防退步（回归护栏轨）。当用户说「给这个 agent 改动写测试」「写案例」「改完跑回归」「agent 改动会不会退步」「出个对话预览」时使用。
-
 - **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，避免一次抛出多个问题。适合用户明确要求“一次只问一个问题”或希望更慢、更聚焦的设计访谈。
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling-wx 把术语写进 GLOSSARY.md（与 matt 上游兼容）、术语关系/歧义写进 CONTEXT.md、决策写进 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
 - **retro-wx** — 复盘一次编码会话，向 agent 的环境提出改进建议（改环境不改代码，只提议不执行）。按导航/自动检查/编码标准/steering 瘦身/工具经济/no-op/信息可达七类扫描痛点，按严重度排序；默认复盘当前会话，也可直接 grep 本机五源会话日志（codebuddy/claude/codex/copilot/pi 的 jsonl，无需服务）复盘任意 harness 的历史会话，落点含个人 skills 仓库新 skill 提议与 auto-memory。改编自 mattpocock/skills 的 retro（主体同构），与 matt 版共存。user-invoked。
@@ -330,10 +328,6 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 - **cn-brief-wx** — 中文简报：agent 刚才的英文步骤/工具调用/输出看不懂时，用中文复述"做了什么、为什么、现在到哪"，不替你改方向。model-invoked。
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
 - **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
-
-- **agent-config-tidy** — 整理/收尾智能体配置（AGENTS.md、soul.md、SKILL.md、agent yaml 及脚本）。判定规则唯一真相源：决策背景、会话说明、闲聊等该删，运行时指令必须留，跨文件描述须一致；扫描与判定由全新上下文的子 agent 按配置执行（冷眼判定，写配置的会话自己判会心软），本技能拿报告走「逐条确认 → .bak → 改写」。用于每轮 grill 迭代改完配置后的克制收尾；只要报告不要修改用 /agent-config-lint。
-
-- **agent-config-lint** — 配置克制自动检查：派只读子 agent 按 agent-config-tidy 的判定规则扫描目标目录（含跨文件描述一致性），产出带建议动作的差异报告，跨文件问题成对列出；无人值守、永不改文件。与 agent-config-tidy 成对——lint 是自动检查档（如 wx-flow 阶段 4 配置类改动收尾），要落地修改再走 tidy 逐条确认。
 
 - **source-trace-wx** — 追踪 agent 回答的原始依据与来源。先列出对话里真实读过的来源，再对没有出处的 claim 去一手来源（官方文档/源码/规范/第一方 API）补查，写成注明出处、区分一手/二手信任级的 Markdown 文件。触发词如「查出处」「原始依据在哪」。model-invoked。
 
@@ -418,7 +412,6 @@ skills/
 │   ├── grill-one/  # 单问版 grilling
 │   ├── grill-one-with-docs/  # 单问版 grill-with-docs（访谈+ADR/术语表沉淀）
 │   ├── domain-modeling-wx/  # 领域建模 wx 版（GLOSSARY 术语层 + CONTEXT 关系层 + ADR）
-│   ├── agent-eval-first/  # agent 行为的评测先行：对话剧本（MD 源）→ 编译出案例 JSON + 对话 HTML 预览；红/绿按需，护栏轨 diff 回归
 │   ├── retro-wx/  # 会话复盘：七类扫描改环境，支持 grep 五源历史会话，只提议不执行
 │   ├── ask-wx/  # 工作流主线路由器：默认 grill-one-with-docs 入口，中后段指向 matt 系
 │   ├── step-card-wx/  # 保姆级测试/操作步骤卡（基础档+验收档）
@@ -458,8 +451,6 @@ skills/
 │   ├── setup-tencent-docs/  # 腾讯文档：官方技能安装 + TENCENT_DOCS_TOKEN 用户级 env（无本地 CLI）
 │   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
 │   ├── setup-agent-desktop/  # agent-desktop CLI：npm 安装 + postinstall 修复 + MCP 探针 + 记事本无头冒烟
-│   ├── agent-config-tidy/  # 配置克制收尾：移除混进 agent 配置的决策背景/闲聊 + 跨文件描述一致性（交互确认档）
-│   ├── agent-config-lint/  # 配置克制自动检查：子 agent 只读扫描出报告（含跨文件一致性），不改文件（自动档）
 │   └── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
