@@ -72,6 +72,7 @@
     "./skills/teaching/learn-by-minimal",
     "./skills/teaching/mental-map",
     "./skills/teaching/socratic-tutor",
-    "./skills/teaching/teach-wx"
+    "./skills/teaching/teach-wx",
+    "./skills/productivity/show-me-wx"
   ]
 }
