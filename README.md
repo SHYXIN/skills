@@ -286,14 +286,14 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 
 - **bookpipe** — forcoder.net → suufun.com 加速 → book-to-skill 的每日书籍流水线，下载到 skill 闭环。带 URL 跑单本全链路（下载+解压+即记账）；不带参数抓今日书目并分级预勾选（AI/编程默认勾选，MP4 永不自动）；status 三态查漏单，转换默认值已固化不再问。浏览器操作走 opencli（认证零凭据进脚本），hCaptcha 暂停等人工。
 
-- **show-me-wx** — 通用结果导览：AI 长时间工作后，把已完成工作的 shape 摊给用户看。四节骨架（一句话总览 / 产物地图 / 图示 / 推荐路线），节固定内容自适应裁剪，图默认 1 张总览、节点超 ~10 拆分且每张一个焦点；参数含 save 落盘（temp/ → tmp/ → OS 临时目录的 show-me/ 子目录）。不限代码，调研/开发/部署/写作都适用。与 where-am-i-wx 成对：过程迷路喊地图，做完想看成果喊导览。user-invoked。
+- **show-me-wx** — 通用结果导览：AI 长时间工作后，把已完成工作的 shape 摊给用户看。四节骨架（一句话总览 / 产物地图 / 图示 / 推荐路线），节固定内容自适应裁剪；图示双轨自适应——图进对话走 tui-diagram 字符画、图进文件/网页走 mermaid，默认 1 张总览、节点超 ~10 拆分且每张一个焦点；参数含 save 落盘（temp/ → tmp/ → OS 临时目录的 show-me/ 子目录）。不限代码，调研/开发/部署/写作都适用。与 where-am-i-wx 成对：过程迷路喊地图，做完想看成果喊导览。user-invoked。
 - **handoff-wx** — 把当前对话压缩成交接文档，供下一个 agent 会话无缝接手。适用于任何场景（开发/调研/写作/协作），不限代码。存储按序探测当前目录的 `temp/handoffs/` → `tmp/handoffs/`，都没有则退回 OS 临时目录；文件名 `YYYY-MM-DD_HHMM_主题.md`。保留原版纪律：不复制已有工件（只给路径/URL 指针）、脱敏、参数=下个会话重点。改编自 mattpocock/skills 的 handoff，与其存取策略不同。user-invoked。
 - **domain-modeling-wx** — 构建并打磨项目的领域模型：讨论代码库术语、写/改 GLOSSARY.md（术语层，与 matt 上游完全兼容）、CONTEXT.md（关系/对话/歧义 wx 扩展层）或记录 ADR 时使用。
 
 - **grill-one** — 单问版 grilling。用于把用户的计划、决策或想法通过追问打磨清楚，但每轮只问一个问题，避免一次抛出多个问题。适合用户明确要求“一次只问一个问题”或希望更慢、更聚焦的设计访谈。
 - **grill-one-with-docs** — 单问版 grill-with-docs。边访谈边沉淀文档：调 grill-one 一轮一问打磨设计，调 domain-modeling-wx 把术语写进 GLOSSARY.md（与 matt 上游兼容）、术语关系/歧义写进 CONTEXT.md、决策写进 ADR。原版（grilling 多问版）来自 mattpocock/skills，install.sh 会配套安装。
 - **retro-wx** — 复盘一次编码会话，向 agent 的环境提出改进建议（改环境不改代码，只提议不执行）。按导航/自动检查/编码标准/steering 瘦身/工具经济/no-op/信息可达七类扫描痛点，按严重度排序；默认复盘当前会话，也可直接 grep 本机五源会话日志（codebuddy/claude/codex/copilot/pi 的 jsonl，无需服务）复盘任意 harness 的历史会话，落点含个人 skills 仓库新 skill 提议与 auto-memory。改编自 mattpocock/skills 的 retro（主体同构），与 matt 版共存。user-invoked。
-- **ask-wx** — 工作流主线路由器：问该用哪个技能。入口裁决区默认 `/grill-one-with-docs`（有工作目录即起步：单问快磨 + GLOSSARY/CONTEXT/ADR 沉淀），无工作目录退 `/grill-one`，确定走 matt 全流程想多问深挖才用 matt 的 grill-with-docs；共识已定走 consensus-tech-research 选型。主流含原型绕行（handoff 出 → prototype → handoff 回）与 matt 系中后段（spec/tickets/implement/review），验证层（代码产物 verify-run 系 / agent 行为载体 agent-eval-first）与复盘（retro vs retro-wx）用自有技能；附纠错层（where-am-i-wx/wait-what-wx/source-trace-wx/next-step）与支线（triage/diagnosing-bugs/wayfinder/research-wx）。推荐前必读目标技能的 SKILL.md。user-invoked。
+- **ask-wx** — 工作流主线路由器：问该用哪个技能。入口裁决区默认 `/grill-one-with-docs`（有工作目录即起步：单问快磨 + GLOSSARY/CONTEXT/ADR 沉淀），无工作目录退 `/grill-one`，确定走 matt 全流程想多问深挖才用 matt 的 grill-with-docs；共识已定走 consensus-tech-research 选型。主流含原型绕行（handoff 出 → prototype → handoff 回）与 matt 系中后段（spec/tickets/implement/review），验证层（代码产物 verify-run 系 / agent 行为载体 agent-eval-first）与复盘（retro vs retro-wx）用自有技能；附纠错层（where-am-i-wx/wait-what-wx/source-trace-wx/next-step/show-me-wx）与支线（triage/diagnosing-bugs/wayfinder/research-wx）。推荐前必读目标技能的 SKILL.md。user-invoked。
 - **step-card-wx** — 生成保姆级测试/操作步骤卡，让不看代码的人也能照着走并把结果交回判定。基础档=通用操作指引（分步+命令原文+说明）；验收档=叠加排雷第0步+每步预期结果+测试者/判定者分离闭环。用于"给我测试步骤""怎么测""写个操作指引""验收步骤卡"等场景。
 - **rust-windows-setup** — Windows 上安装 Rust 工具链（含需要 C 编译器的项目，如 rusqlite）。覆盖 rustup 国内镜像加速、Missing manifest 修复、MinGW/MSVC 选择、dlltool/ld 的 PATH 坑。在 Windows 配 Rust 环境或遇到 'Missing manifest' / 'dlltool not found' 报错时使用。
 
