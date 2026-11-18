@@ -49,7 +49,7 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
 # 10) CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（直连 GitHub 可能慢）
-#     还需另装 hub 包管理器（pip install cli-anything-hub，Python >=3.10），见下方「CLI-Anything (CLI-Hub)」小节与 /setup-cli-hub
+#     还需另装 hub 包管理器（uv tool install 或 pip，Python >=3.10），装法见下方「CLI-Anything (CLI-Hub)」小节与 /setup-cli-hub
 cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
@@ -142,7 +142,7 @@ npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
 npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
-# CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（还需另装 hub：pip install cli-anything-hub，见「CLI-Anything (CLI-Hub)」小节）
+# CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（还需另装 hub：uv tool install 或 pip，见「CLI-Anything (CLI-Hub)」小节）
 npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
@@ -270,7 +270,7 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # 2) hub 包管理器（Python >=3.10；有 uv 走 uv tool install，exe 自动进 PATH）
-uv tool install cli-anything-hub   # 没有 uv 时用下一行
+uv tool install cli-anything-hub   # 没有 uv 时用下一行；pyenv 多版本机器勿裸 pip，见下方注意行
 pip install cli-anything-hub
 ```
 
@@ -280,7 +280,7 @@ pip install cli-anything-hub
 cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
-> hub 安装双分支：有 uv 首选 `uv tool install cli-anything-hub`（隔离 venv，入口 exe 自动落 `~/.local/bin/`，免 PATH 加固）；pyenv-win 多版本共存时不要裸 `pip install`（会装进全局 shim 指向的旧版本），改用 `~/.pyenv/pyenv-win/versions/<版本>/python.exe -m pip install cli-anything-hub`，且 `cli-hub.exe` 落在所选版本的 `Scripts/` 目录、不在 PATH 上，需手动加（详见 `/setup-cli-hub`）。部分 `cli-anything-*` 包有 wheel 空包 bug（上游 `find_packages()` 返回空，装完 ModuleNotFoundError，需源码装）；npm 层版本可能落后 repo（JSON 输出等新特性未发布）；Python 壳成功不代表真依赖就位，报错先读该 CLI 的 harness README。hub 之外的 CLI 首选零依赖的（hacker-feeds-cli / cc-switch / pm2 / clibrowser / mermaid）验证链路再上真实 GUI 软件。
+> hub 安装双分支：有 uv 首选 `uv tool install`；无 uv 且 pyenv-win 多版本共存时勿裸 `pip install`（会装进全局 shim 指向的旧版本），要用所选版本的解释器直装并手工把 `Scripts/` 加进 PATH。已知坑：部分 `cli-anything-*` 包有 wheel 空包 bug（需源码装）；npm 层版本可能落后 repo（新特性未发布）；Python 壳成功不代表真依赖就位。细节与修法见 `/setup-cli-hub`；CLI 首选零依赖的（hacker-feeds-cli / cc-switch / pm2 / clibrowser / mermaid）验证链路再上真实 GUI 软件。
 
 ### 同名技能：tdd / teach
 

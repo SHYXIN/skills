@@ -51,7 +51,7 @@ hub 要求 **Python >=3.10**。先看机器上有没有 uv：
 command -v uv && uv --version
 ```
 
-**分支 A · 有 uv（推荐）**——`uv tool install` 是 pipx 等价物：隔离 venv 安装，入口 exe 自动落进 uv 的 bin 目录（通常 `~/.local/bin/`，已在 PATH），免掉 pyenv 分支那套 Scripts/PATH 手工加固：
+**分支 A · 有 uv（推荐）**——`uv tool install` 是 pipx 等价物：隔离 venv 安装，入口 exe 自动落进 uv 的 bin 目录（通常 `~/.local/bin/`，已在 PATH）：
 
 ```bash
 uv tool install cli-anything-hub
@@ -108,7 +108,7 @@ cli-anything-hacker-feeds-cli github trending --json   # GitHub Trending JSON �
 
 `GREEN:` JSON 有内容即全链路通。
 
-要删干净：`uv tool uninstall cli-anything-hacker-feeds-cli`（uv 机器）或 `pip uninstall cli-anything-hacker-feeds-cli`（Python 壳）+ `npm uninstall -g hacker-feeds-cli`（Node 层，如有）。
+要删干净：`uv tool uninstall cli-anything-hacker-feeds-cli`（uv 机器）或 `<解释器> -m pip uninstall cli-anything-hacker-feeds-cli`（解释器用当初安装的那个，pyenv 机器避免裸 pip 卸到 shim 旧版）+ `npm uninstall -g hacker-feeds-cli`（Node 层，如有）。
 
 ---
 
