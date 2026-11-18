@@ -1,6 +1,6 @@
 ---
 name: setup-cli-hub
-description: 在一台新机器上配置 CLI-Anything / CLI-Hub（HKUDS，agent-native CLI 市场：cli-hub 包管理器 + 79 个让 agent 操控真实软件的 CLI + matrix 能力矩阵）。覆盖 hub 安装（pyenv 多版本共存时 Scripts 目录不在 PATH 的坑）、cli-hub-meta-skill 安装（agent 自主发现/安装 CLI）、冒烟验证与三大安装坑（wheel 空包 bug、npm 版本断层、Python 壳≠真依赖）。手动调用（/setup-cli-hub）。
+description: 在一台新机器上配置 CLI-Anything / CLI-Hub（HKUDS，agent-native CLI 市场：cli-hub 包管理器 + 79 个让 agent 操控真实软件的 CLI + matrix 能力矩阵）。覆盖 hub 安装（双分支：有 uv 走 uv tool install，免 PATH 加固；只有 pyenv-win 时版本内直装 + Scripts 目录进 PATH）、cli-hub-meta-skill 安装（agent 自主发现/安装 CLI）、冒烟验证与三大安装坑（wheel 空包 bug、npm 版本断层、Python 壳≠真依赖）。手动调用（/setup-cli-hub）。
 ---
 
 # CLI-Anything / CLI-Hub 环境配置
@@ -19,6 +19,9 @@ description: 在一台新机器上配置 CLI-Anything / CLI-Hub（HKUDS，agent-
 ```bash
 # hub 是否已装、在哪个解释器
 command -v cli-hub && cli-hub --version
+
+# 有没有 uv（决定 Step 2 走分支 A 还是 B）
+command -v uv && uv --version
 
 # pyenv 有哪些版本（hub 要求 Python >=3.10，全局 shim 可能是旧版）
 pyenv versions
@@ -40,39 +43,55 @@ ls ~/.agents/skills/cli-hub-meta-skill/SKILL.md 2>/dev/null
 
 ---
 
-## Step 2 —— hub 安装（关键：装对解释器 + Scripts 进 PATH）
+## Step 2 —— hub 安装（双分支：有 uv 走 uv，否则 pyenv 直装）
 
-hub 要求 **Python >=3.10**。pyenv-win 机器上全局 shim 往往停在旧版（本机 3.10.0 shim 可用但**不要**往里装——该版本常被其他工具占用；用 versions 下的新版独立装）：
+hub 要求 **Python >=3.10**。先看机器上有没有 uv：
 
 ```bash
-# 用 pyenv versions 下的 3.13.3 的 python 直装（不切全局版本）
-~/.pyenv/pyenv-win/versions/3.13.3/python.exe -m pip install cli-anything-hub
+command -v uv && uv --version
 ```
 
-**坑：`cli-hub.exe` 落在该版本的 `Scripts/` 目录，不在 PATH 上。** 两处都加：
+**分支 A · 有 uv（推荐）**——`uv tool install` 是 pipx 等价物：隔离 venv 安装，入口 exe 自动落进 uv 的 bin 目录（通常 `~/.local/bin/`，已在 PATH），免掉 pyenv 分支那套 Scripts/PATH 手工加固：
 
-1. 用户 PATH（PowerShell）：
+```bash
+uv tool install cli-anything-hub
+```
+
+**分支 B · 只有 pyenv-win**——全局 shim 往往停在旧版、且常被其他工具占用，**不要**往 shim 版本里装；从 `pyenv versions` 选一个 >=3.10 的新版本（下称 `<PYENV_VER>`）独立装：
+
+```bash
+# 用所选版本的 python 直装（不切全局版本）
+~/.pyenv/pyenv-win/versions/<PYENV_VER>/python.exe -m pip install cli-anything-hub
+```
+
+**坑（仅分支 B）：`cli-hub.exe` 落在该版本的 `Scripts/` 目录，不在 PATH 上。** 两处都加：
+
+1. 用户 PATH（PowerShell，`<PYENV_VER>` 换成实际所选版本号）：
    ```powershell
-   [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path','User') + ';C:\Users\WX847\.pyenv\pyenv-win\versions\3.13.3\Scripts', 'User')
+   [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path','User') + ";$env:USERPROFILE\.pyenv\pyenv-win\versions\<PYENV_VER>\Scripts", 'User')
    ```
 2. 当前 Git Bash 立即可用（`~/.bashrc`）：
    ```bash
-   export PATH="$HOME/.pyenv/pyenv-win/versions/3.13.3/Scripts:$PATH"
+   export PATH="$HOME/.pyenv/pyenv-win/versions/<PYENV_VER>/Scripts:$PATH"
    ```
 
-`GREEN:` 新开 shell `cli-hub --version` 出版本号（本机 0.4.1）。
+`GREEN:` 新开 shell `cli-hub --version` 出版本号。
 
 ---
 
 ## Step 3 —— meta-skill 安装
 
 ```bash
+# 国外 / Git Bash
 npx skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill -g -y
+
+# 国内（cn-skills，直连 GitHub 可能慢，重试即可）
+cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
-只装 meta-skill 这一个技能（`--skill` 过滤；不带会试图装仓库全部）。装完真身在 `~/.agents/skills/cli-hub-meta-skill/`，`~/.codebuddy/skills/`、`~/.claude/skills/` 出现软链。国内网络直连 GitHub 可能慢，重试即可。
+只装 meta-skill 这一个技能（`--skill` 过滤；不带会试图装仓库全部）。`npx skills` 全局安装以软链接到 agent 目录（真身 `~/.agents/skills/cli-hub-meta-skill/`）；`cn-skills --copy` 则为复制落盘。落点形态不影响使用，任一 agent 目录里存在 `SKILL.md` 即算就位。
 
-`GREEN:` `ls ~/.codebuddy/skills/cli-hub-meta-skill/SKILL.md` 存在。
+`GREEN:` `ls ~/.codebuddy/skills/cli-hub-meta-skill/SKILL.md` 或 `~/.claude/skills/cli-hub-meta-skill/SKILL.md` 存在。
 
 ---
 
@@ -89,7 +108,7 @@ cli-anything-hacker-feeds-cli github trending --json   # GitHub Trending JSON �
 
 `GREEN:` JSON 有内容即全链路通。
 
-要删干净：`pip uninstall cli-anything-hacker-feeds-cli`（Python 壳）+ `npm uninstall -g hacker-feeds-cli`（Node 层，如有）。
+要删干净：`uv tool uninstall cli-anything-hacker-feeds-cli`（uv 机器）或 `pip uninstall cli-anything-hacker-feeds-cli`（Python 壳）+ `npm uninstall -g hacker-feeds-cli`（Node 层，如有）。
 
 ---
 
@@ -109,9 +128,3 @@ cli-hub can "transcribe audio"                          # 跨矩阵查能力
 cli-hub matrix preflight video-creation --json          # 本机哪些可用（exit 3 = 有缺口）
 cli-hub matrix install video-creation --capability text.transcribe   # 只装单项能力，别 bulk-install
 ```
-
-## 本机事实（2026-11-18）
-
-- hub 0.4.1 装在 pyenv 3.13.3；`cli-hub.exe` 在 `~/.pyenv/pyenv-win/versions/3.13.3/Scripts/`，用户 PATH + `~/.bashrc` 均已加
-- meta-skill 已装：真身 `~/.agents/skills/cli-hub-meta-skill/`，软链 codebuddy + claude
-- hacker-feeds-cli 曳光弹已跑通：Python 壳 0.4.x + Node 层 0.5.0（源码装）

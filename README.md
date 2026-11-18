@@ -269,7 +269,8 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 # 1) meta-skill：让 agent 自主发现/安装 CLI
 npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
-# 2) hub 包管理器（Python >=3.10）
+# 2) hub 包管理器（Python >=3.10；有 uv 走 uv tool install，exe 自动进 PATH）
+uv tool install cli-anything-hub   # 没有 uv 时用下一行
 pip install cli-anything-hub
 ```
 
@@ -279,7 +280,7 @@ pip install cli-anything-hub
 cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
-> Python >=3.10；pyenv-win 多版本共存时 `cli-hub.exe` 落在所选版本的 `Scripts/` 目录，不在 PATH 上，需手动加（详见 `/setup-cli-hub`）。已知坑：部分 `cli-anything-*` 包有 wheel 空包 bug（上游 `find_packages()` 返回空，装完 ModuleNotFoundError，需源码装）；npm 层版本可能落后 repo（JSON 输出等新特性未发布）；Python 壳成功不代表真依赖就位，报错先读该 CLI 的 harness README。hub 之外的 CLI 首选零依赖的（hacker-feeds-cli / cc-switch / pm2 / clibrowser / mermaid）验证链路再上真实 GUI 软件。
+> hub 安装双分支：有 uv 首选 `uv tool install cli-anything-hub`（隔离 venv，入口 exe 自动落 `~/.local/bin/`，免 PATH 加固）；pyenv-win 多版本共存时不要裸 `pip install`（会装进全局 shim 指向的旧版本），改用 `~/.pyenv/pyenv-win/versions/<版本>/python.exe -m pip install cli-anything-hub`，且 `cli-hub.exe` 落在所选版本的 `Scripts/` 目录、不在 PATH 上，需手动加（详见 `/setup-cli-hub`）。部分 `cli-anything-*` 包有 wheel 空包 bug（上游 `find_packages()` 返回空，装完 ModuleNotFoundError，需源码装）；npm 层版本可能落后 repo（JSON 输出等新特性未发布）；Python 壳成功不代表真依赖就位，报错先读该 CLI 的 harness README。hub 之外的 CLI 首选零依赖的（hacker-feeds-cli / cc-switch / pm2 / clibrowser / mermaid）验证链路再上真实 GUI 软件。
 
 ### 同名技能：tdd / teach
 
@@ -396,7 +397,7 @@ cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --globa
 
 - **setup-last30days** — 在一台新机器上配置 last30days 研究技能（mvanhorn/last30days-skill，话题深挖：过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论，ai-daily-brief 的深挖搭档）。覆盖 Python 3.12+ 解析（LAST30DAYS_PYTHON 用户级环境变量，含 pyenv 版本过旧/shim 损坏等坑）、~/.config/last30days/.env 最小配置（SETUP_COMPLETE=true 跳过 setup wizard）、--diagnose 免费源健康检查与 --quick 冒烟、国内网络下 Reddit/网页搜索不可用的替代策略。手动调用（/setup-last30days）。
 
-- **setup-cli-hub** — 在一台新机器上配置 CLI-Anything / CLI-Hub（HKUDS，agent-native CLI 市场：cli-hub 包管理器 + 79 个让 agent 操控真实软件的 CLI + matrix 能力矩阵）。覆盖 hub 安装（pyenv 多版本共存时 Scripts 目录不在 PATH 的坑）、cli-hub-meta-skill 安装（agent 自主发现/安装 CLI）、零依赖 CLI 冒烟验证与三大安装坑（wheel 空包 bug、npm 版本断层、Python 壳≠真依赖）。手动调用（/setup-cli-hub）。
+- **setup-cli-hub** — 在一台新机器上配置 CLI-Anything / CLI-Hub（HKUDS，agent-native CLI 市场：cli-hub 包管理器 + 79 个让 agent 操控真实软件的 CLI + matrix 能力矩阵）。覆盖 hub 安装（双分支：有 uv 走 uv tool install，免 PATH 加固；只有 pyenv-win 时版本内直装 + Scripts 目录进 PATH）、cli-hub-meta-skill 安装（agent 自主发现/安装 CLI）、零依赖 CLI 冒烟验证与三大安装坑（wheel 空包 bug、npm 版本断层、Python 壳≠真依赖）。手动调用（/setup-cli-hub）。
 
 ### DevOps
 
@@ -509,7 +510,7 @@ skills/
 │   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
 │   ├── setup-agent-desktop/  # agent-desktop CLI：npm 安装 + postinstall 修复 + MCP 探针 + 记事本无头冒烟
 │   ├── setup-last30days/  # last30days 研究技能环境配置：LAST30DAYS_PYTHON 解析 + 最小配置 + diagnose/冒烟 + 国内网络替代策略
-│   ├── setup-cli-hub/  # CLI-Anything/CLI-Hub：hub 安装 + meta-skill + 零依赖冒烟 + 三大安装坑（wheel 空包/npm 断层/壳≠依赖）
+│   ├── setup-cli-hub/  # CLI-Anything/CLI-Hub：hub 双分支安装（uv tool / pyenv 直装）+ meta-skill + 冒烟 + 三大坑
 │   ├── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 │   └── show-me-wx/  # 通用结果导览：产物地图 + 图示 + 游览路线（save 可落盘，不限代码）
 ├── frontend/           # 前端开发类技能
