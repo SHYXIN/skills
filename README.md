@@ -41,7 +41,11 @@ cn-skills add danyuchn/asd-ste100-skill --copy --yes --global --agent codebuddy,
 # 7) anysearch：实时搜索引擎（通用/垂直域/批量/URL 提取），consensus-tech-research 等调研技能的搜索发现层（无 Gitee 镜像，直连 GitHub，可能慢）
 cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
-# 8) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
+# 8) last30days：话题深挖（过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论），ai-daily-brief 的深挖搭档（无 Gitee 镜像，直连 GitHub）
+# 引擎要求 Python 3.12+，装完运行 /setup-last30days 配解释器与最小配置
+cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+
+# 9) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
 cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
@@ -127,6 +131,9 @@ npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code co
 
 # asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读
 npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+
+# last30days：话题深挖（过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论），ai-daily-brief 的深挖搭档（引擎要求 Python 3.12+，装完运行 /setup-last30days）
+npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
 npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
@@ -230,6 +237,22 @@ npx skills@latest add anysearch-ai/anysearch-skill -y --copy -g -a codebuddy cla
 ```bash
 cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
+
+### last30days
+
+[mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) 研究任意话题在过去 30 天的真实社区讨论：拉 Reddit / X / YouTube / TikTok / HN / Polymarket / GitHub 的帖子与互动数据，合成带引用的报告。是 [ai-daily-brief](#技能列表)（每日固定简报）的深挖搭档——daily-brief 管"今天有什么"，last30days 管"这件事 30 天内大家怎么说"。HN / Polymarket / GitHub / YouTube / Reddit 源免 API key；X / TikTok / Instagram 需 ScrapeCreators key（1 万次免费）。上游活跃版本化（v4.x），**不 vendored 进本仓库**，随推荐搭配外部安装；一键脚本已默认安装，如需单独安装：
+
+```bash
+npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+```
+
+国内无 Gitee 镜像，`cn-skills` 直连 GitHub（可能慢）：
+
+```bash
+cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+```
+
+> 引擎要求 **Python 3.12+**（版本门禁），装完运行 `/setup-last30days` 配置解释器（`LAST30DAYS_PYTHON`）与最小配置。国内网络下 Reddit 与 keyless 网页搜索可能不可达，靠宿主 WebSearch 补证据——详见 setup-last30days 技能。
 
 ### 同名技能：tdd / teach
 
@@ -344,6 +367,8 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 
 - **setup-agent-desktop** — 在新 Windows 电脑上安装并配置 agent-desktop（Vercel Labs 跨平台桌面 GUI 自动化 CLI：UIA 无障碍树快照 + headless 语义操作 + @ref 寻址，Rust 实现、npm 分发）。覆盖 npm 安装与 postinstall 修复（Git Bash 走 JS wrapper 多 125ms）、status 验证、内置版本匹配指南加载、MCP 注册探针（正式版可能无 `mcp` 子命令，README main 超前于发布，先探针再注册）、记事本无头冒烟与 9 条排障（含快照带出隐私内容的处置纪律）。手动调用（/setup-agent-desktop）。
 
+- **setup-last30days** — 在一台新机器上配置 last30days 研究技能（mvanhorn/last30days-skill，话题深挖：过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论，ai-daily-brief 的深挖搭档）。覆盖 Python 3.12+ 解析（LAST30DAYS_PYTHON 用户级环境变量，含 pyenv 版本过旧/shim 损坏等坑）、~/.config/last30days/.env 最小配置（SETUP_COMPLETE=true 跳过 setup wizard）、--diagnose 免费源健康检查与 --quick 冒烟、国内网络下 Reddit/网页搜索不可用的替代策略。手动调用（/setup-last30days）。
+
 ### DevOps
 
 - **bot-skill-sync** — 把本地技能同步到 bot 宿主（open-superagent DSH 技能目录）：list 对比两端清单、push 覆盖推送（保护远端 .env 与 DEPLOY-NOTES.md，推送前后 md5 校验）、remove 软删到 /tmp 备份并记台账。宿主地址不内置，环境事实从运行时记忆取。升级/下线/盘点 bot 技能时使用。手动调用（/bot-skill-sync）。
@@ -454,6 +479,7 @@ skills/
 │   ├── setup-tencent-docs/  # 腾讯文档：官方技能安装 + TENCENT_DOCS_TOKEN 用户级 env（无本地 CLI）
 │   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
 │   ├── setup-agent-desktop/  # agent-desktop CLI：npm 安装 + postinstall 修复 + MCP 探针 + 记事本无头冒烟
+│   ├── setup-last30days/  # last30days 研究技能环境配置：LAST30DAYS_PYTHON 解析 + 最小配置 + diagnose/冒烟 + 国内网络替代策略
 │   └── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 │   ├── show-me-wx/  # 通用结果导览：产物地图 + 图示 + 游览路线（save 可落盘，不限代码）
 ├── frontend/           # 前端开发类技能

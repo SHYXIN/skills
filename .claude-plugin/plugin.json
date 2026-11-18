@@ -46,6 +46,7 @@
     "./skills/productivity/setup-agent-desktop",
     "./skills/productivity/setup-claude-code",
     "./skills/productivity/setup-dws",
+    "./skills/productivity/setup-last30days",
     "./skills/productivity/setup-opencli",
     "./skills/productivity/setup-tapd",
     "./skills/productivity/setup-tencent-docs",

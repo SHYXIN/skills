@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 国内一键安装 SHYXIN/skills + 推荐搭配（pstack 与 mattpocock 走 Gitee 镜像，opencli/asd-ste100/book-to-skill/rea/anysearch 直连 GitHub）
+# 国内一键安装 SHYXIN/skills + 推荐搭配（pstack 与 mattpocock 走 Gitee 镜像，opencli/asd-ste100/book-to-skill/rea/anysearch/last30days 直连 GitHub）
 # 复制安装（--copy）：各 agent 目录写入独立副本而非软链，不依赖 symlink
 #
 # 远程一键运行（Gitee 对 raw 文件有反爬拦截，curl 直接拉 /raw/ 会 403，请用 clone 方式）：
@@ -63,6 +63,12 @@ cn-skills add morluto/rea --copy --yes --global --agent "$AGENTS"
 # 无 Gitee 镜像，直连 GitHub（国内可能慢）
 echo "📦 安装 anysearch (推荐搭配，GitHub 直连) -> $AGENTS"
 cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent "$AGENTS"
+
+# last30days：话题深挖（过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论），ai-daily-brief 的深挖搭档
+# 无 Gitee 镜像，直连 GitHub（国内可能慢）；引擎要求 Python 3.12+，装完跑 /setup-last30days 配解释器与最小配置
+echo "📦 安装 last30days (推荐搭配，GitHub 直连) -> $AGENTS"
+cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent "$AGENTS"
+echo "⚠️  last30days 需要 Python 3.12+ 与环境配置，装完运行 /setup-last30days"
 
 # 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限）
 # 内网不通时不中断脚本，跳过并提示
