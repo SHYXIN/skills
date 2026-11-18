@@ -51,6 +51,7 @@
     "./skills/productivity/setup-tapd",
     "./skills/productivity/setup-tencent-docs",
     "./skills/productivity/setup-windows-mcp",
+    "./skills/productivity/show-me-wx",
     "./skills/productivity/skill-iterate",
     "./skills/productivity/source-trace-wx",
     "./skills/productivity/ssh-key-setup",
@@ -73,7 +74,6 @@
     "./skills/teaching/learn-by-minimal",
     "./skills/teaching/mental-map",
     "./skills/teaching/socratic-tutor",
-    "./skills/teaching/teach-wx",
-    "./skills/productivity/show-me-wx"
+    "./skills/teaching/teach-wx"
   ]
 }

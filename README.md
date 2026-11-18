@@ -480,8 +480,8 @@ skills/
 │   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
 │   ├── setup-agent-desktop/  # agent-desktop CLI：npm 安装 + postinstall 修复 + MCP 探针 + 记事本无头冒烟
 │   ├── setup-last30days/  # last30days 研究技能环境配置：LAST30DAYS_PYTHON 解析 + 最小配置 + diagnose/冒烟 + 国内网络替代策略
-│   └── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
-│   ├── show-me-wx/  # 通用结果导览：产物地图 + 图示 + 游览路线（save 可落盘，不限代码）
+│   ├── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
+│   └── show-me-wx/  # 通用结果导览：产物地图 + 图示 + 游览路线（save 可落盘，不限代码）
 ├── frontend/           # 前端开发类技能
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 ├── design/            # 设计 / 可视化类技能
