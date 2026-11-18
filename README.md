@@ -47,6 +47,10 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 
 # 9) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
 cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+
+# 10) CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（直连 GitHub 可能慢）
+#     还需另装 hub 包管理器（pip install cli-anything-hub，Python >=3.10），见下方「CLI-Anything (CLI-Hub)」小节与 /setup-cli-hub
+cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
 > 说明：`--agent` 逗号分隔列表在 PowerShell / CMD / Git Bash 下均可直接使用（`cn-skills-cli >= 0.1.16`）。装完可用 `cn-skills update` 随时更新（详见下方「更新（国内）」）。
@@ -137,6 +141,9 @@ npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
 npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+
+# CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（还需另装 hub：pip install cli-anything-hub，见「CLI-Anything (CLI-Hub)」小节）
+npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
@@ -254,6 +261,26 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 
 > 引擎要求 **Python 3.12+**（版本门禁），装完运行 `/setup-last30days` 配置解释器（`LAST30DAYS_PYTHON`）与最小配置。国内网络下 Reddit 与 keyless 网页搜索基本指望不上（直连与代理均被拦），靠宿主 WebSearch 补证据——详见 setup-last30days 技能。
 
+### CLI-Anything (CLI-Hub)
+
+[HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) 是 agent-native CLI 市场：79 个 CLI 让 agent 操控真实 GUI 软件（GIMP、Kdenlive、Blender、LibreOffice 等），全部支持 JSON 输出与 REPL；另有 matrix 机制把"做个视频""批量出图"这类跨工具任务打包成能力矩阵，按需装单项能力。装好后 agent 自己查目录、自己装，用户不用记命令。技能（meta-skill）+ 包管理器（hub）两层配合：
+
+```bash
+# 1) meta-skill：让 agent 自主发现/安装 CLI
+npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+
+# 2) hub 包管理器（Python >=3.10）
+pip install cli-anything-hub
+```
+
+国内无 Gitee 镜像，`cn-skills` 直连 GitHub（可能慢）：
+
+```bash
+cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+```
+
+> Python >=3.10；pyenv-win 多版本共存时 `cli-hub.exe` 落在所选版本的 `Scripts/` 目录，不在 PATH 上，需手动加（详见 `/setup-cli-hub`）。已知坑：部分 `cli-anything-*` 包有 wheel 空包 bug（上游 `find_packages()` 返回空，装完 ModuleNotFoundError，需源码装）；npm 层版本可能落后 repo（JSON 输出等新特性未发布）；Python 壳成功不代表真依赖就位，报错先读该 CLI 的 harness README。hub 之外的 CLI 首选零依赖的（hacker-feeds-cli / cc-switch / pm2 / clibrowser / mermaid）验证链路再上真实 GUI 软件。
+
 ### 同名技能：tdd / teach
 
 推荐搭配之间只有两个技能重名，都发生在 pstack 与 mattpocock/skills 之间：
@@ -369,6 +396,8 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 
 - **setup-last30days** — 在一台新机器上配置 last30days 研究技能（mvanhorn/last30days-skill，话题深挖：过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论，ai-daily-brief 的深挖搭档）。覆盖 Python 3.12+ 解析（LAST30DAYS_PYTHON 用户级环境变量，含 pyenv 版本过旧/shim 损坏等坑）、~/.config/last30days/.env 最小配置（SETUP_COMPLETE=true 跳过 setup wizard）、--diagnose 免费源健康检查与 --quick 冒烟、国内网络下 Reddit/网页搜索不可用的替代策略。手动调用（/setup-last30days）。
 
+- **setup-cli-hub** — 在一台新机器上配置 CLI-Anything / CLI-Hub（HKUDS，agent-native CLI 市场：cli-hub 包管理器 + 79 个让 agent 操控真实软件的 CLI + matrix 能力矩阵）。覆盖 hub 安装（pyenv 多版本共存时 Scripts 目录不在 PATH 的坑）、cli-hub-meta-skill 安装（agent 自主发现/安装 CLI）、零依赖 CLI 冒烟验证与三大安装坑（wheel 空包 bug、npm 版本断层、Python 壳≠真依赖）。手动调用（/setup-cli-hub）。
+
 ### DevOps
 
 - **bot-skill-sync** — 把本地技能同步到 bot 宿主（open-superagent DSH 技能目录）：list 对比两端清单、push 覆盖推送（保护远端 .env 与 DEPLOY-NOTES.md，推送前后 md5 校验）、remove 软删到 /tmp 备份并记台账。宿主地址不内置，环境事实从运行时记忆取。升级/下线/盘点 bot 技能时使用。手动调用（/bot-skill-sync）。
@@ -480,6 +509,7 @@ skills/
 │   ├── setup-claude-code/  # 新机器 Claude Code 关键设置：跳过 WebFetch 预检 + 完全权限 + windows-mcp 探测
 │   ├── setup-agent-desktop/  # agent-desktop CLI：npm 安装 + postinstall 修复 + MCP 探针 + 记事本无头冒烟
 │   ├── setup-last30days/  # last30days 研究技能环境配置：LAST30DAYS_PYTHON 解析 + 最小配置 + diagnose/冒烟 + 国内网络替代策略
+│   ├── setup-cli-hub/  # CLI-Anything/CLI-Hub：hub 安装 + meta-skill + 零依赖冒烟 + 三大安装坑（wheel 空包/npm 断层/壳≠依赖）
 │   ├── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 │   └── show-me-wx/  # 通用结果导览：产物地图 + 图示 + 游览路线（save 可落盘，不限代码）
 ├── frontend/           # 前端开发类技能

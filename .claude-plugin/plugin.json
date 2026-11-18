@@ -45,6 +45,7 @@
     "./skills/productivity/set-worktrunk",
     "./skills/productivity/setup-agent-desktop",
     "./skills/productivity/setup-claude-code",
+    "./skills/productivity/setup-cli-hub",
     "./skills/productivity/setup-dws",
     "./skills/productivity/setup-last30days",
     "./skills/productivity/setup-opencli",
