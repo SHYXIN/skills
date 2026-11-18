@@ -41,7 +41,7 @@ cn-skills add danyuchn/asd-ste100-skill --copy --yes --global --agent codebuddy,
 # 7) anysearch：实时搜索引擎（通用/垂直域/批量/URL 提取），consensus-tech-research 等调研技能的搜索发现层（无 Gitee 镜像，直连 GitHub，可能慢）
 cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
-# 8) last30days：话题深挖（过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论），ai-daily-brief 的深挖搭档（无 Gitee 镜像，直连 GitHub）
+# 8) last30days：话题深挖（过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论），ai-daily-brief 的深挖搭档（无 Gitee 镜像，直连 GitHub）
 # 引擎要求 Python 3.12+，装完运行 /setup-last30days 配解释器与最小配置
 cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 
@@ -132,7 +132,7 @@ npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code co
 # asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读
 npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
-# last30days：话题深挖（过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论），ai-daily-brief 的深挖搭档（引擎要求 Python 3.12+，装完运行 /setup-last30days）
+# last30days：话题深挖（过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论），ai-daily-brief 的深挖搭档（引擎要求 Python 3.12+，装完运行 /setup-last30days）
 npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
@@ -252,7 +252,7 @@ npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude
 cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
 ```
 
-> 引擎要求 **Python 3.12+**（版本门禁），装完运行 `/setup-last30days` 配置解释器（`LAST30DAYS_PYTHON`）与最小配置。国内网络下 Reddit 与 keyless 网页搜索可能不可达，靠宿主 WebSearch 补证据——详见 setup-last30days 技能。
+> 引擎要求 **Python 3.12+**（版本门禁），装完运行 `/setup-last30days` 配置解释器（`LAST30DAYS_PYTHON`）与最小配置。国内网络下 Reddit 与 keyless 网页搜索基本指望不上（直连与代理均被拦），靠宿主 WebSearch 补证据——详见 setup-last30days 技能。
 
 ### 同名技能：tdd / teach
 
@@ -367,7 +367,7 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 
 - **setup-agent-desktop** — 在新 Windows 电脑上安装并配置 agent-desktop（Vercel Labs 跨平台桌面 GUI 自动化 CLI：UIA 无障碍树快照 + headless 语义操作 + @ref 寻址，Rust 实现、npm 分发）。覆盖 npm 安装与 postinstall 修复（Git Bash 走 JS wrapper 多 125ms）、status 验证、内置版本匹配指南加载、MCP 注册探针（正式版可能无 `mcp` 子命令，README main 超前于发布，先探针再注册）、记事本无头冒烟与 9 条排障（含快照带出隐私内容的处置纪律）。手动调用（/setup-agent-desktop）。
 
-- **setup-last30days** — 在一台新机器上配置 last30days 研究技能（mvanhorn/last30days-skill，话题深挖：过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论，ai-daily-brief 的深挖搭档）。覆盖 Python 3.12+ 解析（LAST30DAYS_PYTHON 用户级环境变量，含 pyenv 版本过旧/shim 损坏等坑）、~/.config/last30days/.env 最小配置（SETUP_COMPLETE=true 跳过 setup wizard）、--diagnose 免费源健康检查与 --quick 冒烟、国内网络下 Reddit/网页搜索不可用的替代策略。手动调用（/setup-last30days）。
+- **setup-last30days** — 在一台新机器上配置 last30days 研究技能（mvanhorn/last30days-skill，话题深挖：过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论，ai-daily-brief 的深挖搭档）。覆盖 Python 3.12+ 解析（LAST30DAYS_PYTHON 用户级环境变量，含 pyenv 版本过旧/shim 损坏等坑）、~/.config/last30days/.env 最小配置（SETUP_COMPLETE=true 跳过 setup wizard）、--diagnose 免费源健康检查与 --quick 冒烟、国内网络下 Reddit/网页搜索不可用的替代策略。手动调用（/setup-last30days）。
 
 ### DevOps
 
@@ -409,7 +409,7 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 
 ### 公司（已迁出）
 
-公司内部 dp-* 技能（DeepWorks 工具链：ask-dp / dp-ask-deepworks / dp-ask-teams / dp-eval-run / dp-session-forensics(-cloud) / dp-dev-bootstrap / dp-deepworks-dev-start / dp-knowledge-compile / dp-dth-key-setup / dp-console-admin）**已迁移到公司 GitLab [deepsense/skills](https://gitlab.deepexi.com/deepsense/skills) 的 `wangxin/` 目录**，本仓库不再维护。一键安装：`cn-skills add deepexi/skills/wangxin --copy --yes --global`（需内网权限，见上方「国内安装」第 7 步）。
+公司内部 dp-* 技能（DeepWorks 工具链：ask-dp / dp-ask-deepworks / dp-ask-teams / dp-eval-run / dp-session-forensics(-cloud) / dp-dev-bootstrap / dp-deepworks-dev-start / dp-knowledge-compile / dp-dth-key-setup / dp-console-admin）**已迁移到公司 GitLab [deepsense/skills](https://gitlab.deepexi.com/deepsense/skills) 的 `wangxin/` 目录**，本仓库不再维护。一键安装：`cn-skills add deepexi/skills/wangxin --copy --yes --global`（需内网权限，见上方「国内安装」第 9 步）。
 
 ### 设计
 

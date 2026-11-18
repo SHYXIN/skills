@@ -1,13 +1,11 @@
 ---
 name: setup-last30days
-description: 在一台新机器上配置 last30days 研究技能（mvanhorn/last30days-skill，话题深挖：过去 30 天 Reddit/X/HN/YouTube/Polymarket 社区讨论，ai-daily-brief 的深挖搭档）。覆盖 Python 3.12+ 解析（LAST30DAYS_PYTHON 用户级环境变量，含 pyenv 版本过旧/shim 损坏等坑）、~/.config/last30days/.env 最小配置（SETUP_COMPLETE=true 跳过 setup wizard）、--diagnose 免费源健康检查与 --quick 冒烟、国内网络下 Reddit/网页搜索不可用的替代策略。手动调用（/setup-last30days）。
+description: 在一台新机器上配置 last30days 研究技能（mvanhorn/last30days-skill，话题深挖：过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论，ai-daily-brief 的深挖搭档）。覆盖 Python 3.12+ 解析（LAST30DAYS_PYTHON 用户级环境变量，含 pyenv 版本过旧/shim 损坏等坑）、~/.config/last30days/.env 最小配置（SETUP_COMPLETE=true 跳过 setup wizard）、--diagnose 免费源健康检查与 --quick 冒烟、国内网络下 Reddit/网页搜索不可用的替代策略。手动调用（/setup-last30days）。
 ---
 
 # last30days 研究技能环境配置
 
-[last30days](https://github.com/mvanhorn/last30days-skill) 让 agent 研究任意话题在过去 30 天的真实社区讨论（Reddit / X / YouTube / HN / Polymarket / GitHub），合成带引用的报告。技能本体由 `cn-skills add mvanhorn/last30days-skill` / `npx skills add mvanhorn/last30days-skill` 安装（无 Gitee 镜像），**本技能只管装完后的环境配置**：Python 解释器解析、最小配置、健康检查与冒烟。
-
-与 ai-daily-brief 分工：daily-brief 管每日固定简报（编辑精选 + 趋势榜），last30days 管单话题深挖。
+[last30days](https://github.com/mvanhorn/last30days-skill) 让 agent 研究任意话题在过去 30 天的真实社区讨论（Reddit / X / YouTube / TikTok / HN / Polymarket / GitHub），合成带引用的报告。技能本体由 `cn-skills add mvanhorn/last30days-skill` / `npx skills add mvanhorn/last30days-skill` 安装（无 Gitee 镜像），**本技能只管装完后的环境配置**：Python 解释器解析、最小配置、健康检查与冒烟。
 
 ---
 
@@ -99,11 +97,11 @@ printf 'SETUP_COMPLETE=true\n' > ~/.config/last30days/.env
 
 ---
 
-## 国内网络现实（重要预期管理）
+## 国内网络现实
 
 2026-11-18 实测：**Reddit 直连超时；走本机代理（Clash 系出口）也是 403（出口 IP 被 Reddit 拉黑）**。keyless 网页搜索（brave / ddg / startpage 三个 HTML 引擎）直连与代理均被反爬墙拦（DDG 返回 202 challenge 页）。即引擎的网页层在国内网络环境下基本指望不上。
 
-替代策略：SKILL.md 的 allowed-tools 本就含 WebSearch——跑 last30days 时用**宿主的 WebSearch/WebFetch 补网页层证据**，引擎负责 HN / Polymarket / GitHub 等可达源。这不是缺陷规避，是该网络环境下的正常用法。
+替代策略：SKILL.md 的 allowed-tools 本就含 WebSearch——跑 last30days 时用**宿主的 WebSearch/WebFetch 补网页层证据**，引擎负责 HN / Polymarket / GitHub 等可达源。
 
 ---
 
