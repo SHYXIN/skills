@@ -137,13 +137,13 @@ npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code co
 npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # last30days：话题深挖（过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论），ai-daily-brief 的深挖搭档（引擎要求 Python 3.12+，装完运行 /setup-last30days）
-npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
 npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（还需另装 hub：uv tool install 或 pip，见「CLI-Anything (CLI-Hub)」小节）
-npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
@@ -250,13 +250,13 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebud
 [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) 研究任意话题在过去 30 天的真实社区讨论：拉 Reddit / X / YouTube / TikTok / HN / Polymarket / GitHub 的帖子与互动数据，合成带引用的报告。是 [ai-daily-brief](#技能列表)（每日固定简报）的深挖搭档——daily-brief 管"今天有什么"，last30days 管"这件事 30 天内大家怎么说"。HN / Polymarket / GitHub / YouTube / Reddit 源免 API key；X / TikTok / Instagram 需 ScrapeCreators key（1 万次免费）。上游活跃版本化（v4.x），**不 vendored 进本仓库**，随推荐搭配外部安装；一键脚本已默认安装，如需单独安装：
 
 ```bash
-npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 国内无 Gitee 镜像，`cn-skills` 直连 GitHub（可能慢）：
 
 ```bash
-cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 ```
 
 > 引擎要求 **Python 3.12+**（版本门禁），装完运行 `/setup-last30days` 配置解释器（`LAST30DAYS_PYTHON`）与最小配置。国内网络下 Reddit 与 keyless 网页搜索基本指望不上（直连与代理均被拦），靠宿主 WebSearch 补证据——详见 setup-last30days 技能。
@@ -267,7 +267,7 @@ cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,
 
 ```bash
 # 1) meta-skill：让 agent 自主发现/安装 CLI
-npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # 2) hub 包管理器（Python >=3.10；有 uv 走 uv tool install，exe 自动进 PATH）
 uv tool install cli-anything-hub   # 没有 uv 时用下一行；pyenv 多版本机器勿裸 pip，见下方注意行
@@ -277,7 +277,7 @@ pip install cli-anything-hub
 国内无 Gitee 镜像，`cn-skills` 直连 GitHub（可能慢）：
 
 ```bash
-cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 ```
 
 > hub 安装双分支：有 uv 首选 `uv tool install`；无 uv 且 pyenv-win 多版本共存时勿裸 `pip install`（会装进全局 shim 指向的旧版本），要用所选版本的解释器直装并手工把 `Scripts/` 加进 PATH。已知坑：部分 `cli-anything-*` 包有 wheel 空包 bug（需源码装）；npm 层版本可能落后 repo（新特性未发布）；Python 壳成功不代表真依赖就位。细节与修法见 `/setup-cli-hub`；CLI 首选零依赖的（hacker-feeds-cli / cc-switch / pm2 / clibrowser / mermaid）验证链路再上真实 GUI 软件。
