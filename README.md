@@ -399,6 +399,8 @@ cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --globa
 
 - **setup-cli-hub** — 在一台新机器上配置 CLI-Anything / CLI-Hub（HKUDS，agent-native CLI 市场：cli-hub 包管理器 + 79 个让 agent 操控真实软件的 CLI + matrix 能力矩阵）。覆盖 hub 安装（双分支：有 uv 走 uv tool install，免 PATH 加固；只有 pyenv-win 时版本内直装 + Scripts 目录进 PATH）、cli-hub-meta-skill 安装（agent 自主发现/安装 CLI）、零依赖 CLI 冒烟验证与三大安装坑（wheel 空包 bug、npm 版本断层、Python 壳≠真依赖）。手动调用（/setup-cli-hub）。
 
+- **setup-git-bash** — 在装好 Git for Windows 的机器上，把 Git Bash 注册成 Windows Terminal 的 profile（下拉菜单出现 Git Bash 项，可设为默认）。覆盖 Git 安装路径检测（`where git` 反推）、固定 GUID 幂等写入 settings.json（备份 + JSON 校验 + 回滚）、可选设默认 profile 与验证（菜单可见 + `$MINGW_PREFIX` 非空），含 `python -c` 内插 Windows 路径触发 unicode 转义报错的踩坑与 `sys.argv` 修法；另附 fragment 文件方案（多机器脚本化更稳，不动 settings.json 主体）。装完即结束。手动调用（/setup-git-bash）。
+
 ### DevOps
 
 - **bot-skill-sync** — 把本地技能同步到 bot 宿主（open-superagent DSH 技能目录）：list 对比两端清单、push 覆盖推送（保护远端 .env 与 DEPLOY-NOTES.md，推送前后 md5 校验）、remove 软删到 /tmp 备份并记台账。宿主地址不内置，环境事实从运行时记忆取。升级/下线/盘点 bot 技能时使用。手动调用（/bot-skill-sync）。
@@ -511,6 +513,7 @@ skills/
 │   ├── setup-agent-desktop/  # agent-desktop CLI：npm 安装 + postinstall 修复 + MCP 探针 + 记事本无头冒烟
 │   ├── setup-last30days/  # last30days 研究技能环境配置：LAST30DAYS_PYTHON 解析 + 最小配置 + diagnose/冒烟 + 国内网络替代策略
 │   ├── setup-cli-hub/  # CLI-Anything/CLI-Hub：hub 双分支安装（uv tool / pyenv 直装）+ meta-skill + 冒烟 + 三大坑
+│   ├── setup-git-bash/  # 把 Git Bash 注册进 Windows Terminal：固定 GUID 幂等写入 + 备份校验回滚 + fragment 备选
 │   ├── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 │   └── show-me-wx/  # 通用结果导览：产物地图 + 图示 + 游览路线（save 可落盘，不限代码）
 ├── frontend/           # 前端开发类技能
