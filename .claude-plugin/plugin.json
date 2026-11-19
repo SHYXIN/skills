@@ -13,6 +13,7 @@
     "./skills/devops/repo-init",
     "./skills/devops/set-lightpanda",
     "./skills/devops/set-openmausbot",
+    "./skills/frontend/astryx-usage",
     "./skills/frontend/miniprogram-iconfont",
     "./skills/personal/alias",
     "./skills/personal/machine-snap",

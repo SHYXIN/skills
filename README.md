@@ -282,6 +282,18 @@ cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --globa
 
 > hub 安装双分支：有 uv 首选 `uv tool install`；无 uv 且 pyenv-win 多版本共存时勿裸 `pip install`（会装进全局 shim 指向的旧版本），要用所选版本的解释器直装并手工把 `Scripts/` 加进 PATH。已知坑：部分 `cli-anything-*` 包有 wheel 空包 bug（需源码装）；npm 层版本可能落后 repo（新特性未发布）；Python 壳成功不代表真依赖就位。细节与修法见 `/setup-cli-hub`；CLI 首选零依赖的（hacker-feeds-cli / cc-switch / pm2 / clibrowser / mermaid）验证链路再上真实 GUI 软件。
 
+### Astryx（Meta 设计系统）
+
+[meta/astryx](https://github.com/meta/astryx) 是 Meta 开源的 React 设计系统（React 19+ / StyleX，Beta）：174 个可访问组件、CSS 变量主题、暗色模式，主打「人和 AI agent 用同一套工具」——`astryx init` 把完整使用规则写进项目的 `AGENTS.md`/`GEMINI.md`（managed block，幂等，不覆盖已有内容），agent 读文档即按与人相同的方式搭 UI。
+
+```bash
+npm install @astryxdesign/core @astryxdesign/theme-neutral @stylexjs/stylex
+npm install -D @astryxdesign/cli react react-dom
+npx astryx init && npx astryx theme add neutral
+```
+
+工作流：`astryx build "<描述>"` 推荐模板 → `template <name> <path>` scaffold → `component <Name>` 读 props → `doctor --built <dir>` 交付门禁。agent 处理时加 `--json` / `--dense` 省 token。实测坑（模板依赖不代装、init 产物命名与 README 出入等）见 `/astryx-usage`；组件细节一律运行时 `astryx docs` / `search`，本仓库技能不搬运。
+
 ### 同名技能：tdd / teach
 
 推荐搭配之间只有两个技能重名，都发生在 pstack 与 mattpocock/skills 之间：
@@ -426,6 +438,7 @@ cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --globa
 
 ### 前端开发
 
+- **astryx-usage** — Meta 开源设计系统 Astryx（React 19+/StyleX，Beta）的 agent 使用元工作流：何时用（前端任务且项目未 init 时建议接入）、五步工作流（build → template → component → doctor --built 交付门禁）、agent 向 CLI flag（--json/--dense/--zh）、实测坑（模板依赖不代装、init 产物命名与文档出入、Beta 漂移）。明确不覆盖组件 API——运行时以项目 AGENTS.md 与 `astryx docs`/`search` 为准。手动调用（/astryx-usage）。
 - **miniprogram-iconfont** — 微信小程序 Iconfont 图标集成。从 iconfont.cn 挑选下载图标，自动替换字体文件、更新 CSS、扫描并替换 WXML/JS 中的 emoji 为 iconfont 类名。引导式交互 + 自动化脚本，覆盖完整的图标集成流程。
 
 ### 后端开发
@@ -517,6 +530,7 @@ skills/
 │   ├── handoff-wx/  # 泛化交接文档：压缩当前对话供下个 agent 接手（temp/tmp handoffs 存储，不限代码）
 │   └── show-me-wx/  # 通用结果导览：产物地图 + 图示 + 游览路线（save 可落盘，不限代码）
 ├── frontend/           # 前端开发类技能
+│   ├── astryx-usage/  # Astryx 设计系统 agent 元工作流：何时 init + 五步循环 + agent flag + 实测坑（不覆盖组件 API）
 │   └── miniprogram-iconfont/  # 小程序 Iconfont 图标更新
 ├── design/            # 设计 / 可视化类技能
 │   ├── visualise/      # 内联可视化渲染（SVG/HTML/Chart.js，含 references/ 规范）
