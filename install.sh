@@ -4,15 +4,15 @@
 #
 # 远程一键运行（无需克隆仓库）:
 #   curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
-#   curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy codex"
+#   curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy claude-code codex hermes-agent opencode"
 #
 # 本地运行:
-#   ./install.sh                                          # 默认装到 codebuddy claude-code codex hermes-agent（全局）
+#   ./install.sh                                          # 默认装到 codebuddy claude-code codex hermes-agent opencode（全局）
 #   ./install.sh codebuddy                               # 只装 codebuddy
 #   ./install.sh "codebuddy codex"                       # 自定义 agent 列表
 set -euo pipefail
 
-AGENTS="${1:-codebuddy claude-code codex hermes-agent}"
+AGENTS="${1:-codebuddy claude-code codex hermes-agent opencode}"
 
 echo "📦 安装 SHYXIN/skills -> agents: $AGENTS"
 # 未加引号以让空格分隔的 agent 列表展开为多个 -a 参数

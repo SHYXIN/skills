@@ -19,38 +19,38 @@
 npm install -g cn-skills-cli --registry=https://registry.npmmirror.com
 
 # 2) 安装本仓库技能（自动走 Gitee）
-cn-skills add SHYXIN/skills --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add SHYXIN/skills --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 3) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL；当前冻结版 v0.15.15）
-cn-skills add https://gitee.com/theshyxin/pstack --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add https://gitee.com/theshyxin/pstack --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 4) 安装推荐搭配 mattpocock/skills（Gitee 镜像；放最后，使 tdd/teach 采用 matt 版，见下「同名技能」）
-cn-skills add mattpocock/skills --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add mattpocock/skills --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 5) 安装 opencli CLI + 全部 opencli 技能（让 agent 操控日常 Chrome；CLI 已装则跳过 npm 那步）
 npm install -g @jackwener/opencli --registry=https://registry.npmmirror.com
-cn-skills add jackwener/opencli --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add jackwener/opencli --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 注意：还需手动装 Chrome 扩展（无法静默安装）：
 # https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk
 # 装好后 opencli doctor 验证，完整引导见 setup-opencli 技能
 
 # 6) asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读（无 Gitee 镜像，直连 GitHub）
-cn-skills add danyuchn/asd-ste100-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add danyuchn/asd-ste100-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 7) anysearch：实时搜索引擎（通用/垂直域/批量/URL 提取），consensus-tech-research 等调研技能的搜索发现层（无 Gitee 镜像，直连 GitHub，可能慢）
-cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 8) last30days：话题深挖（过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论），ai-daily-brief 的深挖搭档（无 Gitee 镜像，直连 GitHub）
 # 引擎要求 Python 3.12+，装完运行 /setup-last30days 配解释器与最小配置
-cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 9) 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限；装完见 ask-dp 路由器说明）
-cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
 # 10) CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（直连 GitHub 可能慢）
 #     还需另装 hub 包管理器（uv tool install 或 pip，Python >=3.10），装法见下方「CLI-Anything (CLI-Hub)」小节与 /setup-cli-hub
-cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 ```
 
 > 说明：`--agent` 逗号分隔列表在 PowerShell / CMD / Git Bash 下均可直接使用（`cn-skills-cli >= 0.1.16`）。装完可用 `cn-skills update` 随时更新（详见下方「更新（国内）」）。
@@ -63,7 +63,7 @@ cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --globa
 git clone --depth 1 https://gitee.com/theshyxin/skills.git /tmp/skills-cn && bash /tmp/skills-cn/install-cn.sh; rm -rf /tmp/skills-cn
 ```
 
-默认装到 `codebuddy,claude-code,codex,workbuddy`（全局）。
+默认装到 `codebuddy,claude-code,codex,workbuddy,opencode`（全局）。
 
 自定义 agent 列表（逗号分隔）：
 
@@ -94,12 +94,12 @@ cn-skills update socratic-tutor   # 只更新某个
 curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash
 ```
 
-脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」的全部外部技能包（**mattpocock/skills 置于最后**，以便 `tdd`/`teach` 采用 matt 版——见「同名技能」一节），默认装到 `codebuddy claude-code codex hermes-agent`（全局）。
+脚本会远程拉取并直接运行，依次安装本仓库技能与下方「推荐搭配」的全部外部技能包（**mattpocock/skills 置于最后**，以便 `tdd`/`teach` 采用 matt 版——见「同名技能」一节），默认装到 `codebuddy claude-code codex hermes-agent opencode`（全局）。
 
 自定义 agent 列表：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy claude-code codex hermes-agent"
+curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/master/install.sh | bash -s -- "codebuddy claude-code codex hermes-agent opencode"
 ```
 
 如需固定到某个稳定版本（推荐生产环境使用），把 URL 中的 `master` 换成 release tag，例如 `v1.0.0`：
@@ -113,7 +113,7 @@ curl -fsSL https://raw.githubusercontent.com/SHYXIN/skills/v1.0.0/install.sh | b
 ```bash
 git clone https://github.com/SHYXIN/skills.git
 cd skills
-./install.sh                      # 默认装到 codebuddy claude-code codex hermes-agent（全局）
+./install.sh                      # 默认装到 codebuddy claude-code codex hermes-agent opencode（全局）
 ./install.sh codebuddy           # 只装 codebuddy
 ./install.sh "codebuddy codex"   # 自定义 agent 列表
 ```
@@ -122,25 +122,25 @@ cd skills
 
 ```bash
 # 安装本仓库技能
-npx skills@latest add SHYXIN/skills -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add SHYXIN/skills -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # 同时安装推荐搭配（顺序有意义：matt 放最后，让 tdd/teach 采用 matt 版）
-npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebuddy claude-code codex hermes-agent
-npx skills@latest add backnotprop/pstack -y --copy -g -a codebuddy claude-code codex hermes-agent
-npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
+npx skills@latest add backnotprop/pstack -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
+npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # opencli：让 agent 操控日常 Chrome（CLI 已装则跳过 npm 那步；技能装全量，成套互相引用）
 npm install -g @jackwener/opencli
-npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # asd-ste100：受控英语规则，改写给 agent 消费的英文文本，防误读
-npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # last30days：话题深挖（过去 30 天 Reddit/X/YouTube/TikTok/HN/Polymarket/GitHub 社区讨论），ai-daily-brief 的深挖搭档（引擎要求 Python 3.12+，装完运行 /setup-last30days）
 npx skills@latest add mvanhorn/last30days-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
 
 # book-to-skill：把书/文档蒸馏成结构化技能（PDF/EPUB/DOCX/MD 等，Python 依赖按格式可选装）
-npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 
 # CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（还需另装 hub：uv tool install 或 pip，见「CLI-Anything (CLI-Hub)」小节）
 npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
@@ -159,7 +159,7 @@ npx skills@latest add HKUDS/CLI-Anything --skill cli-hub-meta-skill -y --copy -g
 [mattpocock/skills](https://github.com/mattpocock/skills) 是社区高质量技能集（TypeScript / 工程实践向）。上面的一键脚本已默认一并安装；如需单独安装：
 
 ```bash
-npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 ### humanlayer/skills (show-me)
@@ -167,7 +167,7 @@ npx skills@latest add mattpocock/skills -y --copy -g -a codebuddy claude-code co
 [humanlayer/skills](https://github.com/humanlayer/skills) 中的 **show-me** 技能：讲解当前主题时自动配简洁图表、代码形状草图和聚焦的 HTML artifact。一键脚本已默认只安装 show-me；如需单独安装：
 
 ```bash
-npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 ### pstack
@@ -177,7 +177,7 @@ npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebudd
 本仓库按**整包**安装。pstack 自带 `unslop`，因此不再单独安装 `cursor/plugins` 的 unslop（两者同源，独立安装会导致同名技能双副本、更新/卸载互相打架）。一键脚本已默认安装；如需单独安装：
 
 ```bash
-npx skills@latest add backnotprop/pstack -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add backnotprop/pstack -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 pstack 还随附 `poteto-agent` 与 `Comment Sicko` 两个子代理定义（在 `agents/` 下），但 `npx skills` 只安装 `skills/` 里的技能，**子代理不会自动落地**。缺失时 poteto-mode 会降级为"普通子代理 + 固定前缀"运行（pstack 的 Harness 章节写明此路径），功能可用，只是不复用 `poteto-agent` 的完整读取流程。国内安装走 Gitee 镜像仓 `theshyxin/pstack`（默认分支当前对应冻结版 `v0.15.15`，每周自动同步上游，冻结 tag 见仓内 `refs/tags`）。注意用**完整 Gitee URL**：`cn-skills` 的 `owner/repo` 简写会解析到 GitHub，而 `npx skills` 从 Gitee 拉取会被反爬 403：
@@ -191,7 +191,7 @@ cn-skills add https://gitee.com/theshyxin/pstack --copy --yes --global --agent c
 [jackwener/opencli](https://github.com/jackwener/opencli) 让 agent 操控你的日常 Chrome（带全部登录态）。一键脚本已默认安装（CLI + 全部 opencli 技能）；如需单独安装：
 
 ```bash
-npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 > 注意：还需手动装 Chrome 扩展（无法静默安装）：<https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk>，装好后 `opencli doctor` 验证。完整引导见 setup-opencli 技能。
@@ -201,7 +201,7 @@ npx skills@latest add jackwener/opencli -y --copy -g -a codebuddy claude-code co
 [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill) 把航空航天受控英语标准 ASD-STE100 改造成 Claude Code 技能：改写给 agent 消费的英文文本（工具描述、错误消息、系统提示词、跨 agent 指令），消除歧义防止下游误读。与 [writing-for-agents-wx](#技能列表)（中文写作规范）是英文侧的天然搭档。一键脚本已默认安装；如需单独安装：
 
 ```bash
-npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 ### ppt-master
@@ -209,7 +209,7 @@ npx skills@latest add danyuchn/asd-ste100-skill -y --copy -g -a codebuddy claude
 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) 从任意文档生成可编辑的原生 PPTX：幻灯片生成、页面视觉重构、品牌/风格/版式工作区、原生模板填充、成品增强，支持讲解词与动画。**不随一键脚本安装**——子目录 64MB 且带 Python 依赖（`requirements.txt`），属"要用时再装"的重型工具，需要 PPT 能力时单独安装：
 
 ```bash
-npx skills@latest add hugohe3/ppt-master -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add hugohe3/ppt-master -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 ### book-to-skill
@@ -217,7 +217,7 @@ npx skills@latest add hugohe3/ppt-master -y --copy -g -a codebuddy claude-code c
 [virgiliojr94/book-to-skill](https://github.com/virgiliojr94/book-to-skill) 把技术书、文档夹或一组资料蒸馏成**结构化技能**（不是摘要）：框架、决策规则、反模式、术语表、速查表，章节文件按需加载，回答基于原文不幻觉——官方实测比整本塞上下文省 24–51 倍 token。输入不限书籍：内部文档、品牌手册、论文集、RFC 都行。一键脚本已默认安装；如需单独安装：
 
 ```bash
-npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 > 注意：转换 PDF/EPUB/DOCX 等格式时按需安装 Python 依赖（`pip install "book-to-skill[pdf]"` 等，纯 Markdown 免依赖）；对 Python 3.9+。
@@ -227,7 +227,7 @@ npx skills@latest add virgiliojr94/book-to-skill -y --copy -g -a codebuddy claud
 [morluto/rea](https://github.com/morluto/rea) 一个 MCP 覆盖全栈逆向：原生二进制（配合 Hopper/Ghidra/IDA）、Electron/JavaScript、.NET 程序集、网站行为——看中某个应用的特性，让 agent 拆解它怎么实现、出示证据、指导复刻。分析全程本地运行。一键脚本只装**技能本体**（`reverse-engineer-anything`，纯说明书，轻量无依赖）；**MCP server 本体**（`npx rea-agents setup`，仓库 50MB）与原生分析引擎属"要用时再装"的重型件，需要逆向能力时单独安装：
 
 ```bash
-npx skills@latest add morluto/rea -y --copy -g -a codebuddy claude-code codex hermes-agent   # 技能（一键脚本已含）
+npx skills@latest add morluto/rea -y --copy -g -a codebuddy claude-code codex hermes-agent opencode   # 技能（一键脚本已含）
 npx rea-agents setup                                                                  # MCP server（要用时再装）
 ```
 
@@ -236,13 +236,13 @@ npx rea-agents setup                                                            
 [anysearch-ai/anysearch-skill](https://github.com/anysearch-ai/anysearch-skill) 是实时搜索引擎：通用网页搜索、垂直领域搜索（股票/学术/法律/代码等）、并行批量搜索和 URL 内容提取，匿名可用（API key 仅提高限额）。`consensus-tech-research` 等调研技能用它做搜索发现层。上游活跃版本化，**不 vendored 进本仓库**，随推荐搭配外部安装；一键脚本已默认安装，如需单独安装：
 
 ```bash
-npx skills@latest add anysearch-ai/anysearch-skill -y --copy -g -a codebuddy claude-code codex hermes-agent
+npx skills@latest add anysearch-ai/anysearch-skill -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
 ```
 
 国内无 Gitee 镜像，`cn-skills` 直连 GitHub（可能慢）：
 
 ```bash
-cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy
+cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 ```
 
 ### last30days
