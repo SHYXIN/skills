@@ -54,6 +54,8 @@ npx skills add mattpocock/skills -g -a codebuddy -y
 npx skills add https://github.com/SHYXIN/skills
 ```
 
+> **非交互环境（agent 代跑 / CI）**：不带 `-y` 且未显式指定 agent 时，`add` 会弹交互选择，在非 TTY 环境下直接报 `SKILLS_PROMPT_REQUIRES_TTY` 且什么都不装。这类环境下命令必须补 `-y` + 显式 `-a <agents>`（或 `--agent '*'`）。上面的裸命令仅适合人在自己的终端里跑（2026-11-20 实测踩坑）。
+
 ### 来源格式（Source Formats）
 
 `add` 的 `<source>` 支持多种写法，下面是结合本仓库的示例：
