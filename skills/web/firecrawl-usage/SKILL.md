@@ -23,6 +23,7 @@ npx -y firecrawl-cli@latest scrape <url>
 
 # 二、login 解锁 crawl/search/map/Alexandria（浏览器点一下，无终端输入）
 npx -y firecrawl-cli@latest login --browser
+#    实测 2m34s 完成（含人工点浏览器）；成功后 Team: Personal，key 存本地
 #    或环境变量：FIRECRAWL_API_KEY=fc-...
 
 # 三、Local 版（Windows 未实测——官方只给 macOS/Linux 编译指引，需 Rust+C 编译器）
@@ -37,22 +38,28 @@ Cloud 按 credit 计费（scrape 免费额度可用）；Local 版 localhost API
 npx -y firecrawl-cli@latest scrape <url>                      # 默认出 markdown，stdout 直出
 npx -y firecrawl-cli@latest scrape <url> --only-main-content  # 去导航/横幅噪音
 npx -y firecrawl-cli@latest scrape <url> --format markdown,links  # 多格式→JSON
-npx -y firecrawl-cli@latest crawl <url>                       # 整站，异步 job，需 login
-npx -y firecrawl-cli@latest map <url>                         # 列全站 URL，需 login
-npx -y firecrawl-cli@latest search "<query>"                  # 搜索+全文，需 login
+npx -y firecrawl-cli@latest crawl <url> --limit 3 --wait      # 整站，异步 job，需 login
+npx -y firecrawl-cli@latest map <url> --limit 5               # 列全站 URL，需 login
+npx -y firecrawl-cli@latest search "<query>" --limit 3        # 搜索+全文，需 login
+npx -y firecrawl-cli@latest credits                           # 查剩余额度
 ```
 
 - 单格式 = 裸内容输出；多格式 = JSON 信封
+- crawl 实用参数：`--limit`（页数）、`--max-depth`、`--wait`（阻塞等完）、`--include-paths/--exclude-paths`、`--sitemap skip|include`；异步 job 后续用 `crawl <job-id> --status` 读
+- crawl/search 输出是完整 JSON 信封（含每页全文 markdown），页数多时 stdout 巨大——落盘再解析，别直接管道
 - MCP 接 agent：`npx firecrawl-mcp` + `FIRECRAWL_API_KEY` env；一条命令接全：`npx -y firecrawl-cli@latest init --all --browser`
 - crawl/search/map/Alexandria 全部要认证；**scrape 是唯一免 key 操作**
+- 免费版 1,000 credits/月；crawl 按 1 credit/页计费，search/map 消耗极低
 
 ## 实测坑（2026-11-20，firecrawl-cli latest）
 
 1. **无 `--markdown` flag**：默认就是 markdown；传了报 unknown option
 2. **Cloud 代理隧道坑**：部分站点报 `ERR_TUNNEL_CONNECTION_FAILED`（Firecrawl 内部代理错误）——firecrawl.dev/docs 域已验通，自建站/小站可能隧道失败；重试或换 Local 版绕开 Cloud 代理层
-3. **crawl 限页参数不是 `--limit`**（scrape 子命令没这参数，具体以 `crawl --help` 实时输出为准）
+3. **crawl 限页就是 `--limit`**（2026-11-20 实测：`crawl --limit 3 --wait` 正常）；scrape 子命令才没这参数
 4. **本机代理环境**：NODE_TLS_REJECT_UNAUTHORIZED=0 警告刷屏，不影响功能
-5. **免注册额度**：scrape 可匿名，其余操作直接报 `Not authenticated. Run "firecrawl login --browser"`
+5. **免注册额度**：scrape 可匿名，其余操作直接报 `Not authenticated. Run "firecrawl login --browser"`；login 是 OAuth 浏览器流程（弹浏览器点授权，CLI 轮询等结果，约 2-3 分钟含人工）
+6. **输出体积**：crawl 3 页就 439KB JSON——大站 crawl 必须 `--limit` + 落盘（`> file.json`），或配 `--scrape-options '{"onlyMainContent":true}'` 减噪
+7. **`credits` 有、`whoami` 无**：查额度用 `credits` 子命令；没有 whoami
 
 ## 与 web-reader-wx 的边界
 
