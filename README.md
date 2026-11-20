@@ -467,6 +467,10 @@ npx astryx init && npx astryx theme add neutral
 
 - **cnb-token** — 引导用户创建或粘贴 CNB 访问令牌（PAT）并持久化，安装 cnb CLI 并配置 git 凭据，使 cnb 命令行与 git push/pull 到 cnb.cool 免密可用。首次配置 CNB 工具链、cnb 命令报 401/403、或 git 推拉 cnb.cool 要求认证时使用。
 
+### Web
+
+- **firecrawl-usage** — Firecrawl 抓取服务的 agent 使用元工作流。何时用（批量 crawl 整站转 Markdown、search 全文返回、changeTracking 页面监控、Alexandria 结构化数据源）、三层接入（零安装 npx scrape 免注册 / login --browser 解锁 crawl·search·map / Local 版 cargo install，Windows 未实测）、CLI 速查与实测坑（无 --markdown flag、Cloud 代理隧道坑、scrape 是唯一免 key 操作）。与 web-reader-wx 分工：单页读取走那个路由器，批量/搜索取数走本技能。
+
 ## 目录结构
 
 ```
@@ -544,6 +548,8 @@ skills/
 │   └── teach-pstack/  # pstack 版 Teach（与 matt 的 teach 并存）
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
+├── web/               # 网页抓取 / 读取类技能
+│   └── firecrawl-usage/  # Firecrawl 抓取服务元工作流（何时用/三层接入/CLI 速查/实测坑）
 ├── devops/            # 运维 / CI-CD 类技能
 │   ├── bot-skill-sync/  # 本地技能同步到 bot 宿主（list 对比 / push 覆盖保护 .env / remove 软删备份）
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
