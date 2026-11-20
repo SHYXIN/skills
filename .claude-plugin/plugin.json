@@ -78,6 +78,7 @@
     "./skills/teaching/mental-map",
     "./skills/teaching/socratic-tutor",
     "./skills/teaching/teach-wx",
-    "./skills/web/firecrawl-usage"
+    "./skills/web/firecrawl-usage",
+    "./skills/web/modern-web-guidance-usage"
   ]
 }

@@ -470,6 +470,7 @@ npx astryx init && npx astryx theme add neutral
 ### Web
 
 - **firecrawl-usage** — Firecrawl 抓取服务的 agent 使用元工作流。何时用（批量 crawl 整站转 Markdown、search 全文返回、changeTracking 页面监控、Alexandria 结构化数据源）、三层接入（零安装 npx scrape 免注册 / login --browser 解锁 crawl·search·map / Local 版 cargo install，Windows 未实测）、CLI 速查与实测坑（无 --markdown flag、Cloud 代理隧道坑、scrape 是唯一免 key 操作）。与 web-reader-wx 分工：单页读取走那个路由器，批量/搜索取数走本技能。
+- **modern-web-guidance-usage** — Google 官方 Web 现代化指导工具（Chrome/Edge/Firefox/MDN 联合维护）的 agent 使用元工作流。何时用（写 Web UI/CSS/客户端 JS 前查最佳实践、legacy-scan 扫描旧代码现代化机会）、CLI 三入口（search/retrieve/legacy-scan --json）、实测坑（install 非 TTY 必须带参、query 不带框架名、遥测关闭）。与 astryx-usage 分工：那个管组件从哪来，本技能管代码写法对不对。
 
 ## 目录结构
 
@@ -548,8 +549,9 @@ skills/
 │   └── teach-pstack/  # pstack 版 Teach（与 matt 的 teach 并存）
 ├── cnb/               # CNB 平台相关技能（建仓/提交/PR/流水线入口）
 │   └── cnb-token/  # CNB 访问令牌初始化（PAT 创建+持久化，建仓前置）
-├── web/               # 网页抓取 / 读取类技能
-│   └── firecrawl-usage/  # Firecrawl 抓取服务元工作流（何时用/三层接入/CLI 速查/实测坑）
+├── web/               # 网页抓取 / Web 开发知识类技能
+│   ├── firecrawl-usage/  # Firecrawl 抓取服务元工作流（何时用/三层接入/CLI 速查/实测坑）
+│   └── modern-web-guidance-usage/  # Web 现代化最佳实践查询+旧代码扫描（search/retrieve/legacy-scan）
 ├── devops/            # 运维 / CI-CD 类技能
 │   ├── bot-skill-sync/  # 本地技能同步到 bot 宿主（list 对比 / push 覆盖保护 .env / remove 软删备份）
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
