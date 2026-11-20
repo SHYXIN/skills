@@ -391,7 +391,7 @@ npx astryx init && npx astryx theme add neutral
 - **loop-driver** — 环式自进化调度器。把任务逼成一个自我改进的循环：收集目标 → 按经验选 skill 组合 → 执行 → 用闭环信号记分 → 沉淀到 ledger 并调权重 → 等下一个目标，一圈比一圈选得准。人只在无共识决策和红线处被拍板。说"转起来""跑一整个循环""让 loop 转一圈"时手动调用（/loop-driver）。
 - **cn-brief-wx** — 中文简报：agent 刚才的英文步骤/工具调用/输出看不懂时，用中文复述"做了什么、为什么、现在到哪"，不替你改方向。model-invoked。
 - **research-wx** — 中文版 research：派后台 agent 调研一手来源，结论写成带出处的 Markdown 存进仓库。model-invoked。
-- **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit。
+- **skill-curator** — 技能市场策展人：维护 plugin.json / README 与磁盘上 skills/ 目录三者一致（注册新技能、移除旧技能、重同步漂移），改动后自动 git commit（push 由用户手动触发），含本地安装试用环与非交互参数硬要求。手动调用（/skill-curator）。
 
 - **source-trace-wx** — 追踪 agent 回答的原始依据与来源。先列出对话里真实读过的来源，再对没有出处的 claim 去一手来源（官方文档/源码/规范/第一方 API）补查，写成注明出处、区分一手/二手信任级的 Markdown 文件。触发词如「查出处」「原始依据在哪」。model-invoked。
 
@@ -432,7 +432,7 @@ npx astryx init && npx astryx theme add neutral
 
 - **wx-flow** — 个人全任务流程驱动器（适用于所有代码任务，不限仓库）。五个阶段：需求澄清（grill）→ 隔离判断（worktree 硬裁决）→ 开发 → 收尾验证（按改动类型分流提示）→ 提交 + 清理（三档停靠：只提交 / 提交+push / 完整 MR，兜底只提交，升级由用户触发）。AI 领路，每个阶段收口处停下等用户拍板后再进下一阶段。调用：`/wx-flow`。
 
-- **machine-snap** — 机器级环境快照与还原。capture 扫描本机 CLI（winget/choco/pip/npm）+ 三客户端 MCP 配置（codebuddy/claude/codex）+ 用户 PATH 增量，生成可修剪的 manifest；doctor 对账；restore 在新电脑照单还原；redact 出脱敏版。换新电脑想快速配成跟旧电脑一致时用。调用：`/machine-snap`。
+- **machine-snap** — agent 工具箱快照与还原：whitelist.json 记录有利于 agent 工作的 CLI 白名单（core = agent 直接用的 CLI 如 rg/jq/fzf/duckdb/sg/http，coreRuntimes = MCP/skills 依赖的 runtime），doctor 逐条对账本机在位情况，restore 照单还原 + 三客户端 MCP 配置 + PATH 增量，redact 出脱敏版。换新电脑快速给 agent 配齐工具箱时用。用户手动调用（/machine-snap）。
 
 - **alias** — 通用短名登记：用户嫌实体全名长（专家/仓库/服务器/任务/项目…）时，agent 批量推荐尽量短的名字（❓+➡️ emoji 格式，单字母/单汉字优先，撞名顺延），确认后登记进全局 ~/.alias-registry.json，之后用户直接打短名，agent 查表解析。任何 agent（codebuddy/claude/codex…）通用。
 
