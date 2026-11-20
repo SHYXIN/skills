@@ -154,6 +154,10 @@ npx skills@latest add <仓库根路径> --skill <skill-a> --skill <skill-b> -y -
 - **本地路径装的是快照副本**（落到 `~/.agents/skills/` 再软链给各 agent），之后再改仓库文件
   **不会自动反映**——每轮迭代后都要重跑一次上面的 add 命令刷新
 - 只装改动的技能（`--skill`），别全量 59 个重装一遍
+- **非交互参数是硬要求**：`npx skills add` 在没带 `-y` 且没显式指定 agent 时会弹交互选择，
+  在 agent 代跑（非 TTY）下直接报 `SKILLS_PROMPT_REQUIRES_TTY` 什么都不装。上面模板命令
+  已带 `-y -g -a ...` 是安全的；若因故临时拼命令（如指定 `--skill` 单装），**必须同样补上
+  `-y` + 显式 agent 列表（或 `--agent '*'`）**（2026-11-20 实测踩坑）
 - 用户体验说"没问题" → 提示 `git push`（push 永远用户手动触发）
 - 用户说有问题 → 回到对应技能修，重新走 Step 3/4/5
 
