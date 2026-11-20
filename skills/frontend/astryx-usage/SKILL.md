@@ -50,6 +50,8 @@ init 的 AGENTS.md 块是 `<!-- ASTRYX:START/END -->` 标记块：重跑只更�
 2. **文档与实现出入**：README 说 init 写 `AGENTS.md`/`CLAUDE.md`，实测写的是 `AGENTS.md` + `GEMINI.md`（无 CLAUDE.md）——按实际产物为准
 3. **Beta 变动快**：组件数/命令面随版本漂（150+ → 174），细节以 `astryx --version` 对应的运行时输出为准，勿背文档
 4. **主题改动以看图为准**：`experimental theme editor show <name> --png` 写 PNG，不看图不算改完
+5. **Windows npx 间歇失灵**：`npx astryx <cmd>` 随机报 `could not determine executable to run`（重定向/循环里更频繁）；绕过法：直调本地 bin `node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs <cmd>`（路径可由 `node -e "console.log(require('./node_modules/@astryxdesign/cli/package.json').bin)"` 查）
+6. **scaffold 的 block 是独立文件**：`astryx template <Block> --type block` 只把默认导出组件落成单独 .tsx，不会自动接进页面——要手动 import 进去或参照其用法改页面
 
 ## 边界
 
