@@ -421,6 +421,7 @@ npx astryx init && npx astryx theme add neutral
 
 - **set-openmausbot** — 在一台有 Docker 的 Linux 服务器上从零部署 OpenMausBot（开源 AI bot 车队聊天壳）并出公网 HTTPS 地址。覆盖：镜像离线搬运（服务器直连 ghcr.io 超时时）、邮箱验证码登录（QQ 码易混淆推荐 Gmail）、容器常驻启动、cloudflared 二进制手动落位、设备配对（每个新设备一次）、OpenAI-compat 引擎接入（直写 config.json）、端到端验收与排障速查。环境事实（服务器地址/邮箱/key）一律占位符，由运行时记忆提供。手动调用（/set-openmausbot）。
 - **set-lightpanda** — 在一台有 Docker + Nginx 的 Linux 服务器上部署 Lightpanda Browser（Zig 写的 headless 浏览器，专为 AI agent 设计）的 MCP 服务，并接入本机 agent CLI。覆盖：镜像离线搬运（服务器直连 Docker Hub 慢时本地中转）、MCP-only 容器启动、Nginx 反代（硬编码 Host 校验坑：域名必须改写 Host 头）、IP 白名单（MCP 无鉴权时的唯一防线）、codebuddy/claude mcp add 接入、端到端验收、镜像升级。用户手动调用（/set-lightpanda）。
+- **set-dsh-tui** — 本机安装 DSH CLI 并配置 TUI 终端界面：profile 体系认知（web/headless/tui 各自独立不继承）、credentials 凭据服务机制（.credentials.yaml + 插件注入）、自定义模型 patch 实测模板（DTH + DTS 双路由 + danger-full-access 权限）、headless credentials 插件默认禁用坑、@deepseek-harness-tui/dsh-tui 插件安装（含 0.1.x 传递依赖 allow-version 豁免）。换新机器或帮别人配 DSH 时用。手动调用（/set-dsh-tui）。
 
 - **gitlab** — GitLab 平台操作技能（只做平台层，本地 git 流程归 branch-management）：MR 创建/查看/合并/关闭/rebase、指定审核者(reviewer)与指派人(assignee)、labels/milestone、approve 与评论讨论；MR 之外的 REST API 调用、CI pipeline 查询、tag/发布操作、分支保护（protected_branches 禁直推）、token/凭据获取；内置 glab 优先 + 挂死/误报 422 时改 curl + PRIVATE-TOKEN 直连 API 的兜底，以及合并前 merge-tree 冲突预检。通用化不绑定实例，本机/公司特有信息隔离在 references/。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、分支保护、凭据的任务触发。
 
@@ -558,6 +559,7 @@ skills/
 │   ├── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·分支保护·凭据 / reviewer·assignee / glab→curl 兜底）
 │   ├── set-openmausbot/  # OpenMausBot 服务器部署（镜像离线搬运→登录→隧道→配对→引擎→验收）
 │   ├── set-lightpanda/  # Lightpanda Browser MCP 服务器部署（镜像搬运→容器→Nginx 反代+白名单→接入→验收→升级）
+│   ├── set-dsh-tui/  # DSH CLI 安装 + TUI 配置（profile 体系→凭据服务→模型 patch→权限→TUI 插件豁免安装）
 │   └── repo-init/  # 仓库初始化引导器（新仓 0→1 / 存量补缺 / 分支保护）
 ├── personal/          # 个人效率类技能
 │   ├── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）

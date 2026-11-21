@@ -11,6 +11,7 @@
     "./skills/devops/gitlab",
     "./skills/devops/gitlab-runner-provision",
     "./skills/devops/repo-init",
+    "./skills/devops/set-dsh-tui",
     "./skills/devops/set-lightpanda",
     "./skills/devops/set-openmausbot",
     "./skills/frontend/astryx-usage",
