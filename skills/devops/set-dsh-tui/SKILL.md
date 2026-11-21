@@ -59,7 +59,7 @@ export DTH_API_KEY=sk-xxx
 
 新 profile 的 `cordis.patch.yml` 默认为空，模型回落到内置 `llm-deepseek`（DeepSeek 官方路由，需要 `DEEPSEEK_API_KEY`）——不配就会报 `MISSING_CREDENTIAL: llm-deepseek`。
 
-把下面三段写进目标 profile 的 `cordis.patch.yml`（实测配置，dth + DTS 双路由）：
+把下面三段写进目标 profile 的 `cordis.patch.yml`（dth + DTS 双路由）：
 
 ```yaml
 # openai 槽位 = OpenAI 兼容协议（不是 OpenAI 官方），这里指向 Deepexi DTS 网关
@@ -137,7 +137,7 @@ dsh --profile <name> --dump-config | grep -A4 "agent-default-model"
 
 TUI 不是内置的——`dsh --profile tui` 首次启动只有裸 base，界面出不来，必须装社区维护的 TUI 插件。
 
-**选型（2026-11 实测）**：npm 上搜 `dsh-tui` 会撞到多个同名包，认准 `@deepseek-harness-tui/dsh-tui`（ccch1mneyyy 维护，peerDeps 明确支持 0.2.x，持续更新）。其他同名包（如 `@dsh-tui/dsh-tui`）锁死 0.1.x 且停更，装上会在 import 阶段报 `does not provide an export named ...` 的 API 断裂错误。
+**选型**：npm 上搜 `dsh-tui` 会撞到多个同名包，认准 `@deepseek-harness-tui/dsh-tui`（peerDeps 明确支持 0.2.x）。其他同名包（如 `@dsh-tui/dsh-tui`）锁死 0.1.x 且停更，装上会在 import 阶段报 `does not provide an export named ...` 的 API 断裂错误。
 
 ```bash
 dsh plugin --profile tui add "@deepseek-harness-tui/dsh-tui"
@@ -198,4 +198,4 @@ headless 顺手验证：`dsh --profile headless "回复OK两个字母即可"`，
 
 - DSH 官方仓库：https://github.com/deepseek-ai/deepseek-harness（plugin-manager 文档在 `packages/boot/plugin-manager/README.zh.md`）
 - TUI 插件：npm 包 `@deepseek-harness-tui/dsh-tui`（2026-11-21 实测 0.20.2 版兼容 0.2.2-rc.1）
-- 本机已验证配置存档：`~/.dsh/profiles/{web,headless,tui}/cordis.patch.yml`
+- 现成配置参考：`~/.dsh/profiles/*/cordis.patch.yml`
