@@ -1,6 +1,6 @@
 ---
 name: set-dsh-tui
-description: "在本机安装 DSH CLI 并配置 TUI 终端界面的完整流程。覆盖：npm 装 dsh、profile 体系认知（web/headless/tui 各自独立）、credentials 凭据服务机制、自定义模型 patch（DTH + DTS 双路由实测配置）、danger-full-access 权限设置、安装 @deepseek-harness-tui/dsh-tui 插件（含 0.1.x 传递依赖豁免）。用户手动调用（/set-dsh-tui）。换新机器或帮别人配 DSH 时用。"
+description: "在本机安装 DSH CLI 并配置 TUI 终端界面的完整流程。覆盖：npm 装 dsh、profile 体系认知（web/headless/tui 各自独立）、credentials 凭据服务机制、自定义模型 patch（DTH + DTS 双路由实测配置）、danger-full-access 权限设置、TUI 插件两条安装路径（A：全局启动器 dsh-tui 自动自举，需 dsh ≥ 0.2.2-rc.5；B：plugin-manager 手动装 + 0.1.x 传递依赖豁免）。用户手动调用（/set-dsh-tui）。换新机器或帮别人配 DSH 时用。"
 disable-model-invocation: true
 ---
 
@@ -133,17 +133,30 @@ dsh --profile <name> --dump-config | grep -A4 "agent-default-model"
 
 （web / tui profile 无此问题，credentials 插件默认启用。）
 
-## Step 4：安装 TUI 插件
+## Step 4：安装 TUI（两条路径二选一）
 
-TUI 不是内置的——`dsh --profile tui` 首次启动只有裸 base，界面出不来，必须装社区维护的 TUI 插件。
+TUI 不是内置的，必须装社区维护的 TUI 插件。**选型**：npm 上搜 `dsh-tui` 会撞到多个同名包，认准 `@deepseek-harness-tui/dsh-tui`（peerDeps 明确支持 0.2.x）。其他同名包（如 `@dsh-tui/dsh-tui`）锁死 0.1.x 且停更，装上会在 import 阶段报 `does not provide an export named ...` 的 API 断裂错误。
 
-**选型**：npm 上搜 `dsh-tui` 会撞到多个同名包，认准 `@deepseek-harness-tui/dsh-tui`（peerDeps 明确支持 0.2.x）。其他同名包（如 `@dsh-tui/dsh-tui`）锁死 0.1.x 且停更，装上会在 import 阶段报 `does not provide an export named ...` 的 API 断裂错误。
+### 路径 A：全局启动器（推荐，需 dsh ≥ 0.2.2-rc.5）
+
+```bash
+npm install -g @deepseek-harness-tui/dsh-tui
+dsh-tui doctor        # 环境预检（node/dsh/pnpm/密钥/profile）
+dsh-tui               # 首次运行自动自举独立 profile：~/.dsh/profiles/dsh-tui/
+```
+
+- 启动器提供 `dsh-tui` / `dst` 两个命令，独立于官方 dsh 的 profile 体系（自建 `dsh-tui` profile，不碰 web/headless/tui）
+- npm 全局装**不经过 plugin-manager 的版本兼容闸**，无需 allow-version 豁免
+- 后续维护：`dsh-tui update` 一键对齐 TUI + dsh 引擎 + 启动器；`dsh-tui safe --rescue` 可建干净救援 profile
+- 自举出的 profile 同样默认 `llm-deepseek`——**Step 3 的模型 patch 仍要写**进 `~/.dsh/profiles/dsh-tui/cordis.patch.yml`
+
+### 路径 B：plugin-manager 手动装（dsh 版本较旧时的兜底）
 
 ```bash
 dsh plugin --profile tui add "@deepseek-harness-tui/dsh-tui"
 ```
 
-**可能被拒：传递依赖是 0.1.x 旧包**。安装器对整棵依赖树做版本兼容检查，该插件的传递依赖里有两个 0.1.x 遗留包（`@deepseek-ai/dsh-code-runtime-worker-thread`、`@deepseek-ai/dsh-agent-presets`，均锁 `0.1.0-rc.6`）会被 0.2.x 运行时拒绝：
+装进官方 dsh 的 profile，启动用 `dsh --profile tui`。走 plugin-manager 会对整棵依赖树做版本兼容检查，**可能被拒：传递依赖是 0.1.x 旧包**——该插件的传递依赖里有两个 0.1.x 遗留包（`@deepseek-ai/dsh-code-runtime-worker-thread`、`@deepseek-ai/dsh-agent-presets`，均锁 `0.1.0-rc.6`）会被 0.2.x 早期版本拒绝：
 
 ```
 dsh: installation rejected: Plugin ... is incompatible with dsh 0.2.2-rc.1
@@ -168,6 +181,9 @@ TUI 会有两条无害警告（`tool-ralph` / `tool-subagent-list-agents` entry 
 ## Step 5：验收
 
 ```bash
+# 路径 A
+dsh-tui
+# 路径 B
 dsh --profile tui
 ```
 
@@ -187,15 +203,16 @@ headless 顺手验证：`dsh --profile headless "回复OK两个字母即可"`，
 
 | 症状 | 原因 | 解法 |
 | --- | --- | --- |
-| `MISSING_CREDENTIAL: llm-deepseek` | patch 没配自定义模型，回落到内置 DeepSeek 官方路由 | Step 3 三段 patch |
+| `MISSING_CREDENTIAL: llm-deepseek` | patch 没配自定义模型，回落到内置 DeepSeek 官方路由 | Step 3 三段 patch（两条路径都要写） |
 | key 已存但报 MISSING_CREDENTIAL（headless） | headless 模板默认禁用 credentials 插件，凭据读不到 | Step 3 末尾的启用段 |
-| `installation rejected: incompatible` | 依赖树里有 0.1.x 旧包 | Step 4 的 allow-version 豁免 |
+| 路径 B `installation rejected: incompatible` | 依赖树里有 0.1.x 旧包 | Step 4 路径 B 的 allow-version 豁免 |
 | import 阶段 `does not provide an export named ...` | 装了锁死 0.1.x 的停更包（API 断裂，豁免救不了） | 认准 `@deepseek-harness-tui/dsh-tui` scope |
+| 路径 A `ADAPTER_UNAVAILABLE: This adapter validates ...` | 自动化适配器（`dsh-tui run`）只验证较新的 dsh 版本 | 升级 dsh 到 rc.5，或改用路径 B |
 | Web 面板配好模型但 headless/tui 没用上 | profile 配置隔离，各 profile 的 patch 独立 | 每个 profile 单独写 Step 3 |
 | TUI 启动报 `entry did not activate` | 插件与本机 dsh 版本 API 不匹配 | 查插件 peerDeps 是否覆盖你的 dsh 版本，不覆盖就换包 |
 
 ## 来源
 
 - DSH 官方仓库：https://github.com/deepseek-ai/deepseek-harness（plugin-manager 文档在 `packages/boot/plugin-manager/README.zh.md`）
-- TUI 插件：npm 包 `@deepseek-harness-tui/dsh-tui`（2026-11-21 实测 0.20.2 版兼容 0.2.2-rc.1）
+- TUI 插件：npm 包 `@deepseek-harness-tui/dsh-tui`，仓库 https://github.com/ccch1mneyyy/dsh-TUI（2026-11-21 实测 0.20.2 版兼容 0.2.2-rc.1；自动化适配器验证基线为 0.2.2-rc.5）
 - 现成配置参考：`~/.dsh/profiles/*/cordis.patch.yml`
