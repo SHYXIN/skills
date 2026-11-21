@@ -137,7 +137,7 @@ dsh --profile <name> --dump-config | grep -A4 "agent-default-model"
 
 TUI 不是内置的，必须装社区维护的 TUI 插件。**选型**：npm 上搜 `dsh-tui` 会撞到多个同名包，认准 `@deepseek-harness-tui/dsh-tui`（peerDeps 明确支持 0.2.x）。其他同名包（如 `@dsh-tui/dsh-tui`）锁死 0.1.x 且停更，装上会在 import 阶段报 `does not provide an export named ...` 的 API 断裂错误。
 
-### 路径 A：全局启动器（推荐，需 dsh ≥ 0.2.2-rc.5）
+### 路径 A：全局启动器（推荐，2026-11 在 0.2.2-rc.5 上实测跑通）
 
 ```bash
 npm install -g @deepseek-harness-tui/dsh-tui
@@ -146,9 +146,11 @@ dsh-tui               # 首次运行自动自举独立 profile：~/.dsh/profiles
 ```
 
 - 启动器提供 `dsh-tui` / `dst` 两个命令，独立于官方 dsh 的 profile 体系（自建 `dsh-tui` profile，不碰 web/headless/tui）
-- npm 全局装**不经过 plugin-manager 的版本兼容闸**，无需 allow-version 豁免
-- 后续维护：`dsh-tui update` 一键对齐 TUI + dsh 引擎 + 启动器；`dsh-tui safe --rescue` 可建干净救援 profile
+- **首跑自举仍会撞版本闸**：自举内部调的还是 plugin-manager（`dsh plugin --profile dsh-tui add -w ...`），对那两个 0.1.x 传递依赖照样拒绝。被拦时启动器会打印修复命令，照跑两条 allow-version 后重跑 `dsh-tui` 即可（豁免包自带条件守卫不会实际加载，同路径 B 的说明）
+- 自动化引擎 `dsh-tui run` 是独立验证基线（0.2.0-rc.2 / 0.2.1-rc.2~rc.5），**不含 0.2.2-rc.x**——rc.5 上 `run` 仍报 `ADAPTER_UNAVAILABLE`，只影响无界面自动化，不影响交互式 TUI
+- 后续维护：`dsh-tui update` 一键对齐 TUI + dsh 引擎 + 启动器；`dsh-tui safe --rescue` 可建干净救援 profile；`dsh-tui doctor` 全绿（profile ✓ / config ✓）即自举完成
 - 自举出的 profile 同样默认 `llm-deepseek`——**Step 3 的模型 patch 仍要写**进 `~/.dsh/profiles/dsh-tui/cordis.patch.yml`
+- 验证注意：TUI profile 没有 headless 模式——`dsh --profile dsh-tui "提示词"` 会挂起（TUI 应用在非 TTY 下不退出），验证配置用 `--dump-config`，验证对话要在真终端里跑 `dsh-tui`
 
 ### 路径 B：plugin-manager 手动装（dsh 版本较旧时的兜底）
 
@@ -207,7 +209,8 @@ headless 顺手验证：`dsh --profile headless "回复OK两个字母即可"`，
 | key 已存但报 MISSING_CREDENTIAL（headless） | headless 模板默认禁用 credentials 插件，凭据读不到 | Step 3 末尾的启用段 |
 | 路径 B `installation rejected: incompatible` | 依赖树里有 0.1.x 旧包 | Step 4 路径 B 的 allow-version 豁免 |
 | import 阶段 `does not provide an export named ...` | 装了锁死 0.1.x 的停更包（API 断裂，豁免救不了） | 认准 `@deepseek-harness-tui/dsh-tui` scope |
-| 路径 A `ADAPTER_UNAVAILABLE: This adapter validates ...` | 自动化适配器（`dsh-tui run`）只验证较新的 dsh 版本 | 升级 dsh 到 rc.5，或改用路径 B |
+| 路径 A 自举被拦（`installation rejected`） | 自举内部也走 plugin-manager，两个 0.1.x 传递依赖被拒 | 按启动器打印的命令跑两条 allow-version（对 `dsh-tui` profile），重跑 `dsh-tui` |
+| 路径 A `ADAPTER_UNAVAILABLE`（仅 `dsh-tui run`） | 自动化引擎验证基线不含 0.2.2-rc.x | 不影响交互式 TUI；无界面自动化改用 `dsh --profile headless` 或路径 B 的 profile |
 | Web 面板配好模型但 headless/tui 没用上 | profile 配置隔离，各 profile 的 patch 独立 | 每个 profile 单独写 Step 3 |
 | TUI 启动报 `entry did not activate` | 插件与本机 dsh 版本 API 不匹配 | 查插件 peerDeps 是否覆盖你的 dsh 版本，不覆盖就换包 |
 
