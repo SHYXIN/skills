@@ -80,6 +80,9 @@
     "./skills/teaching/socratic-tutor",
     "./skills/teaching/teach-wx",
     "./skills/web/firecrawl-usage",
-    "./skills/web/modern-web-guidance-usage"
+    "./skills/web/modern-web-guidance-usage",
+    "./skills/devops/set-engram",
+    "./skills/personal/agent-memory-sync",
+    "./skills/productivity/dsh-plugin-brief"
   ]
 }

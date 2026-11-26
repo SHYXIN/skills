@@ -393,6 +393,7 @@ cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --gl
 - **where-am-i-wx** — 中文版「迷路就喊地图」：任务/对话中不知道走到哪时，手动触发画一张纯文字决策地图——已定结论、📍当前位置、未决问题、被否决的选项（附否决原因），关键节点旁标注前置知识（名词+一句话解释，深挖交给 eli5-zh / learn-by-minimal）。与 wait-what-wx 成对：单点没懂→重讲那句；整体迷路→喊地图。user-invoked，模型不会自触发。
 
 - **ai-daily-brief** — AI 每日简报：把「AI HOT 每日新闻」「GitHub 热门仓库」和「Star History 月报」合并成一份中文简报，一次调用出完整结果。AI 新闻走 aihot.news 匿名只读 API，GitHub trending 走 github.com/trending（WebFetch），Star History 走其 newsletter RSS，均免 API Key；支持「今天(24h)」「本周(7d)」「最热(hot-topics)」三种模式。model-invoked。
+- **dsh-plugin-brief** — DSH 插件简报：一次性生成「DSH 插件动态 + 周下载热榜」中文简报。动态走 awesome-dsh-plugin 目录 index.json（三镜像源轮询），热榜走 npm 官方下载量 API，均免 API Key、匿名只读；支持「今天(24h)」「本周(7d)」「30天」三种窗口。ai-daily-brief 的姊妹篇。
 
 - **upward-networking** — 设计真诚、克制、可执行的向上社交和高价值关系经营动作，支持邀约、请教、跟进、复盘，以及可选的 Obsidian 笔记草稿。想走向上社交流程时手动调用（/upward-networking）。
 
@@ -436,6 +437,7 @@ cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --gl
 - **set-openmausbot** — 在一台有 Docker 的 Linux 服务器上从零部署 OpenMausBot（开源 AI bot 车队聊天壳）并出公网 HTTPS 地址。覆盖：镜像离线搬运（服务器直连 ghcr.io 超时时）、邮箱验证码登录（QQ 码易混淆推荐 Gmail）、容器常驻启动、cloudflared 二进制手动落位、设备配对（每个新设备一次）、OpenAI-compat 引擎接入（直写 config.json）、端到端验收与排障速查。环境事实（服务器地址/邮箱/key）一律占位符，由运行时记忆提供。手动调用（/set-openmausbot）。
 - **set-lightpanda** — 在一台有 Docker + Nginx 的 Linux 服务器上部署 Lightpanda Browser（Zig 写的 headless 浏览器，专为 AI agent 设计）的 MCP 服务，并接入本机 agent CLI。覆盖：镜像离线搬运（服务器直连 Docker Hub 慢时本地中转）、MCP-only 容器启动、Nginx 反代（硬编码 Host 校验坑：域名必须改写 Host 头）、IP 白名单（MCP 无鉴权时的唯一防线）、codebuddy/claude mcp add 接入、端到端验收、镜像升级。用户手动调用（/set-lightpanda）。
 - **set-dsh-tui** — 本机安装 DSH CLI 并配置 TUI 终端界面：profile 体系认知（web/headless/tui 各自独立不继承）、credentials 凭据服务机制（.credentials.yaml + 插件注入）、自定义模型 patch 实测模板（DTH + DTS 双路由 + danger-full-access 权限）、headless credentials 插件默认禁用坑、@deepseek-harness-tui/dsh-tui 插件安装（含 0.1.x 传递依赖 allow-version 豁免）。换新机器或帮别人配 DSH 时用。手动调用（/set-dsh-tui）。
+- **set-engram** — 安装/升级 engram（AI agent 持久记忆：单 Go 二进制 + SQLite，MCP/CLI/TUI 三用）并把任意 agent 接入：Windows 两条安装路径（release zip 实测 / Go install）、doctor 验收、save/search/timeline 常用命令、codebuddy mcp.json 注册模板、升级时 exe 被 MCP 常驻进程占用的处理、实测坑（更新检查拖慢、搜索偏关键词、scope 枚举）。换新机器配记忆、升级 engram、给新 agent 接记忆时用。手动调用（/set-engram）。
 
 - **gitlab** — GitLab 平台操作技能（只做平台层，本地 git 流程归 branch-management）：MR 创建/查看/合并/关闭/rebase、指定审核者(reviewer)与指派人(assignee)、labels/milestone、approve 与评论讨论；MR 之外的 REST API 调用、CI pipeline 查询、tag/发布操作、分支保护（protected_branches 禁直推）、token/凭据获取；内置 glab 优先 + 挂死/误报 422 时改 curl + PRIVATE-TOKEN 直连 API 的兜底，以及合并前 merge-tree 冲突预检。通用化不绑定实例，本机/公司特有信息隔离在 references/。凡是涉及 GitLab 实例、GitLab API、MR、pipeline、tag、分支保护、凭据的任务触发。
 
@@ -448,6 +450,8 @@ cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --gl
 - **wx-flow** — 个人全任务流程驱动器（适用于所有代码任务，不限仓库）。五个阶段：需求澄清（grill）→ 隔离判断（worktree 硬裁决）→ 开发 → 收尾验证（按改动类型分流提示）→ 提交 + 清理（三档停靠：只提交 / 提交+push / 完整 MR，兜底只提交，升级由用户触发）。AI 领路，每个阶段收口处停下等用户拍板后再进下一阶段。调用：`/wx-flow`。
 
 - **machine-snap** — agent 工具箱快照与还原：whitelist.json 记录有利于 agent 工作的 CLI 白名单（core = agent 直接用的 CLI 如 rg/jq/fzf/duckdb/sg/http，coreRuntimes = MCP/skills 依赖的 runtime），doctor 逐条对账本机在位情况，restore 照单还原 + 三客户端 MCP 配置 + PATH 增量，redact 出脱敏版。换新电脑快速给 agent 配齐工具箱时用。用户手动调用（/machine-snap）。
+
+- **agent-memory-sync** — 各 agent 历史记忆 → engram 增量同步器：混合扫描（codebuddy 双层记忆 + claude/codex/DSH/WorkBuddy 探测点 + 兜底特征扫描，清单人肉勾选）、按工作区分库（project 名推断）、内容指纹增量只灌新增变更、首跑 --reconcile 对账已有条目、AGENTS.md 指引段幂等生成、跨项目纪律类 global scope 约定。md 源只读，写入只进 engram。换新机迁移记忆、定期同步、接新记忆源时用。手动调用（/agent-memory-sync）。
 
 - **alias** — 通用短名登记：用户嫌实体全名长（专家/仓库/服务器/任务/项目…）时，agent 批量推荐尽量短的名字（❓+➡️ emoji 格式，单字母/单汉字优先，撞名顺延），确认后登记进全局 ~/.alias-registry.json，之后用户直接打短名，agent 查表解析。任何 agent（codebuddy/claude/codex…）通用。
 
@@ -522,6 +526,7 @@ skills/
 │   ├── where-am-i-wx/  # 迷路就喊地图：当前任务/对话的决策定位图（中文版）
 │   ├── source-trace-wx/  # 追踪回答的原始依据与来源（一手来源补查）
 │   ├── ai-daily-brief/  # AI 每日简报（AI HOT 新闻 + GitHub trending + Star History 月报）
+│   ├── dsh-plugin-brief/  # DSH 插件简报（插件动态 + 周下载热榜，ai-daily-brief 姊妹篇）
 │   ├── web-reader-wx/  # 网页读取工具路由器（WebFetch/lightpanda/opencli browser 三分流 + 降级链）
 │   ├── upward-networking/ # 向上社交和高价值关系经营
 │   ├── doc-append-log/  # 只追加文档/日志历史机制（INDEX.md + 脚本，目录无关）
@@ -574,11 +579,13 @@ skills/
 │   ├── set-openmausbot/  # OpenMausBot 服务器部署（镜像离线搬运→登录→隧道→配对→引擎→验收）
 │   ├── set-lightpanda/  # Lightpanda Browser MCP 服务器部署（镜像搬运→容器→Nginx 反代+白名单→接入→验收→升级）
 │   ├── set-dsh-tui/  # DSH CLI 安装 + TUI 配置（profile 体系→凭据服务→模型 patch→权限→TUI 插件豁免安装）
+│   ├── set-engram/   # engram 安装/升级 + 多 agent 接入（CLI/MCP，doctor 验收）
 │   └── repo-init/  # 仓库初始化引导器（新仓 0→1 / 存量补缺 / 分支保护）
 ├── personal/          # 个人效率类技能
 │   ├── weekly-report/  # 周报生成器（例会全文 → 单人周报邮件正文）
 │   ├── wx-flow/        # 个人全任务流程驱动器（grill → 隔离 → 开发 → 验证 → 三档停靠提交）
 │   ├── machine-snap/   # 机器级环境快照（CLI+MCP+PATH → manifest，新机 restore）
+│   ├── agent-memory-sync/ # 各 agent 记忆 → engram 增量同步（扫描→勾选→指纹增量→AGENTS.md 指引）
 │   └── alias/          # 通用短名登记（实体起短名 → 全局登记表，跨 agent 解析）
 └── skill-curator/     # 技能市场策展（plugin.json / README / 磁盘三者一致）
 ```
