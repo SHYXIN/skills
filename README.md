@@ -294,6 +294,20 @@ npx astryx init && npx astryx theme add neutral
 
 工作流：`astryx build "<描述>"` 推荐模板 → `template <name> <path>` scaffold → `component <Name>` 读 props → `doctor --built <dir>` 交付门禁。agent 处理时加 `--json` / `--dense` 省 token。实测坑（模板依赖不代装、init 产物命名与 README 出入等）见 `/astryx-usage`；组件细节一律运行时 `astryx docs` / `search`，本仓库技能不搬运。
 
+### DSH 官方技能（dsh-doc / dsh-tui-guide）
+
+[deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)（MIT）官方 agent preset 自带的 **dsh-doc**：DSH 本体的问答导游——功能、profile 配置、插件、技能机制的问题从**本机安装版**文档与源码作答（前提：本机装有 DSH）。[ccch1mneyyy/dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI) 的 **dsh-tui-guide**：DSH 全屏终端 TUI 的使用手册（键位、斜杠命令、配置、主题）。**不随一键脚本安装**——受众是装了 DSH 的机器，需要时单独安装：
+
+```bash
+# dsh-doc：DSH 本体问答（前提：本机装有 DSH）
+cn-skills add github:deepseek-ai/deepseek-harness --skill dsh-doc --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
+
+# dsh-tui-guide：TUI 使用手册
+cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
+```
+
+> ⚡ 两个仓库都不小（harness 211 MiB / dsh-TUI 53 MiB），**需 cn-skills-cli ≥ 0.1.22**：稀疏拉取只检出技能目录（实测 dsh-doc 6 秒级），旧版会整仓浅克隆（2 分半）。`npx skills` 暂无此优化（上游整仓克隆，harness 直装不现实）；国外环境可用 tree 链接直装单枚技能，仍需克隆整仓、量力而行。harness 仓库另带的技能是 DSH 仓库贡献者的开发流程件（dsh-code-review、dsh-pr-description 等），外部用户无需安装。
+
 ### 同名技能：tdd / teach
 
 推荐搭配之间只有两个技能重名，都发生在 pstack 与 mattpocock/skills 之间：
