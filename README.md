@@ -21,9 +21,6 @@ npm install -g cn-skills-cli --registry=https://registry.npmmirror.com
 # 2) 安装本仓库技能（自动走 Gitee）
 cn-skills add SHYXIN/skills --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
-# 记忆体系（set-engram / agent-memory-sync 已随本仓库入库）：engram 二进制需单独装——
-# 装完运行 /set-engram 安装 engram 并接入各 agent，再跑 /agent-memory-sync 同步历史记忆
-
 # 3) 安装推荐搭配 pstack 整包（Gitee 镜像仓 theshyxin/pstack，用完整 URL；当前冻结版 v0.15.15）
 cn-skills add https://gitee.com/theshyxin/pstack --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 
@@ -126,9 +123,6 @@ cd skills
 ```bash
 # 安装本仓库技能
 npx skills@latest add SHYXIN/skills -y --copy -g -a codebuddy claude-code codex hermes-agent opencode
-
-# 记忆体系（set-engram / agent-memory-sync 已随本仓库入库）：engram 二进制需单独装——
-# 装完运行 /set-engram 安装 engram 并接入各 agent，再跑 /agent-memory-sync 同步历史记忆
 
 # 同时安装推荐搭配（顺序有意义：matt 放最后，让 tdd/teach 采用 matt 版）
 npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a codebuddy claude-code codex hermes-agent opencode

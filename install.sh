@@ -17,7 +17,6 @@ AGENTS="${1:-codebuddy claude-code codex hermes-agent opencode}"
 echo "📦 安装 SHYXIN/skills -> agents: $AGENTS"
 # 未加引号以让空格分隔的 agent 列表展开为多个 -a 参数
 npx skills@latest add SHYXIN/skills -y --copy -g -a $AGENTS
-echo "🧠 记忆体系（set-engram / agent-memory-sync 已随仓库入库）：装完运行 /set-engram 安装 engram 二进制并接入各 agent，再跑 /agent-memory-sync 同步历史记忆"
 
 echo "📦 安装 humanlayer/skills show-me (推荐搭配) -> agents: $AGENTS"
 npx skills@latest add humanlayer/skills --skill show-me -y --copy -g -a $AGENTS
