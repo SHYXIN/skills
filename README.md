@@ -443,6 +443,8 @@ cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --gl
 
 - **repo-init** — 仓库初始化引导器（一次性仪式）。两条路径：新仓库从 0 到 1（git init → 远程建仓 GitLab/GitHub → dev→main|master 分支模型 → 脚手架落盘 → push 点亮 → 设分支保护）；存量仓库只补缺、不改既有，不一致仅标注。GLOSSARY/CONTEXT 遵 domain-modeling-wx 纪律，GitLab 平台操作引用 gitlab skill。手动调用（/repo-init）。
 
+- **npm-publish** — 把本地 npm 包发到 registry.npmjs.org（首次配置 + 日常发包两段合一的单技能，前置检测自动分流）。覆盖：镜像源不接 publish 的根因与 `publishConfig` 钉源、`npm adduser` 设备授权（≠ passkey）、passkey/WebAuthn 2FA（npm 已永久停用 TOTP 新建，2FA 页面只有 Security key）、发包前预检（包名占用 / prepublishOnly）、发后 `npm view` 验证，以及 ENEEDAUTH / EOTP / 403 / EPUBLISHCONFLICT 与「gh keyring 报红跟 npm 无关」等真实踩坑。附截至 2026-11 的政策事实与来源链接（bypass-2FA token 直发 2027-01 取消，CI 走 trusted publishing）。发布不可逆，故只允许手动调用（/npm-publish）。
+
 ### 个人
 
 - **weekly-report** — 周报生成器。把多人的例会全文（如钉钉/飞书导出的周会记录）整理成单人周报邮件正文，自动提取指定成员（默认 王鑫）的「本周内容/进度」与「下周计划」，并起草「新技术/个人思考」一段，输出带主题行的三段式邮件正文。调用：`/weekly-report [成员名]`。
@@ -576,6 +578,7 @@ skills/
 │   ├── bot-skill-sync/  # 本地技能同步到 bot 宿主（list 对比 / push 覆盖保护 .env / remove 软删备份）
 │   ├── gitlab-runner-provision/  # GitLab Runner 新机器部署（SSH→Docker→Runner→CI 跑通）
 │   ├── gitlab/  # GitLab 平台操作（MR 生命周期 / API·pipeline·tag·分支保护·凭据 / reviewer·assignee / glab→curl 兜底）
+│   ├── npm-publish/  # npm 发包：publishConfig 钉源 + 设备授权登录 + passkey 2FA + 发前预检 + 排障（TOTP 已停用）
 │   ├── set-openmausbot/  # OpenMausBot 服务器部署（镜像离线搬运→登录→隧道→配对→引擎→验收）
 │   ├── set-lightpanda/  # Lightpanda Browser MCP 服务器部署（镜像搬运→容器→Nginx 反代+白名单→接入→验收→升级）
 │   ├── set-dsh-tui/  # DSH CLI 安装 + TUI 配置（profile 体系→凭据服务→模型 patch→权限→TUI 插件豁免安装）
