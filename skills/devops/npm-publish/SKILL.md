@@ -1,6 +1,6 @@
 ---
 name: npm-publish
-description: "把本地 npm 包发到 registry.npmjs.org 的完整流程（首次配置 + 日常发包，同一个技能内两段）。覆盖：镜像源与官方源的区分、npm adduser 设备授权登录、passkey/WebAuthn 2FA（npm 已停用 TOTP 新建）、发包前预检（包名占用 / publishConfig / prepublishOnly）、发后验证，以及 ENEEDAUTH / EOTP / 403 / EPUBLISHCONFLICT 排障。触发词：npm 发包 / npm publish 报错 / 新电脑发包 / ENEEDAUTH / EOTP / npm 2FA 没有验证器选项 / 账号要 --otp。user-invoked：只允许用户手动调用，不得自动触发。"
+description: "把本地 npm 包发到 registry.npmjs.org 的完整流程（首次配置 + 日常发包，同一个技能内两段）。覆盖：镜像源与官方源的区分、npm adduser 设备授权登录、passkey/WebAuthn 2FA（npm 已停用 TOTP 新建）、CI 发版主线（Granular Token + GitHub Actions NPM_TOKEN + release 触发，已实证）、发包前预检（包名占用 / publishConfig / prepublishOnly）、发后验证，以及 ENEEDAUTH / EOTP / 403 / EPUBLISHCONFLICT 排障。触发词：npm 发包 / npm publish 报错 / 新电脑发包 / ENEEDAUTH / EOTP / npm 2FA 没有验证器选项 / 账号要 --otp / GitHub Actions 发 npm。user-invoked：只允许用户手动调用，不得自动触发。"
 ---
 
 # npm publish（发包 / 新机器首发）
@@ -65,13 +65,41 @@ npm 自 2025-10 起永久禁用 TOTP（Google Authenticator 那类 6 位码）�
 - 通行密钥不是可复制的 6 位数字，只在验证时唤起。查看 / 删除：`chrome://password-manager/settings` 或 <https://passwords.google.com>
 - 页面给的恢复码必须抄下来——手机丢了、密钥删了只能靠它
 
-### 2.4 token 备选（只作副本，别当主线）
+### 2.4 CI 发版主线：Granular Token + GitHub Actions
 
-- Granular Access Token：寿命默认 7 天、上限 90 天
-- 勾 `bypass 2FA` 的 token 自 2026-07/08 起不能再做账号 / 组织管理，直发已收窄到 staging，官方口径 2027-01 全面取消（实际已滚动执行）
-- CI 一律走 Trusted Publishing (OIDC)：<https://docs.npmjs.com/trusted-publishers>
+发版首选 CI 通道：repo secret 放 token，建 GitHub release 触发 publish。无 OTP、无 TTY 问题，本机不装任何凭据。
 
-> 旧攻略里「用 automation token 免 OTP 直接发」的写法**已经失效**，不要照抄。
+**创建 Granular Access Token**（npmjs.com → 头像 → Access Tokens → Generate New Token → Granular）。表单按默认值打开，只有下面三处需要**主动设置**，其余不动：
+
+1. **Token name**：必填一个唯一名（如 `github-actions-cn-skills-cli`），默认是空的
+2. **Packages and scopes → Permissions**：默认停在 **No access**，必须手动切到 **Read and write (publish and stage)**——漏了这步，token 能建出来但发布必 403
+3. **Expiration**：默认 30 days，建议选 **90 days**（粒度 token 的上限档）
+
+其余保持默认 / 留空：
+
+- **Bypass two-factor authentication**：不勾（2026-08 起被收窄，2027-01 取消，勾了也只对 staging 有效）
+- **Allowed IP ranges**：留空——GitHub Actions 出口 IP 是动态的，填了必被拒
+- **Organizations**：No access（发包用不到）
+
+点 Generate token 后**立即复制** token 值（只显示一次），然后 `gh secret set NPM_TOKEN --repo <owner>/<repo>` 写入。到期 CI 会 401，属于预期行为：重新生成 → 更新 secret 即完成轮换。
+
+**仓库侧一次性配置**：
+
+```powershell
+printf '%s' "<token>" | gh secret set NPM_TOKEN --repo <owner>/<repo>
+```
+
+workflow 要点（参考 cn-skills-cli `.github/workflows/publish.yml`）：`on: release: types: [created]` 触发；`actions/setup-node` 带 `registry-url: https://registry.npmjs.org/`（这一步让 CI 侧的 npm 认得 `NODE_AUTH_TOKEN`）；publish 步骤 env 传 `NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}`。
+
+**发版动作序列**：bump `package.json` → commit + push master → `git tag vX.Y.Z && git push origin vX.Y.Z` → `gh release create vX.Y.Z --notes "..."` → `gh run list` 盯 workflow → `npm view <包名> version --registry=https://registry.npmjs.org` 确认（CDN 传播约 45 秒）。
+
+**隐藏前提**：账号若勾选「Require two-factor authentication for write actions」，无 bypass 的 token 在 CI 可能触发 EOTP/403。实证可用状态 = 该选项未勾 + passkey 登录网页侧。改账号 2FA 设置后务必重跑一次 CI 验证。
+
+### 2.5 Trusted Publishing (OIDC)（一句话指针）
+
+零长寿命 token 的官方理想方案：<https://docs.npmjs.com/trusted-publishers>。配置比 NPM_TOKEN 复杂，未实证；需要时再按官方文档配。
+
+> 旧攻略里「用 automation token 免 OTP 直接发」的写法**已经失效**，不要照抄。实证有效的是上面的 Granular Token + CI 通道。
 
 ## 3. 发包（每次的动作）
 
@@ -101,18 +129,24 @@ npm view <包名> dist-tags
 |---|---|---|
 | `ENEEDAUTH ... logged in to https://registry.npmmirror.com` | 全局源是镜像，镜像不接 publish | 加 `publishConfig.registry`，或临时 `--registry=https://registry.npmjs.org` |
 | `ENEEDAUTH ... logged in to https://registry.npmjs.org/` | 本机未登录官方源（配了 passkey 也没用） | `npm adduser --registry=https://registry.npmjs.org` 走设备授权 |
-| `EOTP`，或提示要 `--otp` | 账号 2FA 是 auth-and-writes，强制交互式验证 | 按提示在浏览器确认；`--otp=` 收的是会话 token，不是验证器的 6 位数字 |
+| `EOTP`，或提示要 `--otp` | 账号 2FA 是 auth-and-writes，强制交互式验证 | 在真 TTY 终端按提示走浏览器确认；`--otp=` 本意收 TOTP 6 位码，但 TOTP 已禁新建，实际上无码可填，走浏览器通道 |
 | 2FA 页面只有 Security key、提示插 USB | TOTP 已被禁用，只剩 WebAuthn 入口 | 点【更改】/在 Chrome 对话框里选「Google 密码管理工具」，别选 USB 安全密钥 |
-| `403 Forbidden ... 2FA or granular access token with bypass 2fa required` | registry 侧强制交互式 2FA，与 token 权限无关 | 走 passkey 网页确认；token 直发不可靠 |
+| 代理壳/脚本里 publish 报 `ENEEDAUTH`（明明已登录） | npm 11 非 TTY 时无凭据直接抛错，不发起 web 认证；有凭据时 EOTP 也因非 TTY 直接 throw | 换真 TTY 终端手动发，或改走 CI token 通道（§2.4） |
+| `403 Forbidden ... 2FA or granular access token with bypass 2fa required` | registry 侧强制交互式 2FA，与 token 权限无关 | 走 passkey 网页确认；token 直发不可靠，CI 用无 bypass token + 账号不勾 write-2FA（§2.4 隐藏前提） |
 | `EPUBLISHCONFLICT` / cannot publish over previously published version | 该版本号已在 registry 上 | 换版本号，npm 不允许覆盖已发版本 |
 | `gh auth status` 里 keyring 一行报红 | 那是 GitHub CLI 的凭据，与 npm 无关 | 不要因此去重配 npm |
+| CI publish 403 / token 明明有效 | 建 token 时 Permissions 忘了切，停在默认 No access | 重建 token，Permissions 选 Read and write (publish and stage)，重新 `gh secret set` |
+| CI publish 403 / IP 被拒 | token 填了 Allowed IP ranges，Actions 出口 IP 动态不匹配 | 重建 token，IP ranges 留空 |
 
-## 6. 现状事实（截至 2026-11 核实，政策仍在收紧）
+## 6. 现状事实（2026-11-26 实证核对，政策仍在收紧）
 
-- TOTP（验证器 APP）新建与重配：**永久禁用**（2025-10 起）
+- TOTP（验证器 APP）新建与重配：**禁用**（2025-10 起，实测 Enable 2FA 页面确实只有 Security key 入口）
 - bypass-2FA 的 Granular Token：2026-08 起不能做账号 / 组织管理；直发收窄到 staging，2027-01 起全面取消
-- CI 官方路径：Trusted Publishing (OIDC)，无需长寿命 token
-- 结论：本机手动发 = passkey WebAuthn 确认；CI = trusted publishing；长寿命 token 直发不要再依赖
+- **实证有效的两条发版通道**：
+  - 本机手动发 = 真 TTY 终端 + passkey WebAuthn 浏览器确认（npm 11 实测：TTY 是 web 认证的硬前提）
+  - CI 发版 = Granular Token（无 bypass、IP 留空、90 天）+ GitHub Actions NPM_TOKEN secret + release 触发（cn-skills-cli 0.1.23 全绿实证）
+- Trusted Publishing (OIDC)：官方零 token 方案，配置较复杂，未实证；需要时按官方文档配（§2.5）
+- 结论：日常发版默认走 CI 通道（§2.4）；本机手动发留作应急
 
 来源（政策原文，读者可自查）：
 
