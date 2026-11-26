@@ -22,6 +22,7 @@ fi
 
 echo "📦 安装 SHYXIN/skills (Gitee) -> $AGENTS"
 cn-skills add SHYXIN/skills --copy --yes --global --agent "$AGENTS"
+echo "🧠 记忆体系（set-engram / agent-memory-sync 已随仓库入库）：装完运行 /set-engram 安装 engram 二进制并接入各 agent，再跑 /agent-memory-sync 同步历史记忆"
 
 # pstack 整包，从 Gitee 镜像仓拉取（默认分支当前对应冻结版 v0.15.15；冻结 tag 见仓内 refs/tags）
 # 用完整 gitee URL：cn-skills 的 owner/repo 简写会解析到 GitHub，而 npx skills 从 Gitee 拉取会被反爬 403
