@@ -51,6 +51,12 @@ cn-skills add deepexi/skills/wangxin --copy --yes --global --agent codebuddy,cla
 # 10) CLI-Anything meta-skill：agent 自主发现/安装 agent-native CLI（直连 GitHub 可能慢）
 #     还需另装 hub 包管理器（uv tool install 或 pip，Python >=3.10），装法见下方「CLI-Anything (CLI-Hub)」小节与 /setup-cli-hub
 cn-skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
+
+# 11) dsh-doc：DSH 本体问答（前提：本机装有 DSH）
+cn-skills add github:deepseek-ai/deepseek-harness --skill dsh-doc --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
+
+# 12) dsh-tui-guide：TUI 使用手册
+cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 ```
 
 > 说明：`--agent` 逗号分隔列表在 PowerShell / CMD / Git Bash 下均可直接使用（`cn-skills-cli >= 0.1.16`）。装完可用 `cn-skills update` 随时更新（详见下方「更新（国内）」）。

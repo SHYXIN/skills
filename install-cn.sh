@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 国内一键安装 SHYXIN/skills + 推荐搭配（pstack 与 mattpocock 走 Gitee 镜像，opencli/asd-ste100/book-to-skill/rea/anysearch/last30days 直连 GitHub）
+# 国内一键安装 SHYXIN/skills + 推荐搭配（pstack 与 mattpocock 走 Gitee 镜像，opencli/asd-ste100/book-to-skill/rea/anysearch/last30days/DSH 官方技能 直连 GitHub）
 # 复制安装（--copy）：各 agent 目录写入独立副本而非软链，不依赖 symlink
 #
 # 远程一键运行（Gitee 对 raw 文件有反爬拦截，curl 直接拉 /raw/ 会 403，请用 clone 方式）：
@@ -69,6 +69,13 @@ cn-skills add anysearch-ai/anysearch-skill --copy --yes --global --agent "$AGENT
 echo "📦 安装 last30days (推荐搭配，GitHub 直连) -> $AGENTS"
 cn-skills add mvanhorn/last30days-skill --copy --yes --global --agent "$AGENTS"
 echo "⚠️  last30days 需要 Python 3.12+ 与环境配置，装完运行 /setup-last30days"
+
+# DSH 官方技能：dsh-doc（DSH 本体问答，前提本机装有 DSH）+ dsh-tui-guide（TUI 使用手册）
+# GitHub 直连；需 cn-skills-cli >= 0.1.22（稀疏拉取只检出技能目录，211MiB 仓库秒级；
+# 旧版会整仓浅克隆，慢但可用）；dsh-tui-guide 依赖技能发现递归扫描，同样需 >= 0.1.22
+echo "📦 安装 DSH 官方技能 dsh-doc + dsh-tui-guide (GitHub 直连，稀疏拉取) -> $AGENTS"
+cn-skills add github:deepseek-ai/deepseek-harness --skill dsh-doc --copy --yes --global --agent "$AGENTS"
+cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --global --agent "$AGENTS"
 
 # 公司内部 dp-* 技能（DeepWorks 工具链，从公司 GitLab 拉取，需内网权限）
 # 内网不通时不中断脚本，跳过并提示
