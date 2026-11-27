@@ -138,28 +138,30 @@ git commit -m "..."
 
 ## Step 5 — 本地体验（push 前的试用环）
 
-commit 完成后，**先本地安装试用，满意再 push**。`npx skills add` 支持本地路径（详见仓库根
-`NPX-SKILLS.md` 的「本地克隆后安装」），不需要先推远端。
+commit 完成后，**先本地安装试用，满意再 push**。`cn-skills add` 支持本地路径源（官方源格式含
+`./local/path`），不需要先推远端。
 
 按本次 curate 涉及的技能，给用户输出定制好的命令（用户自己执行，curator 不代跑）：
 
 ```bash
 # 仓库根 = 含 skills/ 目录的那层（本仓库即仓库根目录）
 # 新增/修改 N 个技能时，--skill 逐个列出
-npx skills@latest add <仓库根路径> --skill <skill-a> --skill <skill-b> -y -g -a codebuddy claude-code codex
+cn-skills add <仓库根路径> --skill <skill-a> --skill <skill-b> --copy --yes --global --agent codebuddy,claude-code,codex,workbuddy,opencode
 ```
 
 要点：
 
-- **本地路径装的是快照副本**（落到 `~/.agents/skills/` 再软链给各 agent），之后再改仓库文件
+- **`--copy` 是快照语义的硬要求**：cn-skills 默认 installMode 是 symlink；本地路径装快照副本
+  必须带 `--copy`（各 agent 目录写独立文件、不依赖软链）。装的是快照副本，之后再改仓库文件
   **不会自动反映**——每轮迭代后都要重跑一次上面的 add 命令刷新
-- 只装改动的技能（`--skill`），别全量 59 个重装一遍
-- **非交互参数是硬要求**：`npx skills add` 在没带 `-y` 且没显式指定 agent 时会弹交互选择，
-  在 agent 代跑（非 TTY）下直接报 `SKILLS_PROMPT_REQUIRES_TTY` 什么都不装。上面模板命令
-  已带 `-y -g -a ...` 是安全的；若因故临时拼命令（如指定 `--skill` 单装），**必须同样补上
-  `-y` + 显式 agent 列表（或 `--agent '*'`）**（2026-11-20 实测踩坑）
+- 只装改动的技能（`--skill`），别全量重装一遍
+- **非交互参数是硬要求**：`--yes` + 显式 `--agent`（逗号分隔列表，需 `cn-skills-cli >= 0.1.16`），
+  缺了会弹交互选择，在 agent 代跑（非 TTY）下什么都装不上。上面模板命令已带齐是安全的；
+  若因故临时拼命令（如指定 `--skill` 单装），**必须同样补上这两个参数**
 - 用户体验说"没问题" → 提示 `git push`（push 永远用户手动触发）
 - 用户说有问题 → 回到对应技能修，重新走 Step 3/4/5
+
+> 国外环境可等价改用 `npx skills@latest`，用法与坑见仓库根 `NPX-SKILLS.md`。
 
 `GREEN:` 用户拿到了可直接复制执行的本地安装命令，且命令里的 `--skill` 列表与本次 curate
 的改动集一致。
