@@ -434,6 +434,8 @@ cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --gl
 
 - **setup-git-bash** — 在装好 Git for Windows 的机器上，把 Git Bash 注册成 Windows Terminal 的 profile（下拉菜单出现 Git Bash 项，可设为默认）。覆盖 Git 安装路径检测（`where git` 反推）、固定 GUID 幂等写入 settings.json（备份 + JSON 校验 + 回滚）、可选设默认 profile 与验证（菜单可见 + `$MINGW_PREFIX` 非空），含 `python -c` 内插 Windows 路径触发 unicode 转义报错的踩坑与 `sys.argv` 修法；另附 fragment 文件方案（多机器脚本化更稳，不动 settings.json 主体）。装完即结束。手动调用（/setup-git-bash）。
 
+- **lean-describe-wx** — 用户描述一个东西但信息不足以开工时（丢截图说「加个类似的功能」「帮我看看这个」、描述含糊就要你干活），立即回一组 lean 引导词让用户一轮填空锁定对象，再组装成可复制给任何 agent 的结构化描述；任何领域通用。用户说「引导词」「帮我把这事说清楚」「/lean-describe-wx」时也触发。
+
 ### DevOps
 
 - **bot-skill-sync** — 把本地技能同步到 bot 宿主（open-superagent DSH 技能目录）：list 对比两端清单、push 覆盖推送（保护远端 .env 与 DEPLOY-NOTES.md，推送前后 md5 校验）、remove 软删到 /tmp 备份并记台账。宿主地址不内置，环境事实从运行时记忆取。升级/下线/盘点 bot 技能时使用。手动调用（/bot-skill-sync）。
@@ -518,6 +520,7 @@ skills/
 │   ├── interview-coach/  # 面试备战教练
 │   ├── grill-one/  # 单问版 grilling
 │   ├── grill-one-with-docs/  # 单问版 grill-with-docs（访谈+ADR/术语表沉淀）
+│   ├── lean-describe-wx/  # 模糊描述快速锁定：lean 引导词一轮填空 + 可携带描述
 │   ├── domain-modeling-wx/  # 领域建模 wx 版（GLOSSARY 术语层 + CONTEXT 关系层 + ADR）
 │   ├── retro-wx/  # 会话复盘：七类扫描改环境，支持 grep 五源历史会话，只提议不执行
 │   ├── ask-wx/  # 工作流主线路由器：默认 grill-one-with-docs 入口，中后段指向 matt 系
