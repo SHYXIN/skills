@@ -516,7 +516,6 @@ skills/
 │   ├── mental-map/
 │   └── learn-by-doing/
 ├── productivity/      # 效率类技能
-│   ├── dsh-plugin-brief/  # DSH 插件动态 + 周下载热榜简报（ai-daily-brief 姊妹篇）
 │   ├── bookpipe/  # forcoder 每日书籍流水线（suufun 加速 + book-to-skill 闭环转换 + 防漏单）
 │   ├── guided-book-reader/  # 英文技术书 PDF 带读
 │   ├── interview-coach/  # 面试备战教练
