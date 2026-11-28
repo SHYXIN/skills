@@ -1,4 +1,4 @@
-# SHYXIN Skills
+﻿# SHYXIN Skills
 
 个人 Claude Code 技能集。
 
@@ -493,6 +493,7 @@ cn-skills add github:ccch1mneyyy/dsh-TUI --skill dsh-tui-guide --copy --yes --gl
 - **visual-verdict** — 结构化视觉 QA 判定技能。把生成的 UI 截图与一张或多张参考图对比，返回严格 JSON 判定（`score` 0-100 / `verdict` pass·revise·fail / `category_match` / `differences` / `suggestions` / `reasoning`），用于截图还原度、布局/间距/字体/配色一致性验收；目标阈值 90+。源自 oh-my-claudecode，可直接作为"截图对比检查清单"使用。
 - **tui-diagram** — TUI 终端字符画图技能。用 Unicode 盒线字符（┌─┐│└┘ → ▼）在 Claude Code / CodeBuddy 等纯终端 Agent 里直接画流程图、架构图、时序图、状态机、层级树、对比矩阵、数据条、UI 线框、时间线共 9 类图；被调用时按对话上下文自动选型，内置中英混排宽度对齐规则。说"存下来"时能转 Mermaid 的图转入工作目录根部 `diagrams.md`，转不了的以 text 块原样保留。触发：仅显式调用 /tui-diagram。
 - **excalidraw-diagram** — 手绘风 Excalidraw 图生成技能。基于 `excalidraw-cli`（统一 `npx -y excalidraw-cli@0.0.2`，首次运行自动下载，无需全局安装）把需求变成 `.excalidraw` 文件，需要时再 `export` 成 excalidraw.com 可分享链接。内置「图要论证不是陈列」方法论、9 类图型选型（流程/关系/思维导图/架构/数据流/泳道/类图/时序/ER）与配色单一真源（浅色 + 深色）。与 `visualise`（对话内联）、`tui-diagram`（终端字符）三线分离。触发：仅显式调用 /excalidraw-diagram。
+- **webshot** — HTML/URL → PNG 截图技能。用系统已有浏览器（Edge/Chrome/Chromium/Brave 自动探测，零安装）无头渲染 HTML 文件、字符串或网址为 PNG；支持宽高、2x 缩放、等待 JS 渲染（--virtual-time-budget，图表类页面）。内置浏览器探测链脚本 webshot.ps1（防 stderr 误杀、输出校验）。触发：用户说"截图""HTML转图片""网页截图""README 配图""生成分享图""图表截成 PNG"。
 
 ### CNB
 
@@ -574,7 +575,8 @@ skills/
 │   ├── visualise/      # 内联可视化渲染（SVG/HTML/Chart.js，含 references/ 规范）
 │   ├── visual-verdict/ # 截图 vs 参考图 结构化视觉 QA 判定
 │   ├── tui-diagram/    # TUI 终端字符画图（Unicode 盒线，9 类图型路由）
-│   └── excalidraw-diagram/ # 手绘风 Excalidraw 图生成（.excalidraw 文件 + 分享链接）
+│   ├── excalidraw-diagram/ # 手绘风 Excalidraw 图生成（.excalidraw 文件 + 分享链接）
+│   └── webshot/        # HTML → PNG 截图（浏览器无头渲染，自动探测 Edge/Chrome）
 ├── backend/           # 后端开发类技能
 │   └── fastapi-starlette-admin/  # FastAPI + starlette-admin 快速集成
 ├── pstack/            # pstack 同名技能副本（改名后与 matt 版并存）

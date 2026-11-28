@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "shyxin-skills",
   "skills": [
     "./skills/backend/fastapi-starlette-admin",
@@ -85,6 +85,7 @@
     "./skills/devops/set-engram",
     "./skills/personal/agent-memory-sync",
     "./skills/productivity/dsh-plugin-brief",
-    "./skills/productivity/lean-describe-wx"
+    "./skills/productivity/lean-describe-wx",
+    "./skills/design/webshot"
   ]
 }
