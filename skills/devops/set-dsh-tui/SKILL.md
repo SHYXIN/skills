@@ -222,6 +222,14 @@ dsh --profile tui --dump-config | grep -A3 "sandbox-policy\|agent-default-model"
 
 TUI 会有两条无害警告（`tool-ralph` / `tool-subagent-list-agents` entry not found）——插件想增强 base 里两个可选工具，base 版本没有就跳过，不用管。
 
+### 推荐插件（可选，装完 TUI 后顺手）
+
+```bash
+dsh plugin --profile dsh-tui add dsh-tui-gh-panel   # GitHub 收件侧栏：PR/Issue/Discussions 收件箱 + 当前仓库 CI（只读，R 手刷）
+```
+
+不带版本号 = 永远装 latest。更多插件见生态收录列表（dsh-tui-ecosystem）。
+
 ## Step 5：验收
 
 ```bash
